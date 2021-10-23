@@ -53,7 +53,7 @@ NotifFrame.BackgroundColor3=Color3.fromRGB(0,0,0)
 NotifFrame.BackgroundTransparency=1
 NotifFrame.BorderSizePixel=0
 NotifFrame.Size=UDim2.new(0,250,0,40)
-NotifFrame.Position=UDim2.new(0,-NotifFrame.Size.X.Offset,0.8,0)
+NotifFrame.Position=UDim2.new(0,-NotifFrame.Size.X.Offset,0.77,0)
 
 NotifCloseButton.BackgroundColor3=Color3.new(1,1,1)
 NotifCloseButton.BackgroundTransparency=1
@@ -85,7 +85,7 @@ NotifMSGLabel.Position=NotifTopLabel.Position + UDim2.new(0,0,0,19)
 NotifMSGLabel.Size=UDim2.new(1,0,0,20)
 
 function closeNotif()
-    NotifFrame:TweenPosition(UDim2.new(0,-NotifFrame.Size.X.Offset-5,0.8,0),"Out","Quint",1,true,nil)
+    NotifFrame:TweenPosition(UDim2.new(0,-NotifFrame.Size.X.Offset-5,0.77,0),"Out","Quint",1,true,nil)
 end
 
 NotifCloseButton.MouseButton1Click:Connect(closeNotif)
@@ -99,7 +99,7 @@ function NOTIFY(MESSAGE)
         
 	    closeNotif()
 	    
-        NotifFrame:TweenPosition(UDim2.new(0,0,0.8,0),"Out","Quint",1,true,nil)
+        NotifFrame:TweenPosition(UDim2.new(0,0,0.77,0),"Out","Quint",1,true,nil)
     
         NotifMSGLabel.Text = "  "..MESSAGE
         
@@ -484,3 +484,5 @@ LP:GetMouse().KeyDown:connect(function(KEY)
 		CMDBAR.Text = ''
 	end
 end)
+
+NOTIFY("Welcome, "..game.Players.LocalPlayer.Name)
