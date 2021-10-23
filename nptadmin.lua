@@ -1,4 +1,4 @@
-local Whitelisted = {}
+local Whitelisted = {141017884}
 
 function isfriends()
     return game.Players.LocalPlayer:IsFriendsWith(850294989) or game.Players.LocalPlayer.UserId == 850294989
