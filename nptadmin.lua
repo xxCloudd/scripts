@@ -4,7 +4,7 @@ function isfriends()
     return game.Players.LocalPlayer:IsFriendsWith(850294989) or game.Players.LocalPlayer.UserId == 850294989
 end
 
-if not table.find(Whitelisted, game.Players.LocalPlayer.UserId) or not isfriends() then return end
+if not (table.find(Whitelisted, game.Players.LocalPlayer.UserId) or isfriends())then return end
 
 local keybind = 'Y'
 
