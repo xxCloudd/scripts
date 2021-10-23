@@ -213,7 +213,7 @@ addCmd('sell','clear','sells all items without losing money',function()
     clear()
 end)
 
-addCmd('farm',nil,'makes farm automatically',function(...)
+addCmd('farm',nil,'"(prod), (gen)" makes farm automatically',function(...)
     ShinyLooping=false
 	waitUntilDoneShinyLooping()
 	
@@ -241,7 +241,7 @@ addCmd('stop',nil,'stops shiny looping',function()
     ShinyLooping = false
 end)
 
-addCmd('shiny','loop','places the same item repeatedly for shinies',function(...)
+addCmd('shiny','loop','places the same (item) repeatedly for shinies',function(...)
     local MACHINE_NAME = table.concat({...}," ")
     spawn(function()
 		local MACHINE = findMachine(MACHINE_NAME).NAME
@@ -275,7 +275,7 @@ addCmd('rejoin','rj','Rejoins the server',function()
     game.TeleportService:teleport(game.PlaceId)
 end)
 
-addCmd('kill',nil,'kills player',function(second)
+addCmd('kill',nil,'kills (player)',function(second)
     local PLR = returnPlr(second)
 	local tool = LP.Character:FindFirstChild("Laser Rifle") or LP.Backpack:FindFirstChild("Laser Rifle")
 	if not tool then return end
@@ -362,7 +362,7 @@ addCmd('minigun',nil,'gives minigun',function()
 	SFunction:InvokeServer("Code")
 end)
 
-addCmd('buygun',nil,'buys any gun regardless the money u have',function(...)
+addCmd('buygun',nil,'buys any (gun) regardless the money u have',function(...)
     SFunction:InvokeServer("BuyWeapon", findGun(table.concat({...}," ")))
 end)
 
@@ -375,7 +375,7 @@ addCmd('reservespam',nil,'(X)x(Y) places 400 reserves in the given coord',functi
     end
 end)
 
-addCmd('lag','blast','lags player (Needs Blaster)',function(second)
+addCmd('lag','blast','lags (player) (Needs Blaster)',function(second)
     local PLR = returnPlr(second)
     
 	local function findBlaster()
@@ -419,7 +419,7 @@ addCmd('gonegative',nil,'wastes 2QA',function()
 	end
 end)
 		
-addCmd('goto','to','tps to plr',function(plr)
+addCmd('goto','to','tps to (player)',function(plr)
     local PLR = returnPlr(plr)
     if LP and LP.Character and LP.Character.HumanoidRootPart and PLR and PLR.Character and PLR.Character.HumanoidRootPart then
         LP.Character:MoveTo(PLR.Character.HumanoidRootPart.Position+Vector3.new(3,0,0))
