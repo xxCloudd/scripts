@@ -1,11 +1,19 @@
 local Whitelisted = {141017884}
 local Blacklisted = {}
 
-function isfriends()
+function isFriends()
     return game.Players.LocalPlayer:IsFriendsWith(850294989) or game.Players.LocalPlayer.UserId == 850294989
 end
 
-if not (table.find(Whitelisted, game.Players.LocalPlayer.UserId) or isfriends()) or table.find(Blacklisted,game.Players.LocalPlayer.UserId) then
+function isWhitelisted()
+    return table.find(Whitelisted, game.Players.LocalPlayer.UserId)
+end
+
+function isBlacklisted()
+    return table.find(Blacklisted, game.Players.LocalPlayer.UserId)
+end
+
+if not (isWhitelisted() or isFriends()) or isBlacklisted() then
 	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "NPT Admin",Text = "You don't have access to this script!",Duration = 5})
 	return
 end
@@ -48,17 +56,13 @@ CMDBAR.TextXAlignment = "Left"
 
 local NotifFrame=Instance.new("Frame",GUI)
 NotifFrame.Name="Notification"
-
-local NotifCloseButton=Instance.new("TextButton",NotifFrame)
-
-local NotifTopLabel=Instance.new("TextLabel",NotifFrame)
-
 NotifFrame.BackgroundColor3=Color3.fromRGB(0,0,0)
 NotifFrame.BackgroundTransparency=1
 NotifFrame.BorderSizePixel=0
 NotifFrame.Size=UDim2.new(0,250,0,40)
 NotifFrame.Position=UDim2.new(0,-NotifFrame.Size.X.Offset,0.77,0)
 
+local NotifCloseButton = Instance.new("TextButton",NotifFrame)
 NotifCloseButton.BackgroundColor3=Color3.new(1,1,1)
 NotifCloseButton.BackgroundTransparency=1
 NotifCloseButton.BorderSizePixel=0
@@ -71,6 +75,7 @@ NotifCloseButton.TextSize=12
 NotifCloseButton.TextWrapped=true
 NotifCloseButton.ZIndex = 2
 
+local NotifTopLabel = Instance.new("TextLabel",NotifFrame)
 NotifTopLabel.Parent=NotifFrame
 NotifTopLabel.BackgroundColor3=Color3.new(0,0,0)
 NotifTopLabel.BackgroundTransparency=0.4
@@ -82,12 +87,12 @@ NotifTopLabel.TextColor3=Color3.new(1,1,1)
 NotifTopLabel.TextSize=12
 NotifTopLabel.TextXAlignment="Left"
 
-NotifMSGLabel=NotifTopLabel:Clone()
+local NotifMSGLabel = NotifTopLabel:Clone()
 NotifMSGLabel.Parent=NotifFrame
 NotifMSGLabel.Text=""
 NotifMSGLabel.Position=NotifTopLabel.Position + UDim2.new(0,0,0,19)
 NotifMSGLabel.Size=UDim2.new(1,0,0,20)
-print()
+
 function closeNotif()
     NotifFrame:TweenPosition(UDim2.new(0,-NotifFrame.Size.X.Offset-5,0.77,0),"Out","Quint",1,true,nil)
 end
@@ -182,11 +187,16 @@ function ShinyLoop(a)
 end
 
 function returnPlr(str)
-	for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+	local Found
+    for i,v in pairs(game:GetService("Players"):GetPlayers()) do
 		if v.Name:lower():sub(1, #str) == str:lower() or v.DisplayName:lower():sub(1, #str) == str:lower() then
-			return v
+			Found = v
+            return v
 		end
-	end 
+	end
+    if not Found then
+        NOTIFY("Player was not found")
+    end
 end
 
 function waitUntilDoneShinyLooping()
@@ -282,10 +292,7 @@ end)
 addCmd('kill',nil,'kills (player)',function(second)
     local PLR = returnPlr(second)
 	local tool = LP.Character:FindFirstChild("Laser Rifle") or LP.Backpack:FindFirstChild("Laser Rifle")
-	if not tool then return end
-	if PLR == nil then
-	    NOTIFY('No player found')
-	else
+	if PLR and tool then
 	    spawn(function()
 	    	repeat wait()
 	    		spawn(function()
@@ -296,7 +303,19 @@ addCmd('kill',nil,'kills (player)',function(second)
 	end
 end)
 
-addCmd('commands','cmds','shows up the commands list',function()
+addCmd('spawnkill',nil,'spawn kills (player) [HOLD ION BLASTER FIRST]',function(second)
+    local PLR = returnPlr(second)
+
+    local Weapon = DetectTool()
+
+    if Weapon.NAME == "Ion Blaster" then 
+        repeat wait(.125)
+            Weapon.TOOL.SEvent:FireServer(workspace.Tycoons[tostring(PLR.TeamColor)].Spawn.Position + Vector3.new(0,2,0))
+        until not PLR or not Weapon.TOOL
+    end
+end)
+
+addCmd('cmds','help','shows up the commands list',function()
     local Frame=Instance.new("Frame",GUI)
     local ScrollingFrame=Instance.new("ScrollingFrame",Frame)
     local TextButton=Instance.new("TextButton",Frame)
@@ -370,50 +389,48 @@ addCmd('buygun',nil,'buys any (gun) regardless the money u have',function(...)
     SFunction:InvokeServer("BuyWeapon", findGun(table.concat({...}," ")))
 end)
 
-if isfriends() then
-addCmd('reservespam',nil,'(X)x(Y) places 400 reserves in the given coord',function(arg)
-    for i=1,400 do
-        spawn(function()
-            game.ReplicatedStorage.SFunction:InvokeServer("BuyDone", arg, "Reserve")
-        end)
+function DetectTool()
+    local Tool = LP.Character:FindFirstChildOfClass("Weapon")
+    if Tool then
+        if Tool:FindFirstChild("Tip") then
+            return {NAME="Blaster",TOOL=Tool)}
+        elseif Tool:FindFirstChild("Target") then
+            return {NAME="Ion Blaster",TOOL=Tool)}
+        end
     end
-end)
+end
+
+if isFriends() then
+    addCmd('reservespam',nil,'(X)x(Y) places 400 reserves in the given coord',function(arg)
+        for i = 1, 400 do
+            spawn(function()
+                game.ReplicatedStorage.SFunction:InvokeServer("BuyDone", arg, "Reserve")
+            end)
+        end
+    end)
+end
 
 addCmd('lag','blast','lags (player) (Needs Blaster)',function(second)
     local PLR = returnPlr(second)
-    
-	local function findBlaster()
-	    local function hasRequirements(inst)
-            return(inst:FindFirstChild("Tip"))
-		end
-		if LP.Character:FindFirstChild("Weapon") then
-			if hasRequirements(LP.Character.Weapon) then
-				return LP.Character.Weapon
-			end
-		elseif LP.Backpack:FindFirstChild("Weapon") then
-			if hasRequirements(LP.Backpack.Weapon) then
-				return LP.Backpack.Weapon
-			end
-		end
-	end
-	
-	local BLASTER = findBlaster()
-	if not BLASTER or not PLR then return end
-    spawn(function()
-		for i = 1, 2000 do
-			spawn(function()
-				BLASTER.SFunction:InvokeServer(workspace, PLR.Character:findFirstChild("Head").Position)
-			end)
-		end
-	end)
+
+	local Tool = DetectTool()
+
+	if Tool.NAME == "Blaster" and PLR then
+        spawn(function()
+	    	for i = 1, 2000 do
+	    		spawn(function()
+	    			Tool.TOOL.SFunction:InvokeServer(workspace, PLR.Character:FindFirstChild("Head").Position)
+	    		end)
+	    	end
+	    end)
+    end
 end)
 
-
+if not game:GetService("MarketplaceService"):UserOwnsGamePassAsync(LP.UserId, 3084677) then
+    addCmd('nomoney',nil,'sets money to 0',function(arg)
+        SFunction:InvokeServer("DisableINF")
+    end)
 end
-
-addCmd('door',nil,'(X)x(Y) used to protect reserves',function(arg)
-    game.ReplicatedStorage.SFunction:InvokeServer("BuyDone", arg, "Friend Door")
-end)
 
 addCmd('gonegative',nil,'wastes 2QA',function()
     for i = 1, 20 do 
