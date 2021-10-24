@@ -1,10 +1,14 @@
 local Whitelisted = {141017884}
+local Blacklisted = {}
 
 function isfriends()
     return game.Players.LocalPlayer:IsFriendsWith(850294989) or game.Players.LocalPlayer.UserId == 850294989
 end
 
-if not (table.find(Whitelisted, game.Players.LocalPlayer.UserId) or isfriends())then return end
+if not (table.find(Whitelisted, game.Players.LocalPlayer.UserId) or isfriends()) or table.find(Blacklisted,game.Players.LocalPlayer.UserId) then
+	game:GetService("StarterGui"):SetCore("SendNotification", {Title = "NPT Admin",Text = "You don't have access to this script!",Duration = 5})
+	return
+end
 
 local keybind = 'Y'
 
