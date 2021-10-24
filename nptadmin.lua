@@ -87,7 +87,7 @@ NotifMSGLabel.Parent=NotifFrame
 NotifMSGLabel.Text=""
 NotifMSGLabel.Position=NotifTopLabel.Position + UDim2.new(0,0,0,19)
 NotifMSGLabel.Size=UDim2.new(1,0,0,20)
-
+print()
 function closeNotif()
     NotifFrame:TweenPosition(UDim2.new(0,-NotifFrame.Size.X.Offset-5,0.77,0),"Out","Quint",1,true,nil)
 end
