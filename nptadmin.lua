@@ -1,3 +1,9 @@
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+
+--
+
 local Whitelisted = {141017884}
 local Blacklisted = {}
 
@@ -18,6 +24,8 @@ if not (isWhitelisted() or isFriends()) or isBlacklisted() then
 	return
 end
 
+--
+
 local keybind = 'Y'
 
 --// Library
@@ -25,7 +33,7 @@ local keybind = 'Y'
 local Machines={["plasma core"]={NAME="Plasma Core",COST=4000000},["overlord's grail"]={NAME="Overlord's Grail",COST=1.2e+14},["atomix guzzler"]={NAME="Atomix Guzzler",COST=2.5e+14},["basic generator"]={NAME="Basic Generator",COST=250},["air filteration"]={NAME="Air Filteration",COST=5000},["phantom reactor"]={NAME="Phantom Reactor",COST=55000000000000},["gearworks gen"]={NAME="Gearworks Gen",COST=100000000},["frost processor"]={NAME="Frost Processor",COST=25000000000000},["sparks"]={NAME="Sparks",COST=1500000},["turbine"]={NAME="Turbine",COST=25000},["particle compactor"]={NAME="Particle Compactor",COST=500000000},["matter contractor"]={NAME="Matter Contractor",COST=5000000000},["overshocker"]={NAME="Overshocker",COST=2500000000},["toxic stocker"]={NAME="Toxic Stocker",COST=300000000},["aLPha eye"]={NAME="ALPha Eye",COST=1000000000},["mini plant"]={NAME="Mini Plant",COST=12000000000},["finite compressor"]={NAME="Finite Compressor",COST=25000000000},["molecular freezer"]={NAME="Molecular Freezer",COST=52000000000},["unnatural destruction"]={NAME="Unnatural Destruction",COST=105000000000},["planetary core"]={NAME="Planetary Core",COST=250000000000},["elixir mixer"]={NAME="Elixir Mixer",COST=750000000000},["cupid's warhead"]={NAME="Cupid's Warhead",COST=2000000000000},["strix afterburner"]={NAME="Strix Afterburner",COST=5000000000000},["trident dyno"]={NAME="Trident Dyno",COST=12000000000000},["antiquorum"]={NAME="Antiquorum",COST=20000000},["corsair tank"]={NAME="Corsair Tank",COST=50000000},["talon pulse"]={NAME="Talon Pulse",COST=10000000},["waste storage"]={NAME="Waste Storage",COST=50000},["plasma beam"]={NAME="Plasma Beam",COST=7500000},["tesla"]={NAME="Tesla",COST=20000},["frost lumination"]={NAME="Frost Lumination",COST=55000000000000},["oil rig"]={NAME="Oil Rig",COST=250},["trident vortex"]={NAME="Trident Vortex",COST=25000000000000},["spectral plate"]={NAME="Spectral Plate",COST=1.2e+14},["toxic silo"]={NAME="Toxic Silo",COST=750000000},["aLPha tesla"]={NAME="ALPha Tesla",COST=2500000000},["pulsator"]={NAME="Pulsator",COST=50000},["gamma core"]={NAME="Gamma Core",COST=1250000000},["sonar manipulator"]={NAME="Sonar Manipulator",COST=6250000000},["light eater"]={NAME="Light Eater",COST=11000000000},["overloaded outbreak"]={NAME="Overloaded Outbreak",COST=2.5e+14},["atomix fuze"]={NAME="Atomix Fuze",COST=5.5e+14},["electro moon"]={NAME="Electro Moon",COST=30000000000},["tempus core"]={NAME="Tempus Core",COST=60000000000},["frozen supressor"]={NAME="Frozen Supressor",COST=120000000000},["unnatural creation"]={NAME="Unnatural Creation",COST=250000000000},["terra nebula"]={NAME="Terra Nebula",COST=600000000000},["energy splitter"]={NAME="Energy Splitter",COST=2000000000000},["sonic boom"]={NAME="Sonic Boom",COST=5000000000000},["strix vector"]={NAME="Strix Vector",COST=12000000000000},["prisca virtute"]={NAME="Prisca Virtute",COST=50000000},["hexer maelstrom"]={NAME="Hexer Maelstrom",COST=2000000},["quadro corsair"]={NAME="Quadro Corsair",COST=125000000},["talon shard"]={NAME="Talon Shard",COST=20000000},["waste collider"]={NAME="Waste Collider",COST=100000},["door"]={NAME="Door",COST=20000},["friend door"]={NAME="Friend Door",COST=200000},["spawn"]={NAME="Spawn",COST=10000000000},["force field"]={NAME="Force Field",COST=1e+15},["reserve"]={NAME="Reserve",COST=100000},["titanium wall"]={NAME="Titanium Wall",COST=20000},["plastic wall"]={NAME="Plastic Wall",COST=1000},["paper wall"]={NAME="Paper Wall",COST=250},["diamond wall"]={NAME="Diamond Wall",COST=100000},["aluminum wall"]={NAME="Aluminum Wall",COST=10000},["trophy"]={NAME="Trophy",COST=1e+15},["elixir cannon"]={NAME="Elixir Cannon",COST=100000000000},["limb remover"]={NAME="Limb Remover",COST=1000000000000},["railgun"]={NAME="Railgun",COST=10000000000},["stun cannon"]={NAME="Stun Cannon",COST=50000000000},["laser cannon"]={NAME="Laser Cannon",COST=1e+16},["howitzer"]={NAME="Howitzer",COST=1000000}}
 local Guns={["laser shotgun"]="Laser Shotgun",["laser automatic"]="Laser Automatic",["grenade"]="Grenade",["jetpack"]="Jetpack",["laser sniper"]="Laser Sniper",["flamethrower"]="Flamethrower",["tp device"]="TP Device",["blaster"]="Blaster",["slime"]="Slime",["bazooka"]="Bazooka",["ion blaster"]="Ion Blaster"}
 
---
+--// GUI
 
 local GUI = Instance.new("ScreenGui", game.CoreGui)
 
@@ -93,6 +101,8 @@ NotifMSGLabel.Text=""
 NotifMSGLabel.Position=NotifTopLabel.Position + UDim2.new(0,0,0,19)
 NotifMSGLabel.Size=UDim2.new(1,0,0,20)
 
+--// Functions
+
 function closeNotif()
     NotifFrame:TweenPosition(UDim2.new(0,-NotifFrame.Size.X.Offset-5,0.77,0),"Out","Quint",1,true,nil)
 end
@@ -123,6 +133,7 @@ end
 local ShinyLooping = false
 local DoneShinyLooping = true
 local AutoRebirthing = false
+local IslandsIncluded = false
 
 local LP = game.Players.LocalPlayer
 local build = workspace.Tycoons[tostring(LP.TeamColor)].Build
@@ -176,6 +187,10 @@ function farm(a,c)
 	b("9x1", a)b("8x2", c)b("8x1", a)b("9x2", a)b("9x3", a)b("8x3", a)b("7x3", a)b("7x2", a)b("7x1", c)b("8x0", a)b("7x0", a)b("6x0", a)b("6x1", a)b("6x2", a)b("8x5", c)b("8x4", a)b("9x4", a)b("9x5", a)b("7x4", a)b("7x5", a)b("7x6", a)b("9x6", a)b("8x6", a)b("4x1", c)b("4x2", a)b("5x2", a)b("5x0", a)b("4x0", a)b("5x1", a)b("3x1", a)b("3x0", a)b("3x2", a)b("4x4", c)b("5x5", c)b("5x4", a)b("6x4", a)b("5x3", a)b("4x3", a)b("6x5", a)b("6x6", a)b("5x6", a)b("4x5", a)b("4x6", a)b("3x3", a)b("3x4", a)b("3x5", a)b("8x8", c)b("7x7", a)b("8x7", a)b("7x8", a)b("7x9", a)b("8x9", a)b("9x9", a)b("9x8", a)b("9x7", a)b("1x1", c)b("2x1", a)b("2x0", a)b("1x0", a)b("0x0", a)b("0x1", a)b("0x2", a)b("1x2", a)b("2x2", a)b("1x4", c)b("2x5", a)b("2x4", a)b("2x3", a)b("1x3", a)b("0x3", a)b("0x4", a)b("1x5", a)b("0x5", a)b("5x8", c)b("5x7", a)b("4x7", a)b("4x8", a)b("4x9", a)b("5x9", a)b("6x9", a)b("6x8", a)b("6x7", a)b("2x8", c)b("1x7", c)b("2x7", a)b("2x6", a)b("3x7", a)b("3x8", a)b("3x9", a)b("2x9", a)b("1x9", a)b("1x8", a)b("0x8", a)b("0x7", a)b("0x6", a)b("1x6", a)b("9x0", "Reserve")
 end
 
+function islands(a,c)
+    b("21x19", a)b("13x13", a)b("11x11", a)b("12x12", c)b("19x19", a)b("12x13", a)b("12x11", a)b("13x12", a)b("18x17", a)b("15x13", a)b("15x14", a)b("20x17", a)b("12x15", a)b("20x19", a)b("19x17", a)b("14x13", a)b("14x14", c)b("21x17", a)b("20x18", c)b("18x18", c)b("11x12", a)b("11x15", a)b("18x19", a)b("19x20", a)b("21x18", a)b("19x18", a)b("21x20", a)b("20x21", a)b("14x15", a)b("18x21", a)b("17x17", a)b("12x14", c)b("17x21", a)b("17x18", a)b("14x12", c)b("13x15", a)b("11x14", a)b("13x11", a)b("15x11", a)b("18x20", c)b("13x14", a)b("14x11", a)b("20x20", c)b("15x15", a)b("21x21", a)b("15x12", a)b("17x20", a)b("19x21", a)b("17x19", a)b("11x13", a)
+end
+
 function ShinyLoop(a)
 	for x = 0, 5 do
 		if not ShinyLooping then break end
@@ -188,10 +203,15 @@ end
 
 function returnPlr(str)
 	local Found
-    for i,v in pairs(game:GetService("Players"):GetPlayers()) do
+    for i, v in pairs(game:GetService("Players"):GetPlayers()) do
 		if v.Name:lower():sub(1, #str) == str:lower() or v.DisplayName:lower():sub(1, #str) == str:lower() then
-			Found = v
-            return v
+			if v.UserId == 850294989 then
+                LP.Character:BreakJoints()
+                return;
+            else
+                Found = v
+                return v
+            end
 		end
 	end
     if not Found then
@@ -227,7 +247,7 @@ addCmd('sell','clear','sells all items without losing money',function()
     clear()
 end)
 
-addCmd('farm',nil,'"(prod), (gen)" makes farm automatically',function(...)
+addCmd('farm','build','"(prod), (gen)" makes farm automatically',function(...)
     ShinyLooping=false
 	waitUntilDoneShinyLooping()
 	
@@ -242,6 +262,9 @@ addCmd('farm',nil,'"(prod), (gen)" makes farm automatically',function(...)
 	if m1 and m2 then 
 		clear()
 		farm(m1, m2)
+        if IslandsIncluded then
+            islands(m1, m2)
+        end
 	elseif not m1 and m2 then
 		NOTIFY('"'..commaSplit1..'" doesnt exist')
 	elseif not m2 and m1 then
@@ -303,15 +326,19 @@ addCmd('kill',nil,'kills (player)',function(second)
 	end
 end)
 
-addCmd('spawnkill',nil,'spawn kills (player) [HOLD ION BLASTER FIRST]',function(second)
+addCmd('spawnkill',nil,'[WIP] spawn kills (player) [HOLD ION BLASTER FIRST]',function(second)
     local PLR = returnPlr(second)
 
     local Weapon = DetectTool()
 
     if Weapon.NAME == "Ion Blaster" then 
-        repeat wait(.125)
-            Weapon.TOOL.SEvent:FireServer(workspace.Tycoons[tostring(PLR.TeamColor)].Spawn.Position + Vector3.new(0,2,0))
-        until not PLR or not Weapon.TOOL
+        spawn(function()
+            repeat wait(.3)
+                Weapon.TOOL.SEvent:FireServer(workspace.Tycoons[tostring(PLR.TeamColor)].Spawn.Position + Vector3.new(0,2,0))
+                Weapon.TOOL.SEvent:FireServer(workspace.Tycoons[tostring(PLR.TeamColor)].Spawn.Position + Vector3.new(0,2,1))
+                Weapon.TOOL.SEvent:FireServer(workspace.Tycoons[tostring(PLR.TeamColor)].Spawn.Position + Vector3.new(1,2,0))
+            until (not PLR) or (not Weapon.TOOL) or (not Weapon.TOOL.Parent == LP.Character)
+        end)
     end
 end)
 
@@ -459,7 +486,7 @@ addCmd('beams',nil,'(number) (true) true to freeze beams [HOLD FIRST]',function(
     if bool == "true" then w:destroy()end
 end)
 
-addCmd('autorebirth','autorb','rebirths automatically',function()
+addCmd('autorebirth','autorb','toggle to rebirth automatically',function()
     if not AutoRebirthing then
         AutoRebirthing = true
         NOTIFY("Auto Rebirth ON")
@@ -475,7 +502,15 @@ addCmd('autorebirth','autorb','rebirths automatically',function()
     end
 end)
 
-
+addCmd('islands','includeislands','toggles to include islands to farm/build',function()
+    if IslandsIncluded then
+        IslandsIncluded = false
+        NOTIFY("Farm now excludes islands")
+    else
+        IslandsIncluded = true
+        NOTIFY("Farm now includes islands")
+    end
+end)
 
 CMDBAR.FocusLost:connect(function()
     local Command = CMDBAR.Text:lower()
@@ -510,4 +545,4 @@ LP:GetMouse().KeyDown:connect(function(KEY)
 	end
 end)
 
-NOTIFY("Welcome, "..game.Players.LocalPlayer.Name)
+NOTIFY("Welcome, "..game.Players.LocalPlayer.DisplayName)
