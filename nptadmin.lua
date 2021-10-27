@@ -390,12 +390,13 @@ addCmd('buygun',nil,'buys any (gun) regardless the money u have',function(...)
 end)
 
 function DetectTool()
-    local Tool = LP.Character:FindFirstChildOfClass("Weapon")
-    if Tool then
-        if Tool:FindFirstChild("Tip") then
-            return {NAME="Blaster",TOOL=Tool)}
-        elseif Tool:FindFirstChild("Target") then
-            return {NAME="Ion Blaster",TOOL=Tool)}
+    for i, Parent in pairs({"Character","Backpack"}) do
+        for i, tool in pairs(LP[Parent]:GetChildren()) do 
+            if tool:FindFirstChild("Tip") then
+                return {NAME="Blaster",TOOL=tool}
+            elseif tool:FindFirstChild("Target") then
+                return {NAME="Ion Blaster",TOOL=tool}
+            end
         end
     end
 end
@@ -414,7 +415,7 @@ addCmd('lag','blast','lags (player) (Needs Blaster)',function(second)
     local PLR = returnPlr(second)
 
 	local Tool = DetectTool()
-
+    print(Tool, Tool.NAME)
 	if Tool.NAME == "Blaster" and PLR then
         spawn(function()
 	    	for i = 1, 2000 do
@@ -426,7 +427,7 @@ addCmd('lag','blast','lags (player) (Needs Blaster)',function(second)
     end
 end)
 
-if not game:GetService("MarketplaceService"):UserOwnsGamePassAsync(LP.UserId, 3084677) then
+if not game:GetService("MarketplaceService"):UserOwnsGamePassAsync(LP.UserId, 3084677) then -- if player has infinite money gamepass then dont add this cuz will set to inf money
     addCmd('nomoney',nil,'sets money to 0',function(arg)
         SFunction:InvokeServer("DisableINF")
     end)
@@ -486,9 +487,12 @@ CMDBAR.FocusLost:connect(function()
     for CMDNAME, CMD in pairs(CMDS) do 
         if FirstCommand == CMDNAME or FirstCommand == CMD.ALIAS then
             spawn(function()
-                pcall(function()
+                local Success, Error = pcall(function()
                     CMD.FUNC(unpack(ARGS))
                 end)
+                if not Success then
+                    print(Error)
+                end
             end)
             break
         end
