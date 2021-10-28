@@ -4,6 +4,8 @@ end
 
 --
 
+local version = "1.1"
+
 local Whitelisted = {141017884}
 local Blacklisted = {}
 
@@ -342,6 +344,10 @@ addCmd('spawnkill',nil,'[WIP] spawn kills (player) [HOLD ION BLASTER FIRST]',fun
     end
 end)
 
+addCmd('version','ver','script version', function()
+    NOTIFY("NPT ADMIN v"..version)
+end)
+
 addCmd('cmds','help','shows up the commands list',function()
     local Frame=Instance.new("Frame",GUI)
     local ScrollingFrame=Instance.new("ScrollingFrame",Frame)
@@ -384,7 +390,7 @@ addCmd('cmds','help','shows up the commands list',function()
     TextLabel.TextSize=12
     TextLabel.TextXAlignment="Left"
     local UIGridLayout = Instance.new("UIGridLayout",ScrollingFrame)
-    UIGridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
+    UIGridLayout.CellPadding = UDim2.new(0, 0, 0, 2)
     UIGridLayout.CellSize = UDim2.new(1, 0, 0, 20)
     TextButton.MouseButton1Click:connect(function()Frame:Destroy()end)
     ScrollingFrame.ChildAdded:connect(function(c)
