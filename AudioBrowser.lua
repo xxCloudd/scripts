@@ -102,8 +102,8 @@ addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
 -- search icon is not mine: https://www.roblox.com/library/3229239834/button-search
 
 local Pages = {
-	Search = {mainTextLabel, MainScrollingFrame, MainMainTextBox},
-	Favorites = {saveToTxtButton, favSearchTextBox},
+	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
+	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
 	ID = {}
 }
 
