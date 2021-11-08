@@ -397,12 +397,12 @@ end
 
 favSearchTextBox.Changed:connect(function(property)
 	if property == "Text" then
-		refreshFavoritesList(MainTextBox.Text)
+		refreshFavoritesList(favSearchTextBox.Text)
 	end
 end)
 
 MainTextBox.FocusLost:connect(function(enter)
-	if page == "main" and enter then
+	if enter then
 		local check,_check = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_01234567889',false for i=1,#check do if string.find(MainTextBox.Text, check:sub(i,i)) then _check = true break end end if not _check then return end
 		
 		clearMainList()
