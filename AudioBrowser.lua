@@ -4,6 +4,9 @@ local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
 local page = "search" -- search / fav / id
 
+local version = "1.3"
+
+
 function JSONDecode(str)
 	return game:GetService("HttpService"):JSONDecode(str)
 end
@@ -87,8 +90,8 @@ addProperty(favButton,{Parent=Frame,TextScaled=false,TextSize=17,TextYAlignment=
 local FavoritesScrollingFrame = MainScrollingFrame:clone()
 addProperty(FavoritesScrollingFrame,{Parent=Frame,Visible=false})
 
-local ScriptNameLabel = saveToTxtButton:Clone()
-addProperty(ScriptNameLabel,{Text="  AudioBrowser",Parent=Frame})
+local ScriptNameLabel = mainTextLabel:Clone()
+addProperty(ScriptNameLabel,{Text="  AudioBrowser | v"..version,Parent=Frame,Visible=false})
 
 local idButton = minimizeButton:clone()
 addProperty(idButton, {Parent=Frame,Text='ID',Font='SourceSansSemibold',Position=UDim2.new(1,(-18)*5,0,0)})
@@ -99,12 +102,21 @@ addProperty(searchButton,{Active=false,Name='',Image="rbxassetid://3229239834",S
 local favSearchTextBox = MainTextBox:clone()
 addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
 
+local idTextLabel = mainTextLabel:Clone()
+addProperty(idTextLabel,{Text="  Add Audio by ID",Parent=Frame,Visible = false}) 
+
+local idTextBoxNAME = MainTextBox:clone()
+addProperty(idTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Custom Name Input"})
+
+local idToggleCustomName = saveToTxtButton:Clone()
+addProperty(idToggleCustomName,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Custom Name",Position=UDim2.new(0,0,0.45,0),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),BorderColor3=Color3.fromRGB(150,0,0)}) 
+
 -- search icon is not mine: https://www.roblox.com/library/3229239834/button-search
 
 local Pages = {
 	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
 	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
-	ID = {}
+	ID = {idTextLabel, idToggleCustomName, idTextBoxNAME}
 }
 
 local oldBooleans = {}
