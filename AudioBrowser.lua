@@ -109,7 +109,7 @@ local idTextBoxNAME = MainTextBox:clone()
 addProperty(idTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Custom Name Input"})
 
 local idToggleCustomName = saveToTxtButton:Clone()
-addProperty(idToggleCustomName,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Custom Name",Position=UDim2.new(0,0,0.45,0),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),BorderColor3=Color3.fromRGB(150,0,0)}) 
+addProperty(idToggleCustomName,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Custom Name",Position=UDim2.new(0.5,-(Frame.Size.X.Offset/2),0.45,0),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeColor3=Color3.fromRGB(150,0,0),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(150,0,0)}) 
 
 -- search icon is not mine: https://www.roblox.com/library/3229239834/button-search
 
