@@ -336,6 +336,8 @@ CloseButton.MouseButton1Click:connect(function()
     	soundInstance:Destroy()
 	end
 	GUI:destroy()
+
+	getgenv().MjXRqQs7cjVu8 = nil
 end)
 
 function isFavorited(id)
