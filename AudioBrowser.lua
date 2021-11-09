@@ -1,11 +1,17 @@
 --// Made by xxCloudd
 
+if getgenv().MjXRqQs7cjVu8 then -- reload
+	getgenv().MjXRqQs7cjVu8:Destroy()
+end
+
+local GUI = Instance.new("ScreenGui", game.CoreGui) 
+
+getgenv().MjXRqQs7cjVu8 = GUI
+
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
 local page; -- search / fav / id
-
-local version = "1.3"
-
+local version = "1.4"
 
 function JSONDecode(str)
 	return game:GetService("HttpService"):JSONDecode(str)
@@ -38,7 +44,6 @@ local PREVIEW_VOLUME = 1
 
 --------
 
-local GUI = Instance.new("ScreenGui", game.CoreGui) 
 local Frame = Instance.new("Frame", GUI)
 local CloseButton = Instance.new("TextButton", Frame)
 local MainTextBox = Instance.new("TextBox", Frame)
@@ -321,6 +326,9 @@ CloseButton.MouseButton1Click:connect(function()
         pcall(function()
 			tween(GUIElement, .1, {Transparency = 1})
         end)
+		if GUIElement:IsA("TextBox") or GUIElement:IsA("TextLabel") or GUIElement:IsA("TextButton") then
+			tween(GUIElement, .1, {TextStrokeTransparency = 1})
+		end
     end
 	tween(searchButton, .1, {ImageTransparency = 1}) -- bc imagebutton 
     wait(.1)
@@ -341,21 +349,21 @@ end
 
 
 function playAudio(id)
-	if soundInstance then --  and soundInstance.SoundId == "rbxassetid://" .. id
+	if soundInstance then
 		if soundInstance.SoundId == "rbxassetid://" .. id then
 			soundInstance:Destroy()
 			soundInstance = nil
 			return "StopSound"
 		else
 			soundInstance:Destroy()
-			soundInstance = Instance.new("Sound", game.Players.LocalPlayer)
+			soundInstance = Instance.new("Sound", GUI)
 			soundInstance.Volume = PREVIEW_VOLUME
 			soundInstance.SoundId = "rbxassetid://" .. id
 			soundInstance.Looped = true
 			soundInstance:Play()
 		end
 	elseif (not soundInstance) or (not soundInstance.SoundId == "rbxassetid://" .. id) then
-		soundInstance = Instance.new("Sound", game.Players.LocalPlayer)
+		soundInstance = Instance.new("Sound", GUI)
 		soundInstance.Volume = PREVIEW_VOLUME
 		soundInstance.SoundId = "rbxassetid://" .. id
 		soundInstance.Looped = true
