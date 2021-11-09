@@ -2,7 +2,7 @@
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
-local page = "search" -- search / fav / id
+local page; -- search / fav / id
 
 local version = "1.3"
 
@@ -106,17 +106,56 @@ local idTextLabel = mainTextLabel:Clone()
 addProperty(idTextLabel,{Text="  Add Audio by ID",Parent=Frame,Visible = false}) 
 
 local idTextBoxNAME = MainTextBox:clone()
-addProperty(idTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Custom Name Input"})
+addProperty(idTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Name Input"})
 
-local idToggleCustomName = saveToTxtButton:Clone()
-addProperty(idToggleCustomName,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Custom Name",Position=UDim2.new(0.5,-(Frame.Size.X.Offset/2),0.45,0),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeColor3=Color3.fromRGB(150,0,0),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(150,0,0)}) 
+local idTextBoxID = MainTextBox:clone()
+addProperty(idTextBoxID, {Parent=Frame,PlaceholderText="Id Input",Size=UDim2.new(0,100,0,20)})
+idTextBoxID.Position=UDim2.new(0.5,-(idTextBoxID.Size.X.Offset/2),0,50)
+
+local idAddButton = saveToTxtButton:Clone()
+addProperty(idAddButton,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Add",Position=UDim2.new(0.5,-(idAddButton.Size.X.Offset/2),0.5,-(idAddButton.Size.Y.Offset/2)),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
 
 -- search icon is not mine: https://www.roblox.com/library/3229239834/button-search
+
+idAddButton.MouseButton1Click:connect(function()
+	local ID = tonumber(idTextBoxID.Text)
+	local Name = idTextBoxNAME.Text
+
+	local function thingy(str)
+		idAddButton.Text = str
+		wait(.5)
+		idAddButton.Text = "Save to Favorites"
+	end
+
+	if not checkIfHasCharacters(Name) then
+		thingy('Please insert a name')
+		return
+	end
+
+	if not ID then
+		thingy('Please insert an Id')
+		return
+	end
+	
+	if isFavorited(ID) then
+		thingy('Id "' .. ID .. '" was already saved')
+		return
+	end
+
+	addToFavorites(Name, ID)
+
+	idTextBoxNAME.Text = ""
+	idTextBoxID.Text = ""
+
+	idAddButton.Text = '"'..Name..'" was saved to favorites'
+	wait(1)
+	idAddButton.Text = "Save to Favorites"
+end)
 
 local Pages = {
 	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
 	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
-	ID = {idTextLabel, idToggleCustomName, idTextBoxNAME}
+	ID = {idTextLabel, idAddButton, idTextBoxNAME, idTextBoxID}
 }
 
 local oldBooleans = {}
@@ -232,80 +271,42 @@ end)
 
 --// frame drag
 
---[[
-local UserInputService = game:GetService("UserInputService")
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-local delta = input.Position - dragStart
-Frame:TweenPosition(UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y), "InOut", "Sine", 0.05, true, nil) 
-end
-
-Frame.InputBegan:Connect(function(input)
-if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-dragging = true
-dragStart = input.Position
-startPos = Frame.Position
-input.Changed:Connect(function()
-if input.UserInputState == Enum.UserInputState.End then
-dragging = false
-end
-end)
-end
-end)
-
-Frame.InputChanged:Connect(function(input)
-if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-dragInput = input
-end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-if input == dragInput and dragging then
-update(input)
-end
-end)
-]]
-
 function dragify(Frame)
 	dragToggle = nil
-	dragSpeed = 0.2 -- You can edit this.
+	dragSpeed = 0.2 
 	dragInput = nil
 	dragStart = nil
 	dragPos = nil
 	
 	function updateInput(input)
-	Delta = input.Position - dragStart
-	Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
-	game:GetService("TweenService"):Create(Frame, TweenInfo.new(dragSpeed), {Position = Position}):Play()
+		Delta = input.Position - dragStart
+		Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+		tween(Frame, dragSpeed, {Position = Position})
 	end
 	
 	Frame.InputBegan:Connect(function(input)
-	if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
-	dragToggle = true
-	dragStart = input.Position
-	startPos = Frame.Position
-	input.Changed:Connect(function()
-	if (input.UserInputState == Enum.UserInputState.End) then
-	dragToggle = false
-	end
-	end)
-	end
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+			dragToggle = true
+			dragStart = input.Position
+			startPos = Frame.Position
+			input.Changed:Connect(function()
+				if (input.UserInputState == Enum.UserInputState.End) then
+					dragToggle = false
+				end
+			end)
+		end
 	end)
 	
 	Frame.InputChanged:Connect(function(input)
-	if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-	dragInput = input
-	end
+		if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			dragInput = input
+		end
 	end)
 	
 	game:GetService("UserInputService").InputChanged:Connect(function(input)
-	if (input == dragInput and dragToggle) then
-	updateInput(input)
-	end
+		if (input == dragInput and dragToggle) then
+			updateInput(input)
+		end
 	end)
 end
 
@@ -332,7 +333,7 @@ end)
 function isFavorited(id)
     for i, audio in pairs(AUDIOS) do
         if audio["ID"] == id then
-            return true
+            return audio["ID"]
         end
     end
 end
@@ -413,9 +414,23 @@ favSearchTextBox.Changed:connect(function(property)
 	end
 end)
 
+function checkIfHasCharacters(str)
+	local check = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_01234567889'
+	local _check = false
+	for i= 1, #check do
+		if string.find(str, check:sub(i,i)) then
+			_check = true
+			break
+		end
+	end
+
+	return _check
+
+end
+
 MainTextBox.FocusLost:connect(function(enter)
 	if enter then
-		local check,_check = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_01234567889',false for i=1,#check do if string.find(MainTextBox.Text, check:sub(i,i)) then _check = true break end end if not _check then return end
+		if not checkIfHasCharacters(MainTextBox.Text) then return end
 		
 		clearMainList()
 		
