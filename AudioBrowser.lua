@@ -108,21 +108,29 @@ addProperty(searchButton,{Active=false,Name='',Image="rbxassetid://3229239834",S
 local favSearchTextBox = MainTextBox:clone()
 addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
 
+
+local SettingsTxtLbl_1 = ScriptNameLabel:Clone()
+addProperty(SettingsTxtLbl_1, {Parent=Frame,TextXAlignment="Center",TextSize=15,Text="Favorite Audio Manually",Font="SourceSansItalic",Position = UDim2.new(0,0,0,20),Size=UDim2.new(1,0,0,20)})
+
+local SettingsTxtLbl_2 = SettingsTxtLbl_1:Clone()
+addProperty(SettingsTxtLbl_2, {Parent=Frame,Text="Other",Position = UDim2.new(0,0,0,123)})
+
 local SettingsIdTextLabel = mainTextLabel:Clone()
-addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame}) 
+addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
 
 local SettingsIdTextBoxNAME = MainTextBox:clone()
-addProperty(SettingsIdTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Name Input"})
+addProperty(SettingsIdTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Name Input",Position = UDim2.new(0,0,0,45)})
 
 local SettingsIdTextBoxID = MainTextBox:clone()
 addProperty(SettingsIdTextBoxID, {Parent=Frame,PlaceholderText="Id Input",Size=UDim2.new(0,100,0,20)})
-SettingsIdTextBoxID.Position=UDim2.new(0.5,-(SettingsIdTextBoxID.Size.X.Offset/2),0,50)
+SettingsIdTextBoxID.Position=UDim2.new(0.5,-(SettingsIdTextBoxID.Size.X.Offset/2),0,70)
 
 local SettingsIdAddButton = saveToTxtButton:Clone()
-addProperty(SettingsIdAddButton,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Add",Position=UDim2.new(0.5,-(SettingsIdAddButton.Size.X.Offset/2),0.5,-(SettingsIdAddButton.Size.Y.Offset/2)),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
+addProperty(SettingsIdAddButton,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Add",Position=UDim2.new(0.5,-(SettingsIdAddButton.Size.X.Offset/2),0,100),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
 
 local SettingsToggleAlphabeticalSort = SettingsIdAddButton:clone()
-addProperty(SettingsToggleAlphabeticalSort, {Parent=Frame,Text="Sort Favorites Alphabetically: OFF",Position=SettingsIdAddButton.Position+UDim2.new(0,0,0,40)})
+addProperty(SettingsToggleAlphabeticalSort, {Parent=Frame,Text="Sort Favorites Alphabetically: OFF"})
+SettingsToggleAlphabeticalSort.Position=UDim2.new(0.5,-(SettingsToggleAlphabeticalSort.Size.X.Offset/2),0,150)
 
 SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
 	if sortFavoritesAlphabetically then
@@ -174,7 +182,7 @@ end)
 local Pages = {
 	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
 	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
-	Settings = {SettingsToggleAlphabeticalSort, SettingsIdTextLabel, SettingsIdAddButton, SettingsIdTextBoxNAME, SettingsIdTextBoxID}
+	Settings = {SettingsTxtLbl_1, SettingsTxtLbl_2, SettingsToggleAlphabeticalSort, SettingsIdTextLabel, SettingsIdAddButton, SettingsIdTextBoxNAME, SettingsIdTextBoxID}
 }
 
 local oldBooleans = {}
@@ -499,6 +507,6 @@ end)
 
 refreshFavoritesList()
 
-showPage("search")
+showPage("settings")
 
 tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset/2))})
