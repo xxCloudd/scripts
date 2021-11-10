@@ -10,8 +10,9 @@ getgenv().MjXRqQs7cjVu8 = GUI
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
-local page; -- search / fav / id
+local page; -- search / fav / settings
 local version = "1.4"
+local sortFavoritesAlphabetically = false
 
 function JSONDecode(str)
 	return game:GetService("HttpService"):JSONDecode(str)
@@ -82,7 +83,7 @@ addProperty(CloseButton, {Active=false,TextStrokeTransparency=.5,BackgroundTrans
 addProperty(MainTextBox, {BackgroundColor3=Color3.fromRGB(35,35,35),TextStrokeTransparency=.5,BorderSizePixel=0,BorderColor3=Color3.fromRGB(1,1,1),Position=UDim2.new(0,0,0.0983606577,0),Size=UDim2.new(1,0,0,18),Font=Enum.Font.SourceSansItalic,PlaceholderColor3=Color3.fromRGB(150,150,150),PlaceholderText="Audio Search",Text="",TextColor3=Color3.fromRGB(200,200,200),TextSize=14,ClearTextOnFocus=false,TextWrapped=true,Font='SourceSansSemibold',Name=''})
 addProperty(MainScrollingFrame, {BackgroundColor3=Color3.fromRGB(0,0,0),BackgroundTransparency=0.9,BorderColor3=Color3.fromRGB(60, 60, 60),Position=UDim2.new(0,0,0.196721315,0),Size=UDim2.new(1,0,0,147),ScrollBarThickness=4,BottomImage="rbxasset://textures/ui/Scroll/scroll-middle.png",TopImage="rbxasset://textures/ui/Scroll/scroll-middle.png",ScrollBarImageColor3=Color3.fromRGB(100,100,100),CanvasSize=UDim2.new(0,0,0,0),Name=''})
 addProperty(mainTextLabel, {TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,386,0,18),Font='SourceSansBold',Text="  LMB = Preview | RMB = Set to clipboard",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
-addProperty(saveToTxtButton,{Active=false,Visible=false,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,160,0,18),Font='SourceSansBold',Text="  Save to \\workspace\\Audio_List.txt",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
+addProperty(saveToTxtButton,{Active=false,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,160,0,18),Font='SourceSansBold',Text="  Save to \\workspace\\Audio_List.txt",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
 
 Frame.Position = UDim2.new(-1, 0, .5, -(Frame.Size.Y.Offset/2))
 
@@ -93,13 +94,13 @@ local favButton = minimizeButton:clone()
 addProperty(favButton,{Parent=Frame,TextScaled=false,TextSize=17,TextYAlignment='Top',Text='★',Position=UDim2.new(1,(-18)*4,0,0)})
 
 local FavoritesScrollingFrame = MainScrollingFrame:clone()
-addProperty(FavoritesScrollingFrame,{Parent=Frame,Visible=false})
+addProperty(FavoritesScrollingFrame,{Parent=Frame})
 
 local ScriptNameLabel = mainTextLabel:Clone()
 addProperty(ScriptNameLabel,{Text="  AudioBrowser | v"..version,Parent=Frame,Visible=false})
 
-local idButton = minimizeButton:clone()
-addProperty(idButton, {Parent=Frame,Text='ID',Font='SourceSansSemibold',Position=UDim2.new(1,(-18)*5,0,0)})
+local SettingsButton = minimizeButton:clone()
+addProperty(SettingsButton, {Parent=Frame,Text='S',Font='SourceSansSemibold',Position=UDim2.new(1,(-18)*5,0,0)})
 
 local searchButton = Instance.new("ImageButton", Frame)
 addProperty(searchButton,{Active=false,Name='',Image="rbxassetid://3229239834",Size=UDim2.new(0,19,0,18),BackgroundTransparency=1,Position=UDim2.new(1,(-18)*3,0,0)})
@@ -107,29 +108,42 @@ addProperty(searchButton,{Active=false,Name='',Image="rbxassetid://3229239834",S
 local favSearchTextBox = MainTextBox:clone()
 addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
 
-local idTextLabel = mainTextLabel:Clone()
-addProperty(idTextLabel,{Text="  Add Audio by ID",Parent=Frame,Visible = false}) 
+local SettingsIdTextLabel = mainTextLabel:Clone()
+addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame}) 
 
-local idTextBoxNAME = MainTextBox:clone()
-addProperty(idTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Name Input"})
+local SettingsIdTextBoxNAME = MainTextBox:clone()
+addProperty(SettingsIdTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Name Input"})
 
-local idTextBoxID = MainTextBox:clone()
-addProperty(idTextBoxID, {Parent=Frame,PlaceholderText="Id Input",Size=UDim2.new(0,100,0,20)})
-idTextBoxID.Position=UDim2.new(0.5,-(idTextBoxID.Size.X.Offset/2),0,50)
+local SettingsIdTextBoxID = MainTextBox:clone()
+addProperty(SettingsIdTextBoxID, {Parent=Frame,PlaceholderText="Id Input",Size=UDim2.new(0,100,0,20)})
+SettingsIdTextBoxID.Position=UDim2.new(0.5,-(SettingsIdTextBoxID.Size.X.Offset/2),0,50)
 
-local idAddButton = saveToTxtButton:Clone()
-addProperty(idAddButton,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Add",Position=UDim2.new(0.5,-(idAddButton.Size.X.Offset/2),0.5,-(idAddButton.Size.Y.Offset/2)),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
+local SettingsIdAddButton = saveToTxtButton:Clone()
+addProperty(SettingsIdAddButton,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Add",Position=UDim2.new(0.5,-(SettingsIdAddButton.Size.X.Offset/2),0.5,-(SettingsIdAddButton.Size.Y.Offset/2)),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
 
+local SettingsToggleAlphabeticalSort = SettingsIdAddButton:clone()
+addProperty(SettingsToggleAlphabeticalSort, {Parent=Frame,Text="Sort Favorites Alphabetically: OFF",Position=SettingsIdAddButton.Position+UDim2.new(0,0,0,40)})
+
+SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
+	if sortFavoritesAlphabetically then
+	 	sortFavoritesAlphabetically = false
+		SettingsToggleAlphabeticalSort.Text = "Sort Favorites Alphabetically: OFF"
+	else
+		sortFavoritesAlphabetically = true
+		SettingsToggleAlphabeticalSort.Text = "Sort Favorites Alphabetically: ON"
+	end
+	refreshFavoritesList(favSearchTextBox.Text)
+end)
 -- search icon is not mine: https://www.roblox.com/library/3229239834/button-search
 
-idAddButton.MouseButton1Click:connect(function()
-	local ID = tonumber(idTextBoxID.Text)
-	local Name = idTextBoxNAME.Text
+SettingsIdAddButton.MouseButton1Click:connect(function()
+	local ID = tonumber(SettingsIdTextBoxID.Text)
+	local Name = SettingsIdTextBoxNAME.Text
 
 	local function thingy(str)
-		idAddButton.Text = str
+		SettingsIdAddButton.Text = str
 		wait(.5)
-		idAddButton.Text = "Save to Favorites"
+		SettingsIdAddButton.Text = "Save to Favorites"
 	end
 
 	if not checkIfHasCharacters(Name) then
@@ -149,18 +163,18 @@ idAddButton.MouseButton1Click:connect(function()
 
 	addToFavorites(Name, ID)
 
-	idTextBoxNAME.Text = ""
-	idTextBoxID.Text = ""
+	SettingsIdTextBoxNAME.Text = ""
+	SettingsIdTextBoxID.Text = ""
 
-	idAddButton.Text = '"'..Name..'" was saved to favorites'
+	SettingsIdAddButton.Text = '"'..Name..'" was saved to favorites'
 	wait(1)
-	idAddButton.Text = "Save to Favorites"
+	SettingsIdAddButton.Text = "Save to Favorites"
 end)
 
 local Pages = {
 	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
 	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
-	ID = {idTextLabel, idAddButton, idTextBoxNAME, idTextBoxID}
+	Settings = {SettingsToggleAlphabeticalSort, SettingsIdTextLabel, SettingsIdAddButton, SettingsIdTextBoxNAME, SettingsIdTextBoxID}
 }
 
 local oldBooleans = {}
@@ -192,11 +206,27 @@ function refreshFavoritesList(str) -- Update list on GUI:
 	FavoritesScrollingFrame:ClearAllChildren()
     FavoritesScrollingFrame.CanvasSize=UDim2.new(0,0,0,0)
     
-    for i, audio in pairs(AUDIOS)do
-    	if string.find(audio["Name"]:lower(), (str and str:lower()) or '') then
+	if sortFavoritesAlphabetically then
+		local new = {}
+
+		for i, audio in pairs(AUDIOS)do
+			if string.find(audio["Name"]:lower(), (str and str:lower()) or '') then
+				table.insert(new, {Name = audio["Name"], ID = audio["ID"]})
+			end
+		end
+
+		table.sort(new,function(a,b)return a["Name"]:lower() < b["Name"]:lower()end)
+
+		for i, audio in pairs(new)do
 			createNew(FavoritesScrollingFrame, audio["Name"], audio["ID"])
 		end
-    end
+	else
+    	for i, audio in pairs(AUDIOS)do
+    		if string.find(audio["Name"]:lower(), (str and str:lower()) or '') then
+				createNew(FavoritesScrollingFrame, audio["Name"], audio["ID"])
+			end
+    	end
+	end
 end
 
 function addToFavorites(name,id)
@@ -249,14 +279,14 @@ function showPage(pg)
 
 	viewContent("Search", false)
 	viewContent("Favorites", false)
-	viewContent("ID", false)
+	viewContent("Settings", false)
 
 	if pg == "search" then
 		viewContent("Search", true)
 	elseif pg == "fav" then
 		viewContent("Favorites", true)
-	elseif pg == "id" then
-		viewContent("ID", true)
+	elseif pg == "settings" then
+		viewContent("Settings", true)
 	end
 
 	page = pg
@@ -270,8 +300,8 @@ searchButton.MouseButton1Click:connect(function()
 	showPage("search")
 end)
 
-idButton.MouseButton1Click:connect(function()
-	showPage("id")
+SettingsButton.MouseButton1Click:connect(function()
+	showPage("settings")
 end)
 
 --// frame drag
@@ -440,13 +470,14 @@ end
 
 MainTextBox.FocusLost:connect(function(enter)
 	if enter then
-		if not checkIfHasCharacters(MainTextBox.Text) then return end
+		local search = MainTextBox.Text
+
+		if not checkIfHasCharacters(search) then return end
 		
 		clearMainList()
 		
 		if loading then return end
 		
-		local search = MainTextBox.Text
 		loading = true
 		MainTextBox.Text='Loading "'..search..'"..'
 		MainTextBox.TextEditable=false
