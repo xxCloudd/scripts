@@ -150,21 +150,8 @@ function updateResults()
     TextLabel_2.Text = "rushed gui\nresults: "..#ScrollingFrame:GetChildren()
 end
 
-local Players = game:GetService("Players")
-local cache = {}
-function getUserIdFromUsername(name)
-	if cache[name] then return cache[name] end
-	local player = Players:FindFirstChild(name)
-	if player then
-		cache[name] = player.UserId
-		return player.UserId
-	end 
-	local id
-	pcall(function ()
-		id = Players:GetUserIdFromNameAsync(name)
-	end)
-	cache[name] = id
-	return id
+function userExists(user)
+    return game:GetService("HttpService"):JSONDecode(game:HttpGet("https://api.roblox.com/users/get-by-username?username="..user)).Id ~= nil
 end
 
 function getRandomStr(length)
@@ -175,28 +162,35 @@ function getRandomStr(length)
 	elseif tonumber(length) < 5 then
 	    length = 5
 	end
-	local CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789'
-	local FINALSTRING = ''
+	
+	local CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+	local mid = ''
 	local UNDERSCORED = false
 	
-	for i = 1, length do
-	    local RANDOMCHAR_NR = math.random(1, #CHARACTERS)
-	    local RANDOMCHAR = CHARACTERS:sub(RANDOMCHAR_NR, RANDOMCHAR_NR)
+	local function pickWithout()
+	    local a = math.random(1, #CHARACTERS)
+	    return CHARACTERS:sub(a, a)
+	end
+	
+	local function pickWith()
+	    local a = math.random(1, #CHARACTERS+1)
+	    return (CHARACTERS.."_"):sub(a, a)
+	end
+	
+	for i = 1, (length - 2) do
+	    local RANDOMCHAR = pickWith()
 	    
-	    if i == 1 or i == length or UNDERSCORED then
-	        repeat
-	            RANDOMCHAR_NR = math.random(1, #CHARACTERS)
-	            RANDOMCHAR = CHARACTERS:sub(RANDOMCHAR_NR, RANDOMCHAR_NR)
-	        until RANDOMCHAR ~= "_"
+	    if UNDERSCORED then
+	        RANDOMCHAR = pickWithout()
 	    end
 		
 		if RANDOMCHAR == "_" then
 		    UNDERSCORED = true
 		end
 		
-		FINALSTRING = FINALSTRING .. RANDOMCHAR
+		mid = mid .. RANDOMCHAR
 	end
-	return FINALSTRING
+	return pickWithout() .. mid .. pickWithout()
 end
 
 function create(txt)
@@ -208,7 +202,6 @@ function create(txt)
 	Button.TextColor3=Color3.new(0,0,0)
 	Button.TextXAlignment = "Left"
 	Button.BackgroundColor3=Frame.BackgroundColor3
-	--Button.BackgroundTransparency=.9
 	Button.BorderColor3=Color3.fromRGB(255,120,120)
 	Button.Name=txt
 	Frame.ScrollingFrame.CanvasSize=UDim2.new(0,0,0,#Frame.ScrollingFrame:getChildren() * 20)
@@ -225,8 +218,8 @@ end
 function get()
     local function Get()
         local user = getRandomStr(TextBox.Text)
-	    local check = getUserIdFromUsername(user)
-        if not check then
+	    local check = userExists(user)
+        if not check and not ScrollingFrame:FindFirstChild(user) then
         	create(user)
         end
     end
@@ -241,7 +234,7 @@ TextButton.MouseButton1Click:Connect(function()
 	if a == false then
 		a=true 
 		TextButton.Text="stop"
-		repeat wait(.05)
+		repeat wait()
 		    get()
 		until not a
 	else
@@ -257,8 +250,8 @@ TextButton_2.MouseButton1Click:Connect(function()
 end)
 
 TextButton_3.MouseButton1Click:Connect(function()
-	local saveFile = "usernames_" .. math.random(1,10000000) .. ".txt"
-	local String = "|"..#Frame.ScrollingFrame:GetChildren() .. "| UNTAKEN USERS"
+	local saveFile = "users_" .. math.random(1,10000000) .. ".txt"
+	local String = #Frame.ScrollingFrame:GetChildren() .. " UNTAKEN USERS"
 	for i,v in pairs(Frame.ScrollingFrame:getChildren())do
 		String = String .. "\n" .. v.Name
 	end
