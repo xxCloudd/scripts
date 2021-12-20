@@ -241,7 +241,7 @@ TextButton.MouseButton1Click:Connect(function()
 	if a == false then
 		a=true 
 		TextButton.Text="stop"
-		repeat wait(.15)
+		repeat wait()
 		    get()
 		until not a
 	else
