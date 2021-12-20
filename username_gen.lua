@@ -257,10 +257,10 @@ TextButton_2.MouseButton1Click:Connect(function()
 end)
 
 TextButton_3.MouseButton1Click:Connect(function()
-	local saveFile = "usernames_" .. math.random(1,1000000) .. ".txt"
-	local String = ""
+	local saveFile = "usernames_" .. math.random(1,10000000) .. ".txt"
+	local String = #Frame.ScrollingFrame:GetChildren() .. " RESULTS:"
 	for i,v in pairs(Frame.ScrollingFrame:getChildren())do
-		String = String .. v.Name .. "\n"
+		String = String .. "\n" .. v.Name
 	end
 	writefile(saveFile, String)
 end)
