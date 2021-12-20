@@ -225,6 +225,7 @@ function get()
     end
     if multithreading then
         spawn(Get)
+		wait(.075)
     else
         Get()
     end
