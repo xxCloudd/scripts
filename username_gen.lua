@@ -25,7 +25,7 @@ ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(49, 49, 49)
+Frame.BackgroundColor3 = Color3.fromRGB(213,67,67)
 Frame.Position = UDim2.new(0.1, 0, 0.507645249, 0)
 Frame.Size = UDim2.new(0, 272, 0, 170)
 
@@ -34,7 +34,7 @@ UICorner.Parent = Frame
 ScrollingFrame.Parent = Frame
 ScrollingFrame.Active = true
 ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ScrollingFrame.BackgroundTransparency = 0.900
+ScrollingFrame.BackgroundTransparency = 0.9
 ScrollingFrame.BorderSizePixel = 0
 ScrollingFrame.Position = UDim2.new(0.190860182, 0, 0.205882356, 0)
 ScrollingFrame.Size = UDim2.new(0, 219, 0, 135)
@@ -207,7 +207,9 @@ function create(txt)
 	Button.Text = "  "..txt
 	Button.TextColor3=Color3.new(0,0,0)
 	Button.TextXAlignment = "Left"
-	Button.BackgroundTransparency=.9
+	Button.BackgroundColor3=Frame.BackgroundColor3
+	--Button.BackgroundTransparency=.9
+	Button.BorderColor3=Color3.fromRGB(255,120,120)
 	Button.Name=txt
 	Frame.ScrollingFrame.CanvasSize=UDim2.new(0,0,0,#Frame.ScrollingFrame:getChildren() * 20)
 	Frame.ScrollingFrame.CanvasPosition=Vector2.new(0,#Frame.ScrollingFrame:getChildren() * 20)
