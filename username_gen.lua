@@ -244,6 +244,7 @@ end
 
 function updateResults()
     TextLabel_2.Text = "results: " .. #ScrollingFrame:GetChildren()
+	Frame.ClipsDescendants = true
 end
 
 function userExists(user)
@@ -252,7 +253,7 @@ end
 
 function filtered(str)
     local Filtered = false
-    for i,v in pairs({"455","69","420","88","18","6_9","1_8","8_8"}) do
+    for i,v in pairs({"ROBUX","BUX","MILF","FKK","FUX","GAY","DCK","KKK","FUK","FUC","455","69","420","88","18","6_9","1_8","8_8"}) do
         if string.find(str, v) then
             Filtered = true
             break
