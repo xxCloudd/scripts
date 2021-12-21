@@ -6,7 +6,7 @@ local multithreading = false
 local letters = true
 local numbers = true
 local underscore = true
-local WindowColor = Color3.fromRGB(113, 67, 67) -- Default: 213, 67, 67
+local WindowColor = Color3.fromRGB(103, 115, 204) -- Default: 103, 115, 204
 
 --++##'' Varz ''##++--
 
@@ -38,15 +38,16 @@ Frame.Active = true
 Frame.BackgroundColor3 = WindowColor
 Frame.Position = UDim2.new(0.0901065618, 0, 0.504587173, 0)
 Frame.Size = UDim2.new(0, 424, 0, 250)
+Frame.ClipsDescendants=true
 
 Instance.new("UICorner", Frame)
 
 ScrollingFrame.Parent = Frame
 ScrollingFrame.Active = true
-ScrollingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ScrollingFrame.BackgroundTransparency = 0.9
-ScrollingFrame.BorderSizePixel = 0
-ScrollingFrame.Position = UDim2.new(0.190, 0, 0.151, 0)
+ScrollingFrame.BackgroundColor3 = WindowColor
+ScrollingFrame.BorderSizePixel = 1
+ScrollingFrame.BorderColor3 = Color3.fromRGB(25, 25, 25)
+ScrollingFrame.Position = UDim2.new(0.190, 0, 1,-211)
 ScrollingFrame.Size = UDim2.new(0, 343, 0, 211)
 ScrollingFrame.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -73,7 +74,7 @@ TextBox.Position = UDim2.new(-0.0015, 0, 0.212, -15)
 TextBox.Size = UDim2.new(0, 81, 0, 25)
 TextBox.Font = Enum.Font.SourceSans
 TextBox.PlaceholderColor3 = Color3.fromRGB(1, 1, 1)
-TextBox.PlaceholderText = "length\n5-20"
+TextBox.PlaceholderText = "length 5-20"
 TextBox.Text = ""
 TextBox.TextColor3 = Color3.fromRGB(0, 0, 0)
 TextBox.TextScaled = true
