@@ -280,6 +280,7 @@ function getRandomStr(length)
 		CHARACTERS = CHARACTERS .. NUMBERS
 	end
 
+
 	local mid = ''
 	local UNDERSCORED = false
 	
@@ -343,6 +344,8 @@ end
 
 function get()
     local function Get()
+		if not letters and not numbers then return end
+		
         local user = getRandomStr(TextBox.Text)
 
 		if filtered(user) or ScrollingFrame:FindFirstChild(user) then return end
