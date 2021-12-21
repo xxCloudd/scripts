@@ -315,7 +315,7 @@ function getRandomStr(length)
 end
 
 function create(txt)
-    local height = 20
+    local height = 25
 	local Button = Instance.new("TextButton")
 	Button.Size=UDim2.new(1,0,0,height)
 	Button.Position = UDim2.new(0, 0, 0, #Frame.ScrollingFrame:GetChildren() * height)
@@ -327,6 +327,7 @@ function create(txt)
 	Button.BackgroundColor3 = WindowColor
 	Button.BorderColor3 = Color3.fromRGB(25,25,25)
 	Button.Name = txt
+	Button.Font = "Roboto"
 	Frame.ScrollingFrame.CanvasSize = UDim2.new(0,0,0,#Frame.ScrollingFrame:GetChildren() * height)
 	Frame.ScrollingFrame.CanvasPosition = Vector2.new(0,#Frame.ScrollingFrame:GetChildren() * height)
 
