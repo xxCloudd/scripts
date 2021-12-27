@@ -115,17 +115,21 @@ addProperty(SettingsScrollingFrame,{Parent=Frame,Position=UDim2.new(0,0,0,20),Si
 local SettingsUIGridLayout = Instance.new("UIGridLayout", SettingsScrollingFrame)
 addProperty(SettingsUIGridLayout, {SortOrder="LayoutOrder",Name="",CellPadding = UDim2.new(0,0,0,0),CellSize = UDim2.new(1,0,0,20)})
 
+function refreshSettingsScrollingFrameCanvas()
+	SettingsScrollingFrame.CanvasSize = UDim2.new(0,0,0,(#SettingsScrollingFrame:GetChildren()*20)-20)
+end
+
 function addSettingsHeader(TEXT)
 	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
 	addProperty(Header, {BackgroundTransparency=1,TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),Text = TEXT or "",TextXAlignment="Center",TextSize=15,Font="SourceSansBold"})
-
+	refreshSettingsScrollingFrameCanvas()
 	return Header
 end
 
 function addSettingsText(TEXT)
 	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
 	addProperty(Header, {BackgroundTransparency=1,TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),Text = TEXT or "",TextXAlignment="Center",TextSize=13,Font="SourceSansBold"})
-
+	refreshSettingsScrollingFrameCanvas()
 	return Header
 end
 
@@ -135,6 +139,7 @@ function addSettingsButton(TEXT, X_SIZE)
 	local Button = Instance.new("TextButton", Frame)
 	addProperty(Button,{TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text=TEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
 	Button.Position=UDim2.new(0.5,-(Button.Size.X.Offset/2),0.5,-(Button.Size.Y.Offset/2))
+	refreshSettingsScrollingFrameCanvas()
 	return Button
 end
 
@@ -144,6 +149,7 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	local Box = Instance.new("TextBox", Frame)
 	addProperty(Box,{TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,Text="",PlaceholderText=PLACEHOLDERTEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
 	Box.Position=UDim2.new(0.5,-(Box.Size.X.Offset/2),0.5,-(Box.Size.Y.Offset/2))
+	refreshSettingsScrollingFrameCanvas()
 	return Box
 end
 
