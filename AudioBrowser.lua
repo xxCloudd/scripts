@@ -11,7 +11,7 @@ getgenv().MjXRqQs7cjVu8 = GUI
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
 local page; -- search / fav / settings
-local version = "1.4"
+local version = "1.5"
 local sortFavoritesAlphabetically = false
 
 function JSONDecode(str)
@@ -109,28 +109,61 @@ local favSearchTextBox = MainTextBox:clone()
 addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
 
 
-local SettingsTxtLbl_1 = ScriptNameLabel:Clone()
-addProperty(SettingsTxtLbl_1, {Parent=Frame,TextXAlignment="Center",TextSize=15,Text="Favorite Audio Manually",Font="SourceSansItalic",Position = UDim2.new(0,0,0,20),Size=UDim2.new(1,0,0,20)})
+local SettingsScrollingFrame = MainScrollingFrame:clone()
+addProperty(SettingsScrollingFrame,{Parent=Frame,Position=UDim2.new(0,0,0,20),Size=UDim2.new(1,0,1,-20)})
 
-local SettingsTxtLbl_2 = SettingsTxtLbl_1:Clone()
-addProperty(SettingsTxtLbl_2, {Parent=Frame,Text="Other",Position = UDim2.new(0,0,0,123)})
+local SettingsUIGridLayout = Instance.new("UIGridLayout", SettingsScrollingFrame)
+addProperty(SettingsUIGridLayout, {SortOrder="LayoutOrder",Name="",CellPadding = UDim2.new(0,0,0,0),CellSize = UDim2.new(1,0,0,20)})
+
+function addSettingsHeader(TEXT)
+	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
+	addProperty(Header, {BackgroundTransparency=1,TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),Text = TEXT or "",TextXAlignment="Center",TextSize=15,Font="SourceSansBold"})
+
+	return Header
+end
+
+function addSettingsText(TEXT)
+	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
+	addProperty(Header, {BackgroundTransparency=1,TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),Text = TEXT or "",TextXAlignment="Center",TextSize=13,Font="SourceSansBold"})
+
+	return Header
+end
+
+function addSettingsButton(TEXT, X_SIZE)
+	local Frame = Instance.new("Frame", SettingsScrollingFrame)
+	Frame.BackgroundTransparency=1
+	local Button = Instance.new("TextButton", Frame)
+	addProperty(Button,{TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text=TEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
+	Button.Position=UDim2.new(0.5,-(Button.Size.X.Offset/2),0.5,-(Button.Size.Y.Offset/2))
+	return Button
+end
+
+function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
+	local Frame = Instance.new("Frame", SettingsScrollingFrame)
+	Frame.BackgroundTransparency=1
+	local Box = Instance.new("TextBox", Frame)
+	addProperty(Box,{TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,Text="",PlaceholderText=PLACEHOLDERTEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
+	Box.Position=UDim2.new(0.5,-(Box.Size.X.Offset/2),0.5,-(Box.Size.Y.Offset/2))
+	return Box
+end
 
 local SettingsIdTextLabel = mainTextLabel:Clone()
 addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
 
-local SettingsIdTextBoxNAME = MainTextBox:clone()
-addProperty(SettingsIdTextBoxNAME, {Parent=Frame,PlaceholderText="Audio Name Input",Position = UDim2.new(0,0,0,45)})
 
-local SettingsIdTextBoxID = MainTextBox:clone()
-addProperty(SettingsIdTextBoxID, {Parent=Frame,PlaceholderText="Id Input",Size=UDim2.new(0,100,0,20)})
-SettingsIdTextBoxID.Position=UDim2.new(0.5,-(SettingsIdTextBoxID.Size.X.Offset/2),0,70)
+local SettingsTxtLbl_1 = addSettingsHeader("Favorite Audio Manually")
 
-local SettingsIdAddButton = saveToTxtButton:Clone()
-addProperty(SettingsIdAddButton,{TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text="Add",Position=UDim2.new(0.5,-(SettingsIdAddButton.Size.X.Offset/2),0,100),Parent=Frame,BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
+local SettingsIdTextBoxNAME = addSettingsBox("Audio Name Input",200)
 
-local SettingsToggleAlphabeticalSort = SettingsIdAddButton:clone()
-addProperty(SettingsToggleAlphabeticalSort, {Parent=Frame,Text="Sort Favorites Alphabetically: OFF"})
-SettingsToggleAlphabeticalSort.Position=UDim2.new(0.5,-(SettingsToggleAlphabeticalSort.Size.X.Offset/2),0,150)
+local SettingsIdTextBoxID = addSettingsBox("Id Input",120)
+
+local SettingsIdAddButton = addSettingsButton("Add", 70)
+
+addSettingsText()
+
+local SettingsTxtLbl_2 = addSettingsHeader("Other")
+
+local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
 
 SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
 	if sortFavoritesAlphabetically then
@@ -182,7 +215,7 @@ end)
 local Pages = {
 	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
 	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
-	Settings = {SettingsTxtLbl_1, SettingsTxtLbl_2, SettingsToggleAlphabeticalSort, SettingsIdTextLabel, SettingsIdAddButton, SettingsIdTextBoxNAME, SettingsIdTextBoxID}
+	Settings = {SettingsScrollingFrame, SettingsTxtLbl_1, SettingsTxtLbl_2, SettingsToggleAlphabeticalSort, SettingsIdTextLabel, SettingsIdAddButton, SettingsIdTextBoxNAME, SettingsIdTextBoxID}
 }
 
 local oldBooleans = {}
