@@ -11,7 +11,7 @@ getgenv().MjXRqQs7cjVu8 = GUI
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
 local page; -- search / fav / settings
-local version = "1.5"
+local version = "1.6"
 local sortFavoritesAlphabetically = false
 
 function JSONDecode(str)
@@ -182,7 +182,7 @@ addSettingsText('Check the ★ to add the audio to your favorites!')
 
 addSettingsText()
 
-addSettingsText("Made by xxCloudd | AudioBrowser v"..version)
+addSettingsText("Made by xxCloudd  |  AudioBrowser v"..version)
 
 
 SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
