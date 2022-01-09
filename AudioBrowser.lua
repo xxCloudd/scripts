@@ -50,7 +50,6 @@ local CloseButton = Instance.new("TextButton", Frame)
 local MainTextBox = Instance.new("TextBox", Frame)
 local MainScrollingFrame = Instance.new("ScrollingFrame", Frame)
 local mainTextLabel = Instance.new("TextLabel", Frame)
-local saveToTxtButton = Instance.new("TextButton", Frame)
 
 local loading = false
 
@@ -82,8 +81,7 @@ addProperty(Frame, {BackgroundColor3=Color3.fromRGB(25,25,25),BorderColor3=Color
 addProperty(CloseButton, {Active=false,TextStrokeTransparency=.5,BackgroundTransparency=1,BorderColor3=Color3.fromRGB(1,1,1),BorderSizePixel=2,Position=UDim2.new(1,-18,0,0),Size=UDim2.new(0,18,0,18),Font='SourceSansBold',Text='X',Name='',TextColor3=Color3.fromRGB(200,200,200),TextSize=14,AutoButtonColor=false})
 addProperty(MainTextBox, {BackgroundColor3=Color3.fromRGB(35,35,35),TextStrokeTransparency=.5,BorderSizePixel=0,BorderColor3=Color3.fromRGB(1,1,1),Position=UDim2.new(0,0,0.0983606577,0),Size=UDim2.new(1,0,0,18),Font=Enum.Font.SourceSansItalic,PlaceholderColor3=Color3.fromRGB(150,150,150),PlaceholderText="Audio Search",Text="",TextColor3=Color3.fromRGB(200,200,200),TextSize=14,ClearTextOnFocus=false,TextWrapped=true,Font='SourceSansSemibold',Name=''})
 addProperty(MainScrollingFrame, {BackgroundColor3=Color3.fromRGB(0,0,0),BackgroundTransparency=0.9,BorderColor3=Color3.fromRGB(60, 60, 60),Position=UDim2.new(0,0,0.196721315,0),Size=UDim2.new(1,0,0,147),ScrollBarThickness=4,BottomImage="rbxasset://textures/ui/Scroll/scroll-middle.png",TopImage="rbxasset://textures/ui/Scroll/scroll-middle.png",ScrollBarImageColor3=Color3.fromRGB(100,100,100),CanvasSize=UDim2.new(0,0,0,0),Name=''})
-addProperty(mainTextLabel, {TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,386,0,18),Font='SourceSansBold',Text="  LMB = Preview | RMB = Set to clipboard",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
-addProperty(saveToTxtButton,{Active=false,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,160,0,18),Font='SourceSansBold',Text="  Save to \\workspace\\Audio_List.txt",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
+addProperty(mainTextLabel, {TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,386,0,18),Font='SourceSansBold',Text="  Search",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
 
 Frame.Position = UDim2.new(-1, 0, .5, -(Frame.Size.Y.Offset/2))
 
@@ -153,11 +151,13 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	return Box
 end
 
+local FavoritesTextLabel = mainTextLabel:Clone()
+addProperty(FavoritesTextLabel,{Text="  Favorites",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
+
 local SettingsIdTextLabel = mainTextLabel:Clone()
 addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
 
-
-local SettingsTxtLbl_1 = addSettingsHeader("Favorite Audio Manually")
+addSettingsHeader("Add Audio Manually")
 
 local SettingsIdTextBoxNAME = addSettingsBox("Audio Name Input",200)
 
@@ -167,9 +167,23 @@ local SettingsIdAddButton = addSettingsButton("Add", 70)
 
 addSettingsText()
 
-local SettingsTxtLbl_2 = addSettingsHeader("Other")
+addSettingsHeader("Other")
 
 local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
+
+local saveToTxtButton = addSettingsButton("Save Favorites \\workspace\\Audio_List.txt", 220)
+
+addSettingsText()
+
+addSettingsHeader("How do I use this GUI?")
+addSettingsText("Left Mouse Button: Preview")
+addSettingsText("Right Mouse Button: Set to clipboard")
+addSettingsText('Check the ★ to add the audio to your favorites!')
+
+addSettingsText()
+
+addSettingsText("Made by xxCloudd | AudioBrowser v"..version)
+
 
 SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
 	if sortFavoritesAlphabetically then
@@ -181,7 +195,6 @@ SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
 	end
 	refreshFavoritesList(favSearchTextBox.Text)
 end)
--- search icon is not mine: https://www.roblox.com/library/3229239834/button-search
 
 SettingsIdAddButton.MouseButton1Click:connect(function()
 	local ID = tonumber(SettingsIdTextBoxID.Text)
@@ -220,8 +233,8 @@ end)
 
 local Pages = {
 	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
-	Favorites = {saveToTxtButton, favSearchTextBox, FavoritesScrollingFrame},
-	Settings = {SettingsScrollingFrame, SettingsTxtLbl_1, SettingsTxtLbl_2, SettingsToggleAlphabeticalSort, SettingsIdTextLabel, SettingsIdAddButton, SettingsIdTextBoxNAME, SettingsIdTextBoxID}
+	Favorites = {FavoritesTextLabel, favSearchTextBox, FavoritesScrollingFrame},
+	Settings = {SettingsScrollingFrame, SettingsToggleAlphabeticalSort, SettingsIdTextLabel}
 }
 
 local oldBooleans = {}
@@ -285,6 +298,8 @@ function addToFavorites(name,id)
     SaveFavorites()
     
     refreshFavoritesList()
+
+	
 end
 
 function removeFromFavorites(id)
@@ -297,8 +312,10 @@ function removeFromFavorites(id)
     SaveFavorites()
     
     -- Update list on GUI:
-    
+
     refreshFavoritesList()
+
+	
 end
 
 
@@ -309,9 +326,9 @@ saveToTxtButton.MouseButton1Click:connect(function()
         str = str .. "[" .. v["Name"] .. "]  -  " .. v["ID"] .. "\n"
     end
     writefile("Audio_List.txt",str)
-    saveToTxtButton.Text = "  Saved!"
+    saveToTxtButton.Text = "Saved!"
     wait(.25)
-    saveToTxtButton.Text = "  Save to \\workspace\\Audio_List.txt"
+    saveToTxtButton.Text = "Save to \\workspace\\Audio_List.txt"
 end)
 
 function showPage(pg)
@@ -394,8 +411,6 @@ end
 
 dragify(Frame)
 
--- vouch: https://v3rmillion.net/showthread.php?tid=725886
-
 --\\ frame drag
 
 CloseButton.MouseButton1Click:connect(function()
@@ -453,13 +468,14 @@ function createNew(Parent, txt, id)
     local addOrRemove
     if isFavorited(id) then
         addOrRemove = "★"
+		
     else
         addOrRemove = "☆"
     end
 	local btn = Instance.new("TextButton", Parent)
 	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='',TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
 	local fav = Instance.new("TextButton", btn)
-	addProperty(fav,{Active=false,TextStrokeTransparency=.5,Text=addOrRemove,BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='',TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(fav,{Active=false,TextStrokeTransparency=.5,Text=addOrRemove,BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name=id,TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
 
 	btn.MouseButton1Click:connect(function()
 		local Play = playAudio(id)
@@ -485,10 +501,18 @@ function createNew(Parent, txt, id)
 	fav.MouseButton1Click:connect(function()
 	    if fav.Text == "★" then
 	        removeFromFavorites(id)
-	        fav.Text = "☆"
+			for i,v in pairs(GUI:GetDescendants()) do 
+				if v:IsA("TextButton") and v.Name == fav.Name then
+					v.Text = "☆"
+				end
+			end
 	    elseif fav.Text == "☆" then
 	        addToFavorites(txt, id)
-	        fav.Text = "★"
+			for i,v in pairs(GUI:GetDescendants()) do 
+				if v:IsA("TextButton") and v.Name == fav.Name then
+					v.Text = "★"
+				end
+			end
 	    end
 	end)
 	
