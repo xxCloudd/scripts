@@ -135,7 +135,7 @@ function addSettingsButton(TEXT, X_SIZE)
 	local Frame = Instance.new("Frame", SettingsScrollingFrame)
 	Frame.BackgroundTransparency=1
 	local Button = Instance.new("TextButton", Frame)
-	addProperty(Button,{TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text=TEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
+	addProperty(Button,{Active=false,TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text=TEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
 	Button.Position=UDim2.new(0.5,-(Button.Size.X.Offset/2),0.5,-(Button.Size.Y.Offset/2))
 	refreshSettingsScrollingFrameCanvas()
 	return Button
@@ -163,7 +163,7 @@ local SettingsIdTextBoxNAME = addSettingsBox("Audio Name Input",200)
 
 local SettingsIdTextBoxID = addSettingsBox("Id Input",120)
 
-local SettingsIdAddButton = addSettingsButton("Add", 70)
+local SettingsIdAddButton = addSettingsButton("Add", 190)
 
 addSettingsText()
 
@@ -182,8 +182,16 @@ addSettingsText('Check the ★ to add the audio to your favorites!')
 
 addSettingsText()
 
-addSettingsText("Made by xxCloudd  |  AudioBrowser v"..version)
-
+addSettingsHeader("Made by xxCloudd  |  AudioBrowser v"..version)
+addSettingsText()
+addSettingsHeader("Changelog")
+addSettingsText("[v1.0]  [+] GUI | [+] Save to favorites | [+] Preview")
+addSettingsText("[v1.1]  [!] GUI Update")
+addSettingsText("[v1.2]  [+] Favorites | [!] GUI Update")
+addSettingsText("[v1.3]  [!] Changed audio storage system | [+] Favorite Audio Search")
+addSettingsText("[v1.4]  [+] Settings Tab | [+] Two Settings | [+] Search Button")
+addSettingsText("[v1.5]  [+] Sort Favorites Alphabetically Setting")
+addSettingsText("[v1.6]  [!] GUI Update")
 
 SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
 	if sortFavoritesAlphabetically then
@@ -203,7 +211,7 @@ SettingsIdAddButton.MouseButton1Click:connect(function()
 	local function thingy(str)
 		SettingsIdAddButton.Text = str
 		wait(.5)
-		SettingsIdAddButton.Text = "Save to Favorites"
+		SettingsIdAddButton.Text = "Add"
 	end
 
 	if not checkIfHasCharacters(Name) then
@@ -570,6 +578,6 @@ end)
 
 refreshFavoritesList()
 
-showPage("search")
+showPage("settings")
 
 tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset/2))})
