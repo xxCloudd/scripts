@@ -578,6 +578,6 @@ end)
 
 refreshFavoritesList()
 
-showPage("settings")
+showPage("search")
 
 tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset/2))})
