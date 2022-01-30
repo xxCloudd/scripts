@@ -689,22 +689,38 @@ MainTextBox.FocusLost:connect(function(enter)
 		MainTextBox.TextEditable=false
 		
 		local loadedresults = 0
-		local pagestosearch = 3
 		local totalresults = {}
-
-		if pagestosearch>10 or pagestosearch<0 then pagestosearch=2 end 
-
-		for PageNr = 1, pagestosearch do
-			spawn(function() 
-				local results=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber="..PageNr.."&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
-					for i,v in pairs(results) do 
-					totalresults[#totalresults+1]=v
-				end
-				loadedresults = loadedresults + 1
-			end)
-		end
 		
-		repeat wait() until (pagestosearch == loadedresults)
+		-- 3 pages
+
+		local results1
+		local results2
+		local results3
+
+		spawn(function() 
+			results1=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=1&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			loadedresults = loadedresults + 1
+		end)
+		spawn(function() 
+			results2=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=2&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			loadedresults = loadedresults + 1
+		end)
+		spawn(function() 
+			results3=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=3&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			loadedresults = loadedresults + 1
+		end)
+		
+		repeat wait() until (loadedresults == 3)
+		
+		for i,v in pairs(results1) do
+			totalresults[#totalresults+1] = v
+		end
+		for i,v in pairs(results2) do
+			totalresults[#totalresults+1] = v
+		end
+		for i,v in pairs(results3) do
+			totalresults[#totalresults+1] = v
+		end
 
 		for i, audio in pairs(totalresults) do
 			if audio.AudioUrl then
