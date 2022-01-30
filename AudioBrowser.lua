@@ -169,22 +169,30 @@ local SettingsIdAddButton = addSettingsButton("Add", 190)
 
 addSettingsText()
 
-addSettingsHeader("Other")
-
-local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
-
-local saveToTxtButton = addSettingsButton("Save Favorites \\workspace\\Audio_List.txt", 220)
-
-addSettingsText()
-
 addSettingsHeader("Import from file")
 addSettingsText("/workspace/filename.txt (must be .txt)")
 addSettingsText('e.g. "0123456789 audioname"')
 
 
-local filenamebox = addSettingsBox("Filename", 130)
+local importfilenamebox = addSettingsBox("Filename", 130)
 
 local importbtn = addSettingsButton("Import", 140)
+
+addSettingsText()
+
+addSettingsHeader("Export to file")
+addSettingsText("will be exported as .txt to /workspace/")
+
+local exportfilenamebox = addSettingsBox("Filename", 130)
+
+local exportbtn = addSettingsButton("Export audios to /workspace/",200)
+
+addSettingsText()
+
+addSettingsHeader("Other")
+
+local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
+local ClearAudioListData = addSettingsButton("Clear Data", 100)
 
 addSettingsText()
 
@@ -197,18 +205,47 @@ addSettingsText()
 
 addSettingsHeader("Made by xxCloudd  |  AudioBrowser v"..version)
 
+ClearAudioListData.MouseButton1Click:connect(function()
+	local b = ClearAudioListData.Text
+	if b == "Clear Data" then
+		ClearAudioListData.Text = "Are you sure?"
+		wait(2)
+		ClearAudioListData.Text = "Clear Data"
+	elseif b == "Are you sure?" then
+		AUDIOS = {}
+		SaveFavorites()
+		refreshFavoritesList()
+		ClearAudioListData.Text = "Data cleared!"
+		wait(.5)
+		ClearAudioListData.Text = "Clear Data"
+	end
+end)
+
+exportbtn.MouseButton1Click:connect(function()
+    local str = ""
+	local totalAudios = 0
+    for _,v in pairs(AUDIOS) do
+        str = str .. v["ID"] .. " " .. v["Name"] .. "\n"
+		totalAudios = totalAudios + 1
+    end
+    writefile(exportfilenamebox.Text .. ".txt", str)
+    exportbtn.Text = "Exported " .. totalAudios .. " audios!"
+    wait(.6)
+    exportbtn.Text = "Export audios to /workspace/"
+end)
+
 local importdeb=false
 
 importbtn.MouseButton1Click:connect(function()
 	if not importdeb then importdeb=true else return end
 	local file
 	pcall(function()
-		file = readfile(filenamebox.Text .. ".txt")
+		file = readfile(importfilenamebox.Text .. ".txt")
 	end)
 	if not file then
-		filenamebox.Text = "File not found"
+		importfilenamebox.Text = "File not found"
 		wait(.6)
-		filenamebox.Text = ""
+		importfilenamebox.Text = ""
 		return
 	end
 
@@ -219,15 +256,24 @@ importbtn.MouseButton1Click:connect(function()
 		if split[1] and tonumber(split[1]) and split[2] then
 			local new = v:split(" ")
 			table.remove(new, 1)
-			local Added = addToFavorites(table.concat(new, " "), tonumber(split[1]))
-			if Added then
+
+			local AlreadyAdded = isFavorited(tonumber(split[1]))
+
+			if not AlreadyAdded then
 				totalAdded = totalAdded + 1
+				addToAudiosTable(table.concat(new, " "),tonumber(split[1]))
 			end
 		end
 	end
-
+	
+    SaveFavorites()
+	
 	importbtn.Text = "Imported " .. totalAdded .. " audios"
+
+	refreshFavoritesList()
+
 	wait(.6)
+
 	importbtn.Text = "Import"
 	importdeb = false
 end)
@@ -336,25 +382,19 @@ function refreshFavoritesList(str) -- Update list on GUI:
 	end
 end
 
-function addToFavorites(name,id)
-
-	local exists = false
-	for i,v in pairs(AUDIOS) do
-		if v.ID == id then
-			exists = true
-			break
-		end
-	end
-
-	if exists == true then return end
-
-    table.insert(AUDIOS, {
+function addToAudiosTable(name,id)
+	table.insert(AUDIOS, {
 		Name = name,
 		ID = id
 	})
+end
+
+function addToFavorites(name,id)
+	if isFavorited(id) then return end
+
+    addToAudiosTable(name,id)
 	
     SaveFavorites()
-    
     refreshFavoritesList()
 
 	return true
@@ -375,19 +415,6 @@ function removeFromFavorites(id)
 
 	
 end
-
-
-
-saveToTxtButton.MouseButton1Click:connect(function()
-    local str = ""
-    for _,v in pairs(AUDIOS) do
-        str = str .. v["ID"] .. " " .. v["Name"] .. "\n"
-    end
-    writefile("Audio_List.txt",str)
-    saveToTxtButton.Text = "Saved!"
-    wait(.25)
-    saveToTxtButton.Text = "Save to /workspace/Audio_List.txt"
-end)
 
 function showPage(pg)
 
@@ -497,8 +524,6 @@ function isFavorited(id)
         end
     end
 end
-
-
 
 function playAudio(id)
 	if soundInstance then
