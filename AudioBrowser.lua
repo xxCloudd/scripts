@@ -33,12 +33,13 @@ pcall(function()
 end)
 
 if AUDIOS == nil then -- if decoding didnt work
+	local FILENAME = 'corruptedAudioBrowserData_'..tostring(os.time())..".txt"
 	game.StarterGui:SetCore("SendNotification",{
 		Title = "AudioBrowser Error!";
-		Text = "Data file is corrupted, cloned corrupted file for backup, a new data file has been created";
+		Text = "Data file is corrupted, cloned: "..FILENAME.." , a new data file has been created";
 		Duration = 5
 	})
-	writefile('corruptedAudioBrowserData_'..tostring(os.time())..".txt",readfile(data_file))
+	writefile(FILENAME,readfile(data_file))
 	writefile(data_file, '[]')
 end
 
