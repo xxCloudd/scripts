@@ -684,13 +684,12 @@ MainTextBox.FocusLost:connect(function(enter)
 		MainTextBox.Text='Loading "'..search..'"..'
 		MainTextBox.TextEditable=false
 		
-		local pagestosearch = 3 -- dont overload pls
 		local loadedresults = 0
 
 		local totalresults = {}
 
-		if pagestosearch>10 then pagestosearch=2 end 
-		
+		if pagestosearch>10 or pagestosearch<0 then pagestosearch=2 end 
+
 		for PageNr = 1, pagestosearch do
 			spawn(function() 
 				local results=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber="..PageNr.."&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
