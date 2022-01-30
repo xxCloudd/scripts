@@ -11,7 +11,7 @@ getgenv().MjXRqQs7cjVu8 = GUI
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
 local page; -- search / fav / settings
-local version = "1.6"
+local version = "1.7"
 local sortFavoritesAlphabetically = false
 
 function JSONDecode(str)
@@ -151,6 +151,8 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	return Box
 end
 
+
+
 local FavoritesTextLabel = mainTextLabel:Clone()
 addProperty(FavoritesTextLabel,{Text="  Favorites",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
 
@@ -175,6 +177,17 @@ local saveToTxtButton = addSettingsButton("Save Favorites \\workspace\\Audio_Lis
 
 addSettingsText()
 
+addSettingsHeader("Import from file")
+addSettingsText("/workspace/filename.txt (must be .txt)")
+addSettingsText('e.g. "0123456789 audioname"')
+
+
+local filenamebox = addSettingsBox("Filename", 130)
+
+local importbtn = addSettingsButton("Import", 140)
+
+addSettingsText()
+
 addSettingsHeader("How do I use this GUI?")
 addSettingsText("Left Mouse Button: Preview")
 addSettingsText("Right Mouse Button: Set to clipboard")
@@ -183,15 +196,41 @@ addSettingsText('Check the ★ to add the audio to your favorites!')
 addSettingsText()
 
 addSettingsHeader("Made by xxCloudd  |  AudioBrowser v"..version)
-addSettingsText()
-addSettingsHeader("Changelog")
-addSettingsText("[v1.0]  [+] GUI | [+] Save to favorites | [+] Preview")
-addSettingsText("[v1.1]  [!] GUI Update")
-addSettingsText("[v1.2]  [+] Favorites | [!] GUI Update")
-addSettingsText("[v1.3]  [!] Changed audio storage system | [+] Favorite Audio Search")
-addSettingsText("[v1.4]  [+] Settings Tab | [+] Two Settings | [+] Search Button")
-addSettingsText("[v1.5]  [+] Sort Favorites Alphabetically Setting")
-addSettingsText("[v1.6]  [!] GUI Update")
+
+local importdeb=false
+
+importbtn.MouseButton1Click:connect(function()
+	if not importdeb then importdeb=true else return end
+	local file
+	pcall(function()
+		file = readfile(filenamebox.Text .. ".txt")
+	end)
+	if not file then
+		filenamebox.Text = "File not found"
+		wait(.6)
+		filenamebox.Text = ""
+		return
+	end
+
+	local totalAdded = 0
+
+	for i,v in pairs(file:split("\n")) do 
+		local split = v:split(" ")
+		if split[1] and tonumber(split[1]) and split[2] then
+			local new = v:split(" ")
+			table.remove(new, 1)
+			local Added = addToFavorites(table.concat(new, " "), tonumber(split[1]))
+			if Added then
+				totalAdded = totalAdded + 1
+			end
+		end
+	end
+
+	importbtn.Text = "Imported " .. totalAdded .. " audios"
+	wait(.6)
+	importbtn.Text = "Import"
+	importdeb = false
+end)
 
 SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
 	if sortFavoritesAlphabetically then
@@ -298,6 +337,17 @@ function refreshFavoritesList(str) -- Update list on GUI:
 end
 
 function addToFavorites(name,id)
+
+	local exists = false
+	for i,v in pairs(AUDIOS) do
+		if v.ID == id then
+			exists = true
+			break
+		end
+	end
+
+	if exists == true then return end
+
     table.insert(AUDIOS, {
 		Name = name,
 		ID = id
@@ -307,7 +357,7 @@ function addToFavorites(name,id)
     
     refreshFavoritesList()
 
-	
+	return true
 end
 
 function removeFromFavorites(id)
@@ -331,12 +381,12 @@ end
 saveToTxtButton.MouseButton1Click:connect(function()
     local str = ""
     for _,v in pairs(AUDIOS) do
-        str = str .. "[" .. v["Name"] .. "]  -  " .. v["ID"] .. "\n"
+        str = str .. v["ID"] .. " " .. v["Name"] .. "\n"
     end
     writefile("Audio_List.txt",str)
     saveToTxtButton.Text = "Saved!"
     wait(.25)
-    saveToTxtButton.Text = "Save to \\workspace\\Audio_List.txt"
+    saveToTxtButton.Text = "Save to /workspace/Audio_List.txt"
 end)
 
 function showPage(pg)
