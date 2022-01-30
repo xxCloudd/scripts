@@ -613,7 +613,11 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	btn.MouseButton1Click:connect(function()
 		local Play = playAudio(id)
 		
-		for i, button in pairs(Parent:GetChildren()) do
+		for i, button in pairs(MainScrollingFrame:GetChildren()) do
+			tween(button, .1, {BackgroundColor3 = Color3.fromRGB(25,25,25)})
+		end
+
+		for i, button in pairs(FavoritesScrollingFrame:GetChildren()) do
 			tween(button, .1, {BackgroundColor3 = Color3.fromRGB(25,25,25)})
 		end
 		
@@ -685,7 +689,7 @@ MainTextBox.FocusLost:connect(function(enter)
 		MainTextBox.TextEditable=false
 		
 		local loadedresults = 0
-
+		local pagestosearch = 3
 		local totalresults = {}
 
 		if pagestosearch>10 or pagestosearch<0 then pagestosearch=2 end 
