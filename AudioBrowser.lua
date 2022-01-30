@@ -684,9 +684,26 @@ MainTextBox.FocusLost:connect(function(enter)
 		MainTextBox.Text='Loading "'..search..'"..'
 		MainTextBox.TextEditable=false
 		
-		local results=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+		local pagestosearch = 3 -- dont overload pls
+		local loadedresults = 0
+
+		local totalresults = {}
+
+		if pagestosearch>10 then pagestosearch=2 end 
 		
-		for i, audio in pairs(results) do
+		for PageNr = 1, pagestosearch do
+			spawn(function() 
+				local results=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber="..PageNr.."&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+					for i,v in pairs(results) do 
+					totalresults[#totalresults+1]=v
+				end
+				loadedresults = loadedresults + 1
+			end)
+		end
+		
+		repeat wait() until (pagestosearch == loadedresults)
+
+		for i, audio in pairs(totalresults) do
 			if audio.AudioUrl then
 				local name = audio.Name
 				local id = audio.AssetId
