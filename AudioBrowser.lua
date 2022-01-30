@@ -597,10 +597,12 @@ function playAudio(id)
 	end
 end
 function createNew(Parent, txt, id, isARobloxAudio)
+
+	if Parent:FindFirstChild(id) then return end
+
     local addOrRemove
     if isFavorited(id) then
         addOrRemove = "★"
-		
     else
         addOrRemove = "☆"
     end
