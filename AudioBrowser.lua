@@ -24,21 +24,30 @@ function JSONEncode(str)
 	return game:GetService("HttpService"):JSONEncode(str)
 end
 
-if not pcall(function() readfile(data_file) end) then
-	writefile(data_file, JSONEncode({}))
+if not pcall(function() readfile(data_file) end) then -- if file doesnt exist, create a new one
+	writefile(data_file, '[]')
+end
+
+
+
+pcall(function()
+	AUDIOS = JSONDecode(readfile(data_file))
+end)
+
+if AUDIOS == nil then -- if decoding didnt work
+	game.StarterGui:SetCore("SendNotification",{
+		Title = "AudioBrowser Error!";
+		Text = "Data file is corrupted, cloned corrupted file for backup, a new data file has been created";
+		Duration = 5
+	})
+	writefile('corruptedAudioBrowserData_'..
+	tostring(os.time())..".txt",
+	readfile(data_file))
+	writefile(data_file, '[]')
 end
 
 function SaveFavorites()
 	writefile(data_file, JSONEncode(AUDIOS))
-end
-
-AUDIOS = JSONDecode(readfile(data_file))
-
-for i, audio in pairs(AUDIOS) do
-	if audio[1] and audio[2] then
-		print("Converting ''" .. audio[1] .. "'' to the new code")
-		AUDIOS[i] = {Name = audio[1], ID = audio[2]}
-	end
 end
 
 SaveFavorites()
