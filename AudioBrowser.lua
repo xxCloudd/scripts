@@ -9,8 +9,8 @@ local GUI = Instance.new("ScreenGui", game.CoreGui)
 getgenv().MjXRqQs7cjVu8 = GUI
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
-local AUDIOS;
-local page; -- search / fav / settings
+local AUDIOS
+local page -- search / fav / settings
 local version = "1.7.5"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
@@ -28,8 +28,6 @@ if not pcall(function() readfile(data_file) end) then -- if file doesnt exist, c
 	writefile(data_file, '[]')
 end
 
-
-
 pcall(function()
 	AUDIOS = JSONDecode(readfile(data_file))
 end)
@@ -40,9 +38,7 @@ if AUDIOS == nil then -- if decoding didnt work
 		Text = "Data file is corrupted, cloned corrupted file for backup, a new data file has been created";
 		Duration = 5
 	})
-	writefile('corruptedAudioBrowserData_'..
-	tostring(os.time())..".txt",
-	readfile(data_file))
+	writefile('corruptedAudioBrowserData_'..tostring(os.time())..".txt",readfile(data_file))
 	writefile(data_file, '[]')
 end
 
