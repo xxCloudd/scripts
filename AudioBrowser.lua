@@ -606,9 +606,9 @@ function createNew(Parent, txt, id, isARobloxAudio)
     end
 
 	local btn = Instance.new("TextButton", Parent)
-	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=(isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),AutoButtonColor=false,TextSize=16,Name='',TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=(isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),AutoButtonColor=false,TextSize=16,Name=id,TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
 	local fav = Instance.new("TextButton", btn)
-	addProperty(fav,{Active=false,TextStrokeTransparency=.5,Text=addOrRemove,BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name=id,TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(fav,{Active=false,TextStrokeTransparency=.5,Text=addOrRemove,BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='fav',TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
 
 	btn.MouseButton1Click:connect(function()
 		local Play = playAudio(id)
@@ -634,18 +634,16 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	fav.MouseButton1Click:connect(function()
 	    if fav.Text == "★" then
 	        removeFromFavorites(id)
-			for i,v in pairs(GUI:GetDescendants()) do 
-				if v:IsA("TextButton") and v.Name == fav.Name then
-					v.Text = "☆"
-				end
+			local IfExistsFavoritedInMainScrollingFrame = MainScrollingFrame:FindFirstChild(id)
+
+			if IfExistsFavoritedInMainScrollingFrame then 
+				IfExistsFavoritedInMainScrollingFrame.fav.Text = "☆"
 			end
+
+			fav.Text = "☆"
 	    elseif fav.Text == "☆" then
 	        addToFavorites(txt, id)
-			for i,v in pairs(GUI:GetDescendants()) do 
-				if v:IsA("TextButton") and v.Name == fav.Name then
-					v.Text = "★"
-				end
-			end
+			fav.Text = "★"
 	    end
 	end)
 	
