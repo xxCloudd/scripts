@@ -11,8 +11,10 @@ getgenv().MjXRqQs7cjVu8 = GUI
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local AUDIOS;
 local page; -- search / fav / settings
-local version = "1.7"
+local version = "1.7.5"
 local sortFavoritesAlphabetically = false
+local showrobloxaudios = false
+local SortType = 0
 
 function JSONDecode(str)
 	return game:GetService("HttpService"):JSONDecode(str)
@@ -159,6 +161,14 @@ addProperty(FavoritesTextLabel,{Text="  Favorites",Parent=Frame,Position = UDim2
 local SettingsIdTextLabel = mainTextLabel:Clone()
 addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
 
+addSettingsHeader("Search Settings")
+
+local SettingsChangeSearchType = addSettingsButton("Sort Type: Relevance", 200)
+local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
+local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
+
+addSettingsText()
+
 addSettingsHeader("Add Audio Manually")
 
 local SettingsIdTextBoxNAME = addSettingsBox("Audio Name Input",200)
@@ -191,9 +201,6 @@ addSettingsText()
 
 addSettingsHeader("Other")
 
-local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
-local ClearAudioListData = addSettingsButton("Clear Data", 100)
-
 addSettingsText()
 
 addSettingsHeader("How do I use this GUI?")
@@ -201,9 +208,49 @@ addSettingsText("Left Mouse Button: Preview")
 addSettingsText("Right Mouse Button: Set to clipboard")
 addSettingsText('Check the ★ to add the audio to your favorites!')
 
+local rbxAudioExample = addSettingsText('This is a Roblox Audio')
+rbxAudioExample.TextColor3 = Color3.new(.5,.25,.25)
+local rbxAudioExample
+addSettingsText('This is not a Roblox Audio')
+
+addSettingsText()
+
+local ClearAudioListData = addSettingsButton("Clear Data", 100)
+ClearAudioListData.TextColor3=Color3.new(.5,.25,.25)
+ClearAudioListData.BorderColor3=Color3.new(.5,.25,.25)
+
 addSettingsText()
 
 addSettingsHeader("Made by xxCloudd  |  AudioBrowser v"..version)
+
+ShowRobloxAudiosButton.MouseButton1Click:connect(function()
+	if showrobloxaudios == false then
+		showrobloxaudios = true
+		 ShowRobloxAudiosButton.Text = "Show Roblox Audios: ON"
+	else
+		showrobloxaudios = false
+		ShowRobloxAudiosButton.Text = "Show Roblox Audios: OFF"
+	end
+	refreshFavoritesList(favSearchTextBox.Text)
+end)
+
+SettingsChangeSearchType.MouseButton1Click:connect(function()
+	if SortType == 0 then
+		SortType = 1
+		SettingsChangeSearchType.Text = "Sort Type: MostFavorited"
+	elseif SortType == 1 then
+		SortType = 2
+		SettingsChangeSearchType.Text = "Sort Type: Bestselling"
+	elseif SortType == 2 then
+		SortType = 3
+		SettingsChangeSearchType.Text = "Sort Type: RecentlyUpdated"
+	else
+		SortType = 0
+		SettingsChangeSearchType.Text = "Sort Type: Relevance"
+	end
+end)
+
+-- VOUCH https://v3rmillion.net/member.php?action=profile&uid=159881
 
 ClearAudioListData.MouseButton1Click:connect(function()
 	local b = ClearAudioListData.Text
@@ -455,9 +502,9 @@ end)
 
 --// frame drag
 
-function dragify(Frame)
+local function dragify(Frame)
 	dragToggle = nil
-	dragSpeed = 0.2 
+	dragSpeed = 0.1
 	dragInput = nil
 	dragStart = nil
 	dragPos = nil
@@ -495,6 +542,8 @@ function dragify(Frame)
 end
 
 dragify(Frame)
+
+local dragify
 
 --\\ frame drag
 
@@ -547,7 +596,7 @@ function playAudio(id)
 		soundInstance:Play()
 	end
 end
-function createNew(Parent, txt, id)
+function createNew(Parent, txt, id, isARobloxAudio)
     local addOrRemove
     if isFavorited(id) then
         addOrRemove = "★"
@@ -555,8 +604,9 @@ function createNew(Parent, txt, id)
     else
         addOrRemove = "☆"
     end
+
 	local btn = Instance.new("TextButton", Parent)
-	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='',TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=(isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),AutoButtonColor=false,TextSize=16,Name='',TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
 	local fav = Instance.new("TextButton", btn)
 	addProperty(fav,{Active=false,TextStrokeTransparency=.5,Text=addOrRemove,BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name=id,TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
 
@@ -636,13 +686,19 @@ MainTextBox.FocusLost:connect(function(enter)
 		MainTextBox.Text='Loading "'..search..'"..'
 		MainTextBox.TextEditable=false
 		
-		local results=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+		local results=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
 		
 		for i, audio in pairs(results) do
 			if audio.AudioUrl then
 				local name = audio.Name
 				local id = audio.AssetId
-				createNew(MainScrollingFrame, name, id)
+				if audio.CreatorID == 1 then
+					if showrobloxaudios then
+						createNew(MainScrollingFrame, name, id, true)
+					end
+				else
+					createNew(MainScrollingFrame, name, id, false)
+				end
 			end
 		end
 		MainTextBox.Text = ""
