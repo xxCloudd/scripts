@@ -5,16 +5,24 @@ if getgenv().MjXRqQs7cjVu8 then -- reload
 end
 
 local GUI = Instance.new("ScreenGui", game.CoreGui) 
-
+GUI.Name = ""
 getgenv().MjXRqQs7cjVu8 = GUI
 
+
+local PREVIEW_VOLUME = 1
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
-local AUDIOS
 local page -- search / fav / settings
 local version = "1.7.5"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 local SortType = 0
+local onlineSearchLoadingResults = false
+local soundInstance;
+local AUDIOS;
+
+if not pcall(function() readfile(data_file) end) then
+	writefile(data_file, '[]')
+end
 
 function JSONDecode(str)
 	return game:GetService("HttpService"):JSONDecode(str)
@@ -24,22 +32,18 @@ function JSONEncode(str)
 	return game:GetService("HttpService"):JSONEncode(str)
 end
 
-if not pcall(function() readfile(data_file) end) then -- if file doesnt exist, create a new one
-	writefile(data_file, '[]')
-end
-
 pcall(function()
 	AUDIOS = JSONDecode(readfile(data_file))
 end)
 
 if AUDIOS == nil then -- if decoding didnt work
-	local FILENAME = 'corruptedAudioBrowserData_'..tostring(os.time())..".txt"
+	local FILENAME = ('corruptedAudioBrowserData_' .. tostring(os.time()) .. ".txt")
 	game.StarterGui:SetCore("SendNotification",{
 		Title = "AudioBrowser Error!";
-		Text = "Data file is corrupted, cloned: "..FILENAME.." , a new data file has been created";
+		Text = ("Data file is corrupted, cloned: " .. FILENAME .. " , a new data file has been created"),
 		Duration = 5
 	})
-	writefile(FILENAME,readfile(data_file))
+	writefile(FILENAME, readfile(data_file))
 	writefile(data_file, '[]')
 end
 
@@ -49,23 +53,13 @@ end
 
 SaveFavorites()
 
-local PREVIEW_VOLUME = 1
-
---------
-
 local Frame = Instance.new("Frame", GUI)
 local CloseButton = Instance.new("TextButton", Frame)
 local MainTextBox = Instance.new("TextBox", Frame)
 local MainScrollingFrame = Instance.new("ScrollingFrame", Frame)
 local mainTextLabel = Instance.new("TextLabel", Frame)
 
-local loading = false
-
-local soundInstance;
-
-GUI.Name = ""
-
-local window_width = 350 -- 304
+local window_width = 350
 
 Instance.new("UICorner",Frame).CornerRadius = UDim.new(0, 5)
 
@@ -114,7 +108,6 @@ addProperty(searchButton,{Active=false,Name='',Image="rbxassetid://3229239834",S
 local favSearchTextBox = MainTextBox:clone()
 addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
 
-
 local SettingsScrollingFrame = MainScrollingFrame:clone()
 addProperty(SettingsScrollingFrame,{Parent=Frame,Position=UDim2.new(0,0,0,20),Size=UDim2.new(1,0,1,-20)})
 
@@ -158,7 +151,6 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	refreshSettingsScrollingFrameCanvas()
 	return Box
 end
-
 
 
 local FavoritesTextLabel = mainTextLabel:Clone()
@@ -215,15 +207,16 @@ addSettingsText("Right Mouse Button: Set to clipboard")
 addSettingsText('Check the ★ to add the audio to your favorites!')
 
 local rbxAudioExample = addSettingsText('This is a Roblox Audio')
-rbxAudioExample.TextColor3 = Color3.new(.5,.25,.25)
+rbxAudioExample.TextColor3 = Color3.new(0.5, 0.25, 0.25)
 local rbxAudioExample
+
 addSettingsText('This is not a Roblox Audio')
 
 addSettingsText()
 
 local ClearAudioListData = addSettingsButton("Clear Data", 100)
-ClearAudioListData.TextColor3=Color3.new(.5,.25,.25)
-ClearAudioListData.BorderColor3=Color3.new(.5,.25,.25)
+ClearAudioListData.TextColor3=Color3.new(0.5, 0.25, 0.25)
+ClearAudioListData.BorderColor3=Color3.new(0.5, 0.25, 0.25)
 
 addSettingsText()
 
@@ -269,7 +262,7 @@ ClearAudioListData.MouseButton1Click:connect(function()
 		SaveFavorites()
 		refreshFavoritesList()
 		ClearAudioListData.Text = "Data cleared!"
-		wait(.5)
+		wait(0.5)
 		ClearAudioListData.Text = "Clear Data"
 	end
 end)
@@ -277,13 +270,15 @@ end)
 exportbtn.MouseButton1Click:connect(function()
     local str = ""
 	local totalAudios = 0
-    for _,v in pairs(AUDIOS) do
-        str = str .. v["ID"] .. " " .. v["Name"] .. "\n"
+
+    for i, audio in pairs(AUDIOS) do
+        str = (str .. audio.ID .. " " .. audio.Name .. "\n")
 		totalAudios = totalAudios + 1
     end
-    writefile(exportfilenamebox.Text .. ".txt", str)
-    exportbtn.Text = "Exported " .. totalAudios .. " audios!"
-    wait(.6)
+
+    writefile( ((exportfilenamebox.Text ~= "" and exportfilenamebox.Text) or os.time()) .. ".txt", str)
+    exportbtn.Text = ("Exported " .. totalAudios .. " audios!")
+    wait(0.6)
     exportbtn.Text = "Export audios to /workspace/"
 end)
 
@@ -321,7 +316,7 @@ importbtn.MouseButton1Click:connect(function()
 	
     SaveFavorites()
 	
-	importbtn.Text = "Imported " .. totalAdded .. " audios"
+	importbtn.Text = ("Imported " .. totalAdded .. " audios")
 
 	refreshFavoritesList()
 
@@ -372,7 +367,7 @@ SettingsIdAddButton.MouseButton1Click:connect(function()
 	SettingsIdTextBoxNAME.Text = ""
 	SettingsIdTextBoxID.Text = ""
 
-	SettingsIdAddButton.Text = '"'..Name..'" was saved to favorites'
+	SettingsIdAddButton.Text = ('"' ..Name.. '" was saved to favorites')
 	wait(1)
 	SettingsIdAddButton.Text = "Save to Favorites"
 end)
@@ -408,7 +403,7 @@ minimizeButton.MouseButton1Click:connect(function()
     end
 end)
 
-function refreshFavoritesList(str) -- Update list on GUI:
+function refreshFavoritesList(str) -- GUI Refresh
 	FavoritesScrollingFrame:ClearAllChildren()
     FavoritesScrollingFrame.CanvasSize=UDim2.new(0,0,0,0)
     
@@ -421,7 +416,9 @@ function refreshFavoritesList(str) -- Update list on GUI:
 			end
 		end
 
-		table.sort(new,function(a,b)return a["Name"]:lower() < b["Name"]:lower()end)
+		table.sort(new, function(a, b)
+			return a["Name"]:lower() < b["Name"]:lower()
+		end)
 
 		for i, audio in pairs(new)do
 			createNew(FavoritesScrollingFrame, audio["Name"], audio["ID"])
@@ -562,13 +559,16 @@ CloseButton.MouseButton1Click:connect(function()
 			tween(GUIElement, .1, {TextStrokeTransparency = 1})
 		end
     end
-	tween(searchButton, .1, {ImageTransparency = 1}) -- bc imagebutton 
-    wait(.1)
+
+	tween(searchButton, .1, {ImageTransparency = 1}) -- ImageButtons
+
+    wait(0.1)
+
     if soundInstance then
     	soundInstance:Destroy()
 	end
-	GUI:destroy()
 
+	GUI:destroy()
 	getgenv().MjXRqQs7cjVu8 = nil
 end)
 
@@ -605,42 +605,36 @@ end
 function createNew(Parent, txt, id, isARobloxAudio)
 
 	if Parent:FindFirstChild(id) then return end
-
-    local addOrRemove
-    if isFavorited(id) then
-        addOrRemove = "★"
-    else
-        addOrRemove = "☆"
-    end
-
+	
 	local btn = Instance.new("TextButton", Parent)
 	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=(isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),AutoButtonColor=false,TextSize=16,Name=id,TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
+	
 	local fav = Instance.new("TextButton", btn)
-	addProperty(fav,{Active=false,TextStrokeTransparency=.5,Text=addOrRemove,BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='fav',TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(fav,{Text=((isFavorited(id) and "★") or "☆"), Active=false,TextStrokeTransparency=0.5, BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='fav',TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
 
 	btn.MouseButton1Click:connect(function()
 		local Play = playAudio(id)
 		
 		for i, button in pairs(MainScrollingFrame:GetChildren()) do
-			tween(button, .1, {BackgroundColor3 = Color3.fromRGB(25,25,25)})
+			tween(button, .1, {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 		end
 
 		for i, button in pairs(FavoritesScrollingFrame:GetChildren()) do
-			tween(button, .1, {BackgroundColor3 = Color3.fromRGB(25,25,25)})
+			tween(button, .1, {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 		end
 		
 		wait()
 		
 		if Play ~= "StopSound" then
-			tween(btn, .1, {BackgroundColor3 = Color3.fromRGB(35,35,35)})
+			tween(btn, .1, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
 		end
 	end)
 	
 	btn.MouseButton2Click:connect(function()
 		btn.Text = '  Set Id to clipboard'
 		setclipboard(id)
-		wait(.3)
-		btn.Text = "  " .. txt
+		wait(0.3)
+		btn.Text = ("  " .. txt)
 	end)
 	
 	fav.MouseButton1Click:connect(function()
@@ -679,7 +673,6 @@ function checkIfHasCharacters(str)
 	end
 
 	return _check
-
 end
 
 MainTextBox.FocusLost:connect(function(enter)
@@ -690,44 +683,48 @@ MainTextBox.FocusLost:connect(function(enter)
 		
 		clearMainList()
 		
-		if loading then return end
+		if onlineSearchLoadingResults then return end
 		
-		loading = true
-		MainTextBox.Text='Loading "'..search..'"..'
-		MainTextBox.TextEditable=false
+		onlineSearchLoadingResults = true
+		MainTextBox.Text = ('Loading "' .. search.. '"..')
+		MainTextBox.TextEditable = false
 		
 		local loadedresults = 0
 		local totalresults = {}
 		
 		-- 3 pages
 
-		local results1
-		local results2
-		local results3
+		local results_1;
+		local results_2;
+		local results_3;
 
 		spawn(function() 
-			results1=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=1&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			results_1 = JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=1&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
 			loadedresults = loadedresults + 1
 		end)
+
 		spawn(function() 
-			results2=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=2&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			results_2 = JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=2&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
 			loadedresults = loadedresults + 1
 		end)
+
 		spawn(function() 
-			results3=JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=3&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			results_3 = JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=3&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
 			loadedresults = loadedresults + 1
 		end)
 		
 		repeat wait() until (loadedresults == 3)
 		
-		for i,v in pairs(results1) do
-			totalresults[#totalresults+1] = v
+		for i, result in pairs(results_1) do
+			totalresults[#totalresults + 1] = result
 		end
-		for i,v in pairs(results2) do
-			totalresults[#totalresults+1] = v
+
+		for i, result in pairs(results_2) do
+			totalresults[#totalresults + 1] = result
 		end
-		for i,v in pairs(results3) do
-			totalresults[#totalresults+1] = v
+
+		for i, result in pairs(results_3) do
+			totalresults[#totalresults + 1] = result
 		end
 
 		for i, audio in pairs(totalresults) do
@@ -743,14 +740,15 @@ MainTextBox.FocusLost:connect(function(enter)
 				end
 			end
 		end
+
 		MainTextBox.Text = ""
-		loading = false
+		onlineSearchLoadingResults = false
 		MainTextBox.TextEditable = true
 	end
 end)
 
 refreshFavoritesList()
 
-showPage("search")
+showPage("fav")
 
 tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset/2))})
