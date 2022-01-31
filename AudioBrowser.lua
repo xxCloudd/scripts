@@ -13,7 +13,7 @@ local PREVIEW_VOLUME = 1
 local FavoritesSortType = "new-old"
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local page -- search / fav / settings
-local version = "1.7.5"
+local version = "1.7.6"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 local MainSortType = 0
