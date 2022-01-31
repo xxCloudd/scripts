@@ -10,12 +10,13 @@ getgenv().MjXRqQs7cjVu8 = GUI
 
 
 local PREVIEW_VOLUME = 1
+local FavoritesSortType = "new-old"
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local page -- search / fav / settings
 local version = "1.7.5"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
-local SortType = 0
+local MainSortType = 0
 local onlineSearchLoadingResults = false
 local soundInstance;
 local AUDIOS;
@@ -58,7 +59,6 @@ local CloseButton = Instance.new("TextButton", Frame)
 local MainTextBox = Instance.new("TextBox", Frame)
 local MainScrollingFrame = Instance.new("ScrollingFrame", Frame)
 local mainTextLabel = Instance.new("TextLabel", Frame)
-
 local window_width = 350
 
 Instance.new("UICorner",Frame).CornerRadius = UDim.new(0, 5)
@@ -73,46 +73,231 @@ function tween(instance, speed, properties)
 	game:GetService("TweenService"):Create(instance, TweenInfo.new(speed), properties):Play()
 end
 
-
 function clearMainList()
     MainScrollingFrame:ClearAllChildren()
     MainScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 end
 
-addProperty(Frame, {BackgroundColor3=Color3.fromRGB(25,25,25),BorderColor3=Color3.fromRGB(120,120,120),BackgroundTransparency=0,BorderSizePixel=0,Name='',Size=UDim2.new(0,window_width,0,183)})
-addProperty(CloseButton, {Active=false,TextStrokeTransparency=.5,BackgroundTransparency=1,BorderColor3=Color3.fromRGB(1,1,1),BorderSizePixel=2,Position=UDim2.new(1,-18,0,0),Size=UDim2.new(0,18,0,18),Font='SourceSansBold',Text='X',Name='',TextColor3=Color3.fromRGB(200,200,200),TextSize=14,AutoButtonColor=false})
-addProperty(MainTextBox, {BackgroundColor3=Color3.fromRGB(35,35,35),TextStrokeTransparency=.5,BorderSizePixel=0,BorderColor3=Color3.fromRGB(1,1,1),Position=UDim2.new(0,0,0.0983606577,0),Size=UDim2.new(1,0,0,18),Font=Enum.Font.SourceSansItalic,PlaceholderColor3=Color3.fromRGB(150,150,150),PlaceholderText="Online Search",Text="",TextColor3=Color3.fromRGB(200,200,200),TextSize=14,ClearTextOnFocus=false,TextWrapped=true,Font='SourceSansSemibold',Name=''})
-addProperty(MainScrollingFrame, {BackgroundColor3=Color3.fromRGB(0,0,0),BackgroundTransparency=0.9,BorderColor3=Color3.fromRGB(60, 60, 60),Position=UDim2.new(0,0,0.196721315,0),Size=UDim2.new(1,0,0,147),ScrollBarThickness=4,BottomImage="rbxasset://textures/ui/Scroll/scroll-middle.png",TopImage="rbxasset://textures/ui/Scroll/scroll-middle.png",ScrollBarImageColor3=Color3.fromRGB(100,100,100),CanvasSize=UDim2.new(0,0,0,0),Name=''})
-addProperty(mainTextLabel, {TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),BackgroundColor3=Color3.fromRGB(255,255,255),Name='',BackgroundTransparency=1,BorderSizePixel=0,Size=UDim2.new(0,386,0,18),Font='SourceSansBold',Text="  Online Search",TextSize=12,TextXAlignment=Enum.TextXAlignment.Left})
+addProperty(Frame, {
+	BackgroundColor3 = Color3.fromRGB(25,25,25),
+	BorderColor3 = Color3.fromRGB(120,120,120),
+	BackgroundTransparency=0,
+	BorderSizePixel=0,
+	Name='',
+	Size=UDim2.new(0,window_width,0,183)
+})
+
+addProperty(CloseButton, {
+	Active = false,
+	TextStrokeTransparency = .5,
+	BackgroundTransparency = 1,
+	BorderColor3 = Color3.fromRGB(1,1,1),
+	BorderSizePixel = 2,
+	Position = UDim2.new(1,-18,0,0),
+	Size = UDim2.new(0,18,0,18),
+	Font = 'SourceSansBold',
+	Text = 'X',
+	Name = '',
+	TextColor3 = Color3.fromRGB(200,200,200),
+	TextSize = 14,
+	AutoButtonColor=false
+})
+
+addProperty(MainTextBox, {
+	BackgroundColor3 = Color3.fromRGB(35,35,35),
+	TextStrokeTransparency = .5,
+	BorderSizePixel = 0,
+	BorderColor3 = Color3.fromRGB(1,1,1),
+	Position = UDim2.new(0,0,0.0983606577,0),
+	Size = UDim2.new(1,-(18*5),0,18),
+	Font = Enum.Font.SourceSansItalic,
+	PlaceholderColor3 = Color3.fromRGB(150,150,150),
+	PlaceholderText = "Online Search",
+	Text = "",
+	TextColor3 = Color3.fromRGB(200,200,200),
+	TextSize = 14,
+	ClearTextOnFocus = false,
+	TextWrapped = true,
+	Font = 'SourceSansSemibold',
+	Name = ''
+})
+
+addProperty(MainScrollingFrame, {
+	BackgroundColor3 = Color3.fromRGB(0,0,0),
+	BackgroundTransparency = 0.9,
+	BorderColor3 = Color3.fromRGB(60, 60, 60),
+	Position = UDim2.new(0,0,0.196721315,0),
+	Size = UDim2.new(1,0,0,147),
+	ScrollBarThickness = 4,
+	BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
+	TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
+	ScrollBarImageColor3 = Color3.fromRGB(100,100,100),
+	CanvasSize = UDim2.new(0,0,0,0),
+	Name = ''
+})
+
+addProperty(mainTextLabel, {
+	TextStrokeTransparency = .5,
+	TextColor3 = Color3.fromRGB(200,200,200),
+	BackgroundColor3 = Color3.fromRGB(255,255,255),
+	Name = '',
+	BackgroundTransparency = 1,
+	BorderSizePixel = 0,
+	Size = UDim2.new(0,386,0,18),
+	Font = 'SourceSansBold',
+	Text = "  Online Search",
+	TextSize = 12,
+	TextXAlignment = Enum.TextXAlignment.Left
+})
 
 Frame.Position = UDim2.new(-1, 0, .5, -(Frame.Size.Y.Offset/2))
 
 local minimizeButton = CloseButton:clone()
-addProperty(minimizeButton, {Name='',Parent=Frame,Text='—',Position=UDim2.new(1,-36,0,0)})
+
+addProperty(minimizeButton, {
+	Name = '',
+	Parent = Frame,
+	Text = '—',
+	Position = UDim2.new(1,-36,0,0)
+})
 
 local favButton = minimizeButton:clone()
-addProperty(favButton,{Parent=Frame,TextScaled=false,TextSize=17,TextYAlignment='Top',Text='★',Position=UDim2.new(1,(-18)*4,0,0)})
+
+addProperty(favButton, {
+	Parent = Frame,
+	TextScaled = false,
+	TextSize = 17,
+	TextYAlignment = 'Top',
+	Text = '★',
+	Position = UDim2.new(1,(-18)*4,0,0)
+})
 
 local FavoritesScrollingFrame = MainScrollingFrame:clone()
-addProperty(FavoritesScrollingFrame,{Parent=Frame})
+FavoritesScrollingFrame.Parent = Frame
 
 local ScriptNameLabel = mainTextLabel:Clone()
-addProperty(ScriptNameLabel,{Text="  AudioBrowser | v"..version,Parent=Frame,Visible=false})
+addProperty(ScriptNameLabel, {
+	Text = ("  AudioBrowser | v" .. version),
+	Parent = Frame,
+	Visible = false
+})
 
 local SettingsButton = minimizeButton:clone()
-addProperty(SettingsButton, {Parent=Frame,Text='S',Font='SourceSansSemibold',Position=UDim2.new(1,(-18)*5,0,0)})
+
+addProperty(SettingsButton, {
+	Parent = Frame,
+	Text = 'S',
+	Font = 'SourceSansSemibold',
+	Position = UDim2.new(1,(-18)*5,0,0)
+})
 
 local searchButton = Instance.new("ImageButton", Frame)
-addProperty(searchButton,{Active=false,Name='',Image="rbxassetid://3229239834",Size=UDim2.new(0,19,0,18),BackgroundTransparency=1,Position=UDim2.new(1,(-18)*3,0,0)})
+
+addProperty(searchButton, {
+	Active = false,
+	Name = '',
+	Image = "rbxassetid://3229239834",
+	Size = UDim2.new(0,19,0,18),
+	BackgroundTransparency = 1,
+	Position = UDim2.new(1,(-18)*3,0,0)
+})
 
 local favSearchTextBox = MainTextBox:clone()
-addProperty(favSearchTextBox, {Parent=Frame,PlaceholderText="Search Favorites"})
+
+addProperty(favSearchTextBox, {
+	Parent = Frame,
+	PlaceholderText = "Search Favorites"
+})
+
+local MainSortTypeButton = Instance.new("TextButton", Frame)
+
+addProperty(MainSortTypeButton, {
+	Text = FavoritesSortType,
+	Size = UDim2.new(0,(18*5),0,18),
+	Position = UDim2.new(1,-(18*5),0,18),
+	Font = "SourceSansBold",
+	BackgroundColor3 = Color3.fromRGB(25,25,25),
+	BorderSizePixel = 1,
+	BorderColor3 = Color3.fromRGB(35, 35, 35),
+	TextColor3 = Color3.fromRGB(140,140,140),
+	AutoButtonColor = false,
+	BorderMode = "Inset",
+	TextSize = 14,
+	TextStrokeTransparency = 0.5,
+	Active = false
+})
+
+if MainSortType == 0 then
+	MainSortType = 1
+	MainSortTypeButton.Text = "MostFavorited"
+elseif MainSortType == 1 then
+	MainSortType = 2
+	MainSortTypeButton.Text = "Bestselling"
+elseif MainSortType == 2 then
+	MainSortType = 3
+	MainSortTypeButton.Text = "RecentlyUpdated"
+else
+	MainSortType = 0
+	MainSortTypeButton.Text = "Relevance"
+end
+
+MainSortTypeButton.MouseButton1Click:connect(function()
+	local txt = MainSortTypeButton.Text
+
+	if MainSortType == 0 then
+		MainSortType = 1
+		MainSortTypeButton.Text = "MostFavorited"
+	elseif MainSortType == 1 then
+		MainSortType = 2
+		MainSortTypeButton.Text = "Bestselling"
+	elseif MainSortType == 2 then
+		MainSortType = 3
+		MainSortTypeButton.Text = "RecentlyUpdated"
+	else
+		MainSortType = 0
+		MainSortTypeButton.Text = "Relevance"
+	end
+
+	-- VOUCH https://v3rmillion.net/member.php?action=profile&uid=159881	
+
+end)
+
+local FavoritesSortTypeButton = MainSortTypeButton:clone()
+FavoritesSortTypeButton.Parent = Frame
+FavoritesSortTypeButton.Text = FavoritesSortType
+
+FavoritesSortTypeButton.MouseButton1Click:connect(function()
+	local txt = FavoritesSortTypeButton.Text
+
+	if txt == "new-old" then
+		FavoritesSortTypeButton.Text = "old-new"
+	elseif txt == "old-new" then
+		FavoritesSortTypeButton.Text = "A-Z"
+	elseif txt == "A-Z" then
+		FavoritesSortTypeButton.Text = "new-old"
+	end
+
+	FavoritesSortType = FavoritesSortTypeButton.Text
+
+	refreshFavoritesList()
+end)
 
 local SettingsScrollingFrame = MainScrollingFrame:clone()
-addProperty(SettingsScrollingFrame,{Parent=Frame,Position=UDim2.new(0,0,0,20),Size=UDim2.new(1,0,1,-20)})
+
+addProperty(SettingsScrollingFrame, {
+	Parent = Frame,
+	Position = UDim2.new(0,0,0,20),
+	Size = UDim2.new(1,0,1,-20)
+})
 
 local SettingsUIGridLayout = Instance.new("UIGridLayout", SettingsScrollingFrame)
-addProperty(SettingsUIGridLayout, {SortOrder="LayoutOrder",Name="",CellPadding = UDim2.new(0,0,0,0),CellSize = UDim2.new(1,0,0,20)})
+
+addProperty(SettingsUIGridLayout, {
+	SortOrder = "LayoutOrder",
+	Name = "",
+	CellPadding = UDim2.new(0,0,0,0),
+	CellSize = UDim2.new(1,0,0,20)
+})
 
 function refreshSettingsScrollingFrameCanvas()
 	SettingsScrollingFrame.CanvasSize = UDim2.new(0,0,0,(#SettingsScrollingFrame:GetChildren()*20)-20)
@@ -161,9 +346,7 @@ addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame,Position = UDim2
 
 addSettingsHeader("Search Settings")
 
-local SettingsChangeSearchType = addSettingsButton("Sort Type: Relevance", 200)
 local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
-local SettingsToggleAlphabeticalSort = addSettingsButton("Sort Favorites Alphabetically: OFF", 200)
 
 addSettingsText()
 
@@ -215,8 +398,8 @@ addSettingsText('This is not a Roblox Audio')
 addSettingsText()
 
 local ClearAudioListData = addSettingsButton("Clear Data", 100)
-ClearAudioListData.TextColor3=Color3.new(0.5, 0.25, 0.25)
-ClearAudioListData.BorderColor3=Color3.new(0.5, 0.25, 0.25)
+ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)
+ClearAudioListData.BorderColor3 = Color3.new(0.5, 0.25, 0.25)
 
 addSettingsText()
 
@@ -230,26 +413,8 @@ ShowRobloxAudiosButton.MouseButton1Click:connect(function()
 		showrobloxaudios = false
 		ShowRobloxAudiosButton.Text = "Show Roblox Audios: OFF"
 	end
-	refreshFavoritesList(favSearchTextBox.Text)
+	refreshFavoritesList()
 end)
-
-SettingsChangeSearchType.MouseButton1Click:connect(function()
-	if SortType == 0 then
-		SortType = 1
-		SettingsChangeSearchType.Text = "Sort Type: MostFavorited"
-	elseif SortType == 1 then
-		SortType = 2
-		SettingsChangeSearchType.Text = "Sort Type: Bestselling"
-	elseif SortType == 2 then
-		SortType = 3
-		SettingsChangeSearchType.Text = "Sort Type: RecentlyUpdated"
-	else
-		SortType = 0
-		SettingsChangeSearchType.Text = "Sort Type: Relevance"
-	end
-end)
-
--- VOUCH https://v3rmillion.net/member.php?action=profile&uid=159881
 
 ClearAudioListData.MouseButton1Click:connect(function()
 	local b = ClearAudioListData.Text
@@ -326,17 +491,6 @@ importbtn.MouseButton1Click:connect(function()
 	importdeb = false
 end)
 
-SettingsToggleAlphabeticalSort.MouseButton1Click:connect(function()
-	if sortFavoritesAlphabetically then
-	 	sortFavoritesAlphabetically = false
-		SettingsToggleAlphabeticalSort.Text = "Sort Favorites Alphabetically: OFF"
-	else
-		sortFavoritesAlphabetically = true
-		SettingsToggleAlphabeticalSort.Text = "Sort Favorites Alphabetically: ON"
-	end
-	refreshFavoritesList(favSearchTextBox.Text)
-end)
-
 SettingsIdAddButton.MouseButton1Click:connect(function()
 	local ID = tonumber(SettingsIdTextBoxID.Text)
 	local Name = SettingsIdTextBoxNAME.Text
@@ -373,46 +527,80 @@ SettingsIdAddButton.MouseButton1Click:connect(function()
 end)
 
 local Pages = {
-	Search = {mainTextLabel, MainScrollingFrame, MainTextBox},
-	Favorites = {FavoritesTextLabel, favSearchTextBox, FavoritesScrollingFrame},
-	Settings = {SettingsScrollingFrame, SettingsToggleAlphabeticalSort, SettingsIdTextLabel}
+	Search = {mainTextLabel, MainScrollingFrame, MainTextBox, MainSortTypeButton},
+	Favorites = {FavoritesTextLabel, favSearchTextBox, FavoritesScrollingFrame, FavoritesSortTypeButton},
+	Settings = {SettingsScrollingFrame, SettingsIdTextLabel}
 }
 
 local oldBooleans = {}
 
 minimizeButton.MouseButton1Click:connect(function()
-    if Frame.Size == UDim2.new(0,window_width,0,183) then
+    if Frame.Size == UDim2.new(0, window_width, 0, 183) then
+
         for i, GUIElement in pairs(Frame:GetChildren())do
             if GUIElement ~= CloseButton and GUIElement ~= minimizeButton and GUIElement ~= ScriptNameLabel and not GUIElement:IsA('UICorner') then
-                table.insert(oldBooleans, {
-                Element = GUIElement,
-                Bool = GUIElement.Visible
+				table.insert(oldBooleans, {
+                	Element = GUIElement,
+                	Bool = GUIElement.Visible
                 })
+
                 GUIElement.Visible = false
             end
         end
+
         ScriptNameLabel.Visible = true
-        tween(Frame, .2, {Size=UDim2.new(0,window_width,0,18)})
-    elseif Frame.Size == UDim2.new(0,window_width,0,18) then
+
+        tween(Frame, .2, {
+			Size = UDim2.new(0,window_width,0,18)
+		})
+
+    elseif Frame.Size == UDim2.new(0, window_width, 0, 18) then
         ScriptNameLabel.Visible = false
-        tween(Frame, .2, {Size=UDim2.new(0,window_width,0,183)})
+
+        tween(Frame, .2, {
+			Size = UDim2.new(0, window_width, 0, 183)
+		})
+
         for i, GUIElement in pairs(oldBooleans) do
             GUIElement["Element"].Visible = GUIElement["Bool"]
         end
+
         oldBooleans = {}
     end
 end)
 
-function refreshFavoritesList(str) -- GUI Refresh
+function reverseTable(t)
+    local reversedTable = {}
+    local itemCount = #t
+    for k, v in ipairs(t) do
+        reversedTable[itemCount + 1 - k] = v
+    end
+    return reversedTable
+end
+
+--[[
+	new-old
+	old-new
+	A-Z
+]]
+
+function refreshFavoritesList() -- GUI Refresh
 	FavoritesScrollingFrame:ClearAllChildren()
-    FavoritesScrollingFrame.CanvasSize=UDim2.new(0,0,0,0)
+    FavoritesScrollingFrame.CanvasSize = UDim2.new(0,0,0,0)
     
-	if sortFavoritesAlphabetically then
+	local str = favSearchTextBox.Text
+
+	if FavoritesSortType == "A-Z" then
 		local new = {}
 
-		for i, audio in pairs(AUDIOS)do
-			if string.find(audio["Name"]:lower(), (str and str:lower()) or '') then
-				table.insert(new, {Name = audio["Name"], ID = audio["ID"]})
+		for i, audio in pairs(AUDIOS) do
+			local audio_name = audio["Name"]:lower()
+
+    		if string.find(audio_name, (str and str:lower()) or '') then
+				table.insert(new, {
+					Name = audio["Name"],
+					ID = audio["ID"]
+				})
 			end
 		end
 
@@ -423,12 +611,30 @@ function refreshFavoritesList(str) -- GUI Refresh
 		for i, audio in pairs(new)do
 			createNew(FavoritesScrollingFrame, audio["Name"], audio["ID"])
 		end
-	else
-    	for i, audio in pairs(AUDIOS)do
-    		if string.find(audio["Name"]:lower(), (str and str:lower()) or '') then
+
+	elseif FavoritesSortType == "new-old" then
+
+		local reversedAudioOrder = reverseTable(AUDIOS)
+
+    	for i, audio in pairs(reversedAudioOrder) do
+			local audio_name = audio["Name"]:lower()
+
+    		if string.find(audio_name, (str and str:lower()) or '') then
 				createNew(FavoritesScrollingFrame, audio["Name"], audio["ID"])
 			end
     	end
+
+	elseif FavoritesSortType == "old-new" then
+
+		for i, audio in pairs(AUDIOS) do
+			print(audio.Name)
+			local audio_name = audio["Name"]:lower()
+
+    		if string.find(audio_name, (str and str:lower()) or '') then
+				createNew(FavoritesScrollingFrame, audio["Name"], audio["ID"])
+			end
+    	end
+
 	end
 end
 
@@ -607,7 +813,24 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	if Parent:FindFirstChild(id) then return end
 	
 	local btn = Instance.new("TextButton", Parent)
-	addProperty(btn,{Active=false,TextTruncate="AtEnd",TextStrokeTransparency=.5,Text=("  "..txt),BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(1,0,0,20),TextWrapped=true,Position=UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),BackgroundTransparency=0,TextColor3=(isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),AutoButtonColor=false,TextSize=16,Name=id,TextXAlignment='Left',Font='SourceSansSemibold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(btn, {
+		Active = false,
+		TextTruncate = "AtEnd",
+		TextStrokeTransparency = .5,
+		Text = ("  "..txt),
+		BackgroundColor3 = Color3.fromRGB(25,25,25),
+		Size = UDim2.new(1,0,0,20),
+		TextWrapped = true,
+		Position = UDim2.new(0,20,0,(#Parent:GetChildren()*20)-20),
+		BackgroundTransparency = 0,
+		TextColor3 = (isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),
+		AutoButtonColor = false,
+		TextSize = 16,
+		Name = id,
+		TextXAlignment = 'Left',
+		Font = 'SourceSansSemibold',
+		BorderColor3 = Color3.fromRGB(60,60,60)
+	})
 	
 	local fav = Instance.new("TextButton", btn)
 	addProperty(fav,{Text=((isFavorited(id) and "★") or "☆"), Active=false,TextStrokeTransparency=0.5, BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='fav',TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
@@ -658,13 +881,14 @@ end
 
 favSearchTextBox.Changed:connect(function(property)
 	if property == "Text" then
-		refreshFavoritesList(favSearchTextBox.Text)
+		refreshFavoritesList()
 	end
 end)
 
 function checkIfHasCharacters(str)
 	local check = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_01234567889'
 	local _check = false
+
 	for i= 1, #check do
 		if string.find(str, check:sub(i,i)) then
 			_check = true
@@ -675,18 +899,31 @@ function checkIfHasCharacters(str)
 	return _check
 end
 
+function Search(search, PageNumber)
+	local Results = game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=" .. PageNumber .. "&SortType=" .. MainSortType .. "&Keyword=" .. (search:gsub('/',''):gsub(" ","_"):lower()))
+	local DecodedResults = JSONDecode(Results)
+
+	return DecodedResults
+end
+
 MainTextBox.FocusLost:connect(function(enter)
 	if enter then
 		local search = MainTextBox.Text
-
-		if not checkIfHasCharacters(search) then return end
+		
+		if (not checkIfHasCharacters(search)) and search ~= "" then return end
 		
 		clearMainList()
 		
 		if onlineSearchLoadingResults then return end
 		
 		onlineSearchLoadingResults = true
-		MainTextBox.Text = ('Loading "' .. search.. '"..')
+
+		if search == "" then
+			MainTextBox.Text = ('Loading the "' .. MainSortTypeButton.Text .. '" category')
+		else
+			MainTextBox.Text = ('Loading "' .. search .. '"..')
+		end
+
 		MainTextBox.TextEditable = false
 		
 		local loadedresults = 0
@@ -699,17 +936,17 @@ MainTextBox.FocusLost:connect(function(enter)
 		local results_3;
 
 		spawn(function() 
-			results_1 = JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=1&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			results_1 = Search(search, 1)
 			loadedresults = loadedresults + 1
 		end)
 
 		spawn(function() 
-			results_2 = JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=2&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			results_2 = Search(search, 2)
 			loadedresults = loadedresults + 1
 		end)
 
 		spawn(function() 
-			results_3 = JSONDecode(game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=3&SortType="..SortType.."&Keyword="..search:gsub('/',''):gsub(" ","_"):lower()))
+			results_3 = Search(search, 3)
 			loadedresults = loadedresults + 1
 		end)
 		
