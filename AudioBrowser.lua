@@ -16,7 +16,7 @@ local page -- search / fav / settings
 local version = "1.7.6"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
-local MainSortType = 0
+local MainSortType = 3
 local onlineSearchLoadingResults = false
 local soundInstance;
 local AUDIOS;
@@ -176,6 +176,7 @@ local FavoritesScrollingFrame = MainScrollingFrame:clone()
 FavoritesScrollingFrame.Parent = Frame
 
 local ScriptNameLabel = mainTextLabel:Clone()
+
 addProperty(ScriptNameLabel, {
 	Text = ("  AudioBrowser | v" .. version),
 	Parent = Frame,
@@ -305,24 +306,60 @@ end
 
 function addSettingsHeader(TEXT)
 	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
-	addProperty(Header, {BackgroundTransparency=1,TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),Text = TEXT or "",TextXAlignment="Center",TextSize=15,Font="SourceSansBold"})
+	addProperty(Header, {
+		BackgroundTransparency = 1,
+		TextStrokeTransparency = .5,
+		TextColor3 = Color3.fromRGB(200, 200, 200),
+		Text = TEXT or "",
+		TextXAlignment = "Center",
+		TextSize = 15,
+		Font = "SourceSansBold"
+	})
 	refreshSettingsScrollingFrameCanvas()
+	
 	return Header
 end
 
 function addSettingsText(TEXT)
 	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
-	addProperty(Header, {BackgroundTransparency=1,TextStrokeTransparency=.5,TextColor3=Color3.fromRGB(200,200,200),Text = TEXT or "",TextXAlignment="Center",TextSize=13,Font="SourceSansBold"})
+	addProperty(Header, {
+		BackgroundTransparency = 1,
+		TextStrokeTransparency = .5,
+		TextColor3 = Color3.fromRGB(200, 200, 200),
+		Text = TEXT or "",
+		TextXAlignment = "Center",
+		TextSize = 13,
+		Font = "SourceSansBold"
+	})
 	refreshSettingsScrollingFrameCanvas()
+
 	return Header
 end
 
 function addSettingsButton(TEXT, X_SIZE)
 	local Frame = Instance.new("Frame", SettingsScrollingFrame)
-	Frame.BackgroundTransparency=1
+	Frame.BackgroundTransparency = 1
+
 	local Button = Instance.new("TextButton", Frame)
-	addProperty(Button,{Active=false,TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,AutoButtonColor=false,Text=TEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
-	Button.Position=UDim2.new(0.5,-(Button.Size.X.Offset/2),0.5,-(Button.Size.Y.Offset/2))
+	addProperty(Button, {
+		Active = false,
+		TextSize = 14,
+		Size = UDim2.new(0, X_SIZE, 0, 16),
+		TextStrokeTransparency = .5,
+		Font = "SourceSansBold",
+		TextColor3 = Color3.fromRGB(200, 200, 200),
+		TextXAlignment = "Center",
+		BorderSizePixel = 1,
+		AutoButtonColor = false,
+		Text = TEXT or "",
+		BackgroundTransparency = 0,
+		BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+		TextStrokeTransparency = .7,
+		BorderColor3 = Color3.fromRGB(120, 120, 120)
+	})
+
+	Button.Position = UDim2.new(0.5, -(Button.Size.X.Offset / 2), 0.5, -(Button.Size.Y.Offset / 2))
+	
 	refreshSettingsScrollingFrameCanvas()
 	return Button
 end
@@ -331,18 +368,42 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	local Frame = Instance.new("Frame", SettingsScrollingFrame)
 	Frame.BackgroundTransparency=1
 	local Box = Instance.new("TextBox", Frame)
-	addProperty(Box,{TextSize=14,Size = UDim2.new(0,X_SIZE,0,16),TextStrokeTransparency=.5,Font="SourceSansBold",TextColor3=Color3.fromRGB(200,200,200),TextXAlignment="Center",BorderSizePixel=1,Text="",PlaceholderText=PLACEHOLDERTEXT or "",BackgroundTransparency=0,BackgroundColor3=Color3.fromRGB(25,25,25),TextStrokeTransparency=.7,BorderColor3=Color3.fromRGB(120,120,120)}) -- 
-	Box.Position=UDim2.new(0.5,-(Box.Size.X.Offset/2),0.5,-(Box.Size.Y.Offset/2))
+	addProperty(Box, {
+		TextSize = 14,
+		Size = UDim2.new(0, X_SIZE, 0, 16),
+		TextStrokeTransparency = .5,
+		Font = "SourceSansBold",
+		TextColor3 = Color3.fromRGB(200,200,200),
+		TextXAlignment = "Center",
+		BorderSizePixel = 1,
+		Text = "",
+		PlaceholderText = (PLACEHOLDERTEXT or ""),
+		BackgroundTransparency = 0,
+		BackgroundColor3 = Color3.fromRGB(25,25,25),
+		TextStrokeTransparency = .7,
+		BorderColor3=Color3.fromRGB(120,120,120)
+	})
+	
+	Box.Position = UDim2.new(0.5, -(Box.Size.X.Offset / 2), 0.5, -(Box.Size.Y.Offset / 2))
+	
 	refreshSettingsScrollingFrameCanvas()
 	return Box
 end
 
 
 local FavoritesTextLabel = mainTextLabel:Clone()
-addProperty(FavoritesTextLabel,{Text="  Favorites",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
+addProperty(FavoritesTextLabel, {
+	Text = "  Favorites",
+	Parent = Frame,
+	Position = UDim2.new(0,0,0,0)
+}) 
 
 local SettingsIdTextLabel = mainTextLabel:Clone()
-addProperty(SettingsIdTextLabel,{Text="  Settings",Parent=Frame,Position = UDim2.new(0,0,0,0)}) 
+addProperty(SettingsIdTextLabel, {
+	Text = "  Settings",
+	Parent = Frame,
+	Position = UDim2.new(0,0,0,0)
+}) 
 
 addSettingsHeader("Search Settings")
 
@@ -613,8 +674,12 @@ function refreshFavoritesList() -- GUI Refresh
 		end
 
 	elseif FavoritesSortType == "new-old" then
+		
+		local reversedAudioOrder = {}
 
-		local reversedAudioOrder = reverseTable(AUDIOS)
+    	for k, v in ipairs(AUDIOS) do
+    	    reversedAudioOrder[#AUDIOS + 1 - k] = v
+    	end
 
     	for i, audio in pairs(reversedAudioOrder) do
 			local audio_name = audio["Name"]:lower()
@@ -638,14 +703,14 @@ function refreshFavoritesList() -- GUI Refresh
 	end
 end
 
-function addToAudiosTable(name,id)
+function addToAudiosTable(name, id)
 	table.insert(AUDIOS, {
 		Name = name,
 		ID = id
 	})
 end
 
-function addToFavorites(name,id)
+function addToFavorites(name, id)
 	if isFavorited(id) then return end
 
     addToAudiosTable(name,id)
@@ -664,12 +729,9 @@ function removeFromFavorites(id)
         end
     end
     SaveFavorites()
-    
-    -- Update list on GUI:
 
-    refreshFavoritesList()
+    refreshFavoritesList() -- Update list on GUI
 
-	
 end
 
 function showPage(pg)
@@ -808,6 +870,7 @@ function playAudio(id)
 		soundInstance:Play()
 	end
 end
+
 function createNew(Parent, txt, id, isARobloxAudio)
 
 	if Parent:FindFirstChild(id) then return end
@@ -833,7 +896,23 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	})
 	
 	local fav = Instance.new("TextButton", btn)
-	addProperty(fav,{Text=((isFavorited(id) and "★") or "☆"), Active=false,TextStrokeTransparency=0.5, BackgroundColor3=Color3.fromRGB(25,25,25),Size=UDim2.new(0,20,0,20),TextWrapped=true,Position=UDim2.new(0,-20,0,0),BackgroundTransparency=0,TextColor3=Color3.fromRGB(140,140,140),AutoButtonColor=false,TextSize=16,Name='fav',TextXAlignment='Center',Font='SourceSansBold',BorderColor3=Color3.fromRGB(60,60,60)})
+	addProperty(fav, {
+		Text = ((isFavorited(id) and "★") or "☆"),
+		Active = false,
+		TextStrokeTransparency = 0.5,
+		BackgroundColor3 = Color3.fromRGB(25,25,25),
+		Size = UDim2.new(0,20,0,20),
+		TextWrapped = true,
+		Position = UDim2.new(0,-20,0,0),
+		BackgroundTransparency = 0,
+		TextColor3 = Color3.fromRGB(140,140,140),
+		AutoButtonColor = false,
+		TextSize = 16,
+		Name = 'fav',
+		TextXAlignment = 'Center',
+		Font = 'SourceSansBold',
+		BorderColor3 = Color3.fromRGB(60,60,60)
+	})
 
 	btn.MouseButton1Click:connect(function()
 		local Play = playAudio(id)
@@ -889,7 +968,7 @@ function checkIfHasCharacters(str)
 	local check = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_01234567889'
 	local _check = false
 
-	for i= 1, #check do
+	for i = 1, #check do
 		if string.find(str, check:sub(i,i)) then
 			_check = true
 			break
@@ -988,4 +1067,4 @@ refreshFavoritesList()
 
 showPage("fav")
 
-tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset/2))})
+tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset / 2))})
