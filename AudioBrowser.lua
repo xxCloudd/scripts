@@ -1046,13 +1046,8 @@ MainTextBox.FocusLost:connect(function(enter)
 			if audio.AudioUrl then
 				local name = audio.Name
 				local id = audio.AssetId
-				if audio.CreatorID == 1 then
-					if showrobloxaudios then
-						createNew(MainScrollingFrame, name, id, true)
-					end
-				else
-					createNew(MainScrollingFrame, name, id, false)
-				end
+
+				createNew(MainScrollingFrame, name, id, (audio.CreatorID == 1 and showrobloxaudios))
 			end
 		end
 
@@ -1061,6 +1056,16 @@ MainTextBox.FocusLost:connect(function(enter)
 		MainTextBox.TextEditable = true
 	end
 end)
+
+function testAudio(id)
+	local Sound = Instance.new("Sound", game.Players.LocalPlayer)
+	Sound.Volume = 0
+	Sound.SoundId = id
+
+	wait(3)
+
+	print(Sound.TimeLength)
+end
 
 refreshFavoritesList()
 
