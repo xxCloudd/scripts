@@ -1047,7 +1047,14 @@ MainTextBox.FocusLost:connect(function(enter)
 				local name = audio.Name
 				local id = audio.AssetId
 
-				createNew(MainScrollingFrame, name, id, (audio.CreatorID == 1 and showrobloxaudios))
+				if audio.CreatorID == 1 then
+					if showrobloxaudios then
+						createNew(MainScrollingFrame, name, id, true)
+					end
+				else
+					createNew(MainScrollingFrame, name, id, false)
+				end
+				--createNew(MainScrollingFrame, name, id, (audio.CreatorID == 1 and showrobloxaudios))
 			end
 		end
 
