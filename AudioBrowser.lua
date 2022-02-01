@@ -692,7 +692,6 @@ function refreshFavoritesList() -- GUI Refresh
 	elseif FavoritesSortType == "old-new" then
 
 		for i, audio in pairs(AUDIOS) do
-			print(audio.Name)
 			local audio_name = audio["Name"]:lower()
 
     		if string.find(audio_name, (str and str:lower()) or '') then
