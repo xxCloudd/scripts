@@ -345,7 +345,6 @@ function addSettingsButton(TEXT, X_SIZE)
 		Active = false,
 		TextSize = 14,
 		Size = UDim2.new(0, X_SIZE, 0, 16),
-		TextStrokeTransparency = .5,
 		Font = "SourceSansBold",
 		TextColor3 = Color3.fromRGB(200, 200, 200),
 		TextXAlignment = "Center",
