@@ -21,9 +21,6 @@ local onlineSearchLoadingResults = false
 local soundInstance;
 local AUDIOS;
 
-local FavoritesFolder = Instance.new("Folder", GUI)
-FavoritesFolder.Name = "Favorites"
-
 if not pcall(function() readfile(data_file) end) then
 	writefile(data_file, '[]')
 end
@@ -261,10 +258,8 @@ MainSortTypeButton.MouseButton1Click:connect(function()
 		MainSortType = 0
 		MainSortTypeButton.Text = "relevance"
 	end
-
-	-- VOUCH https://v3rmillion.net/member.php?action=profile&uid=159881	
-
 end)
+
 
 local FavoritesSortTypeButton = MainSortTypeButton:clone()
 FavoritesSortTypeButton.Parent = Frame
@@ -368,7 +363,7 @@ end
 
 function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	local Frame = Instance.new("Frame", SettingsScrollingFrame)
-	Frame.BackgroundTransparency = 1
+	Frame.BackgroundTransparency=1
 	local Box = Instance.new("TextBox", Frame)
 	addProperty(Box, {
 		TextSize = 14,
@@ -512,9 +507,6 @@ end)
 
 local importdeb=false
 
-local ToImport = {}
-
-
 importbtn.MouseButton1Click:connect(function()
 	if not importdeb then importdeb=true else return end
 	local file
@@ -540,7 +532,7 @@ importbtn.MouseButton1Click:connect(function()
 
 			if not AlreadyAdded then
 				totalAdded = totalAdded + 1
-				addToFavorites(table.concat(new, " "),tonumber(split[1]))
+				addToAudiosTable(table.concat(new, " "),tonumber(split[1]))
 			end
 		end
 	end
@@ -650,39 +642,12 @@ end
 	A-Z
 ]]
 
-function createButtons()
-	for i, audio in pairs(AUDIOS) do
-		createNew(FavoritesFolder, audio["Name"], audio["ID"])
-	end
-end
-
-function refreshFavoritesList()
-
-	local search_input = (favSearchTextBox.Text:lower() or '')
-
-	for i, button in pairs(FavoritesFolder:GetChildren()) do 
-		if string.find(button.Text, search_input) then
-			button.Visible = true
-			button.Parent = FavoritesScrollingFrame
-		end
-	end
-
-	for i, button in pairs(FavoritesScrollingFrame:GetChildren()) do 
-		if not string.find(button.Text, search_input) then
-			button.Visible = false
-			button.Parent = FavoritesFolder
-		end
-	end
-
-	for i, button in pairs(FavoritesScrollingFrame:GetChildren()) do 
-		button.Position = UDim2.new(0, 20, 0, (i-1)*20)
-	end
-
-
-    FavoritesScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, (#FavoritesScrollingFrame:GetChildren() * 20))
+function refreshFavoritesList() -- GUI Refresh
+	FavoritesScrollingFrame:ClearAllChildren()
+    FavoritesScrollingFrame.CanvasSize = UDim2.new(0,0,0,0)
     
+	local str = favSearchTextBox.Text
 
-	--[[
 	if FavoritesSortType == "A-Z" then
 		local new = {}
 
@@ -731,7 +696,7 @@ function refreshFavoritesList()
 			end
     	end
 
-	end]]
+	end
 end
 
 function addToAudiosTable(name, id)
@@ -747,9 +712,6 @@ function addToFavorites(name, id)
     addToAudiosTable(name,id)
 	
     SaveFavorites()
-
-	createNew(FavoritesFolder, name, id)
-
     refreshFavoritesList()
 
 	return true
@@ -763,12 +725,6 @@ function removeFromFavorites(id)
         end
     end
     SaveFavorites()
-	
-	local Button = FavoritesFolder:FindFirstChild(id) or FavoritesScrollingFrame:FindFirstChild(id)
-
-	if Button then
-		Button:Destroy()
-	end
 
     refreshFavoritesList() -- Update list on GUI
 
@@ -995,9 +951,7 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	    end
 	end)
 	
-	if Parent:IsA("ScrollingFrame") then
-		Parent.CanvasSize = Parent.CanvasSize + UDim2.new(0,0,0,20)
-	end
+	Parent.CanvasSize = Parent.CanvasSize + UDim2.new(0,0,0,20)
 end
 
 favSearchTextBox.Changed:connect(function(property)
@@ -1115,8 +1069,6 @@ function testAudio(id) -- not released
 
 	print(Sound.TimeLength)
 end
-
-createButtons()
 
 refreshFavoritesList()
 
