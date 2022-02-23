@@ -8,18 +8,20 @@ local GUI = Instance.new("ScreenGui", game.CoreGui)
 GUI.Name = ""
 getgenv().MjXRqQs7cjVu8 = GUI
 
+local LocalPlr = game:GetService("Players").LocalPlayer
 
 local PREVIEW_VOLUME = 1
 local FavoritesSortType = "new-old"
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 local page -- search / fav / settings
-local version = "1.7.6"
+local version = "1.8"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 local MainSortType = 3
 local onlineSearchLoadingResults = false
-local soundInstance;
-local AUDIOS;
+local soundInstance
+local playOnBoombox = false
+local AUDIOS
 
 if not pcall(function() readfile(data_file) end) then
 	writefile(data_file, '[]')
@@ -38,9 +40,9 @@ pcall(function()
 end)
 
 if AUDIOS == nil then -- if decoding didnt work
-	local FILENAME = ('corruptedAudioBrowserData_' .. os.time() .. ".txt")
+	local FILENAME = ('corruptedAudioData_' .. os.time() .. ".txt")
 	game.StarterGui:SetCore("SendNotification",{
-		Title = "AudioBrowser Error!";
+		Title = "Error!";
 		Text = ("Data file is corrupted, cloned: " .. FILENAME .. " , a new data file has been created"),
 		Duration = 5
 	})
@@ -145,7 +147,7 @@ addProperty(mainTextLabel, {
 	BorderSizePixel = 0,
 	Size = UDim2.new(0,386,0,18),
 	Font = 'SourceSansBold',
-	Text = "  Online Search",
+	Text = "  wavewhore・Online Search",
 	TextSize = 12,
 	TextXAlignment = Enum.TextXAlignment.Left
 })
@@ -178,7 +180,7 @@ FavoritesScrollingFrame.Parent = Frame
 local ScriptNameLabel = mainTextLabel:Clone()
 
 addProperty(ScriptNameLabel, {
-	Text = ("  AudioBrowser | v" .. version),
+	Text = ("  wavewhore・v" .. version),
 	Parent = Frame,
 	Visible = false
 })
@@ -390,14 +392,14 @@ end
 
 local FavoritesTextLabel = mainTextLabel:Clone()
 addProperty(FavoritesTextLabel, {
-	Text = "  Favorites",
+	Text = "  wavewhore・Favorites",
 	Parent = Frame,
 	Position = UDim2.new(0,0,0,0)
 }) 
 
 local SettingsIdTextLabel = mainTextLabel:Clone()
 addProperty(SettingsIdTextLabel, {
-	Text = "  Settings",
+	Text = "  wavewhore・Settings",
 	Parent = Frame,
 	Position = UDim2.new(0,0,0,0)
 }) 
@@ -405,6 +407,13 @@ addProperty(SettingsIdTextLabel, {
 addSettingsHeader("Search Settings")
 
 local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
+
+addSettingsText()
+
+addSettingsHeader("Play on Boombox")
+addSettingsText("Must hold boombox first")
+
+local playOnBoomboxButton = addSettingsButton("Disabled", 70)
 
 addSettingsText()
 
@@ -447,21 +456,18 @@ addSettingsText("Left Mouse Button: Preview")
 addSettingsText("Right Mouse Button: Set to clipboard")
 addSettingsText('Check the ★ to add the audio to your favorites!')
 
-local rbxAudioExample = addSettingsText('This is a Roblox Audio')
-rbxAudioExample.TextColor3 = Color3.new(0.5, 0.25, 0.25)
-local rbxAudioExample
+local rbxAudioExample = addSettingsText('This is a Roblox Audio')rbxAudioExample.TextColor3 = Color3.new(0.5, 0.25, 0.25)local rbxAudioExample
 
 addSettingsText('This is not a Roblox Audio')
 
 addSettingsText()
 
 local ClearAudioListData = addSettingsButton("Clear Data", 100)
-ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)
-ClearAudioListData.BorderColor3 = Color3.new(0.5, 0.25, 0.25)
+ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)ClearAudioListData.BorderColor3 = Color3.new(0.5, 0.25, 0.25)
 
 addSettingsText()
 
-addSettingsHeader("Made by xxCloudd  |  AudioBrowser v"..version)
+addSettingsHeader("Made by xxCloudd・wavewhore v"..version)
 
 ShowRobloxAudiosButton.MouseButton1Click:connect(function()
 	if showrobloxaudios == false then
@@ -472,6 +478,16 @@ ShowRobloxAudiosButton.MouseButton1Click:connect(function()
 		ShowRobloxAudiosButton.Text = "Show Roblox Audios: OFF"
 	end
 	refreshFavoritesList()
+end)
+
+playOnBoomboxButton.MouseButton1Click:connect(function()
+	if not playOnBoombox then
+		playOnBoombox = true
+		playOnBoomboxButton.Text = "Enabled"
+	else
+		playOnBoombox = false
+		playOnBoomboxButton.Text = "Disabled"
+	end
 end)
 
 ClearAudioListData.MouseButton1Click:connect(function()
@@ -845,25 +861,39 @@ function isFavorited(id)
 end
 
 function playAudio(id)
-	if soundInstance then
-		if soundInstance.SoundId == "rbxassetid://" .. id then
+	if playOnBoombox == true then
+		if soundInstance then
 			soundInstance:Destroy()
 			soundInstance = nil
-			return "StopSound"
-		else
-			soundInstance:Destroy()
+		end
+		if LocalPlr.Character then 
+			local boombox = LocalPlr.Character:FindFirstChildOfClass("Tool")
+			if boombox and boombox:FindFirstChildOfClass("RemoteEvent") then
+				boombox:FindFirstChildOfClass("RemoteEvent"):FireServer("PlaySong", id)
+			end
+		end
+		return "StopSound"
+	else
+		if soundInstance then
+			if soundInstance.SoundId == "rbxassetid://" .. id then
+				soundInstance:Destroy()
+				soundInstance = nil
+				return "StopSound"
+			else
+				soundInstance:Destroy()
+				soundInstance = Instance.new("Sound", GUI)
+				soundInstance.Volume = PREVIEW_VOLUME
+				soundInstance.SoundId = "rbxassetid://" .. id
+				soundInstance.Looped = true
+				soundInstance:Play()
+			end
+		elseif (not soundInstance) or (not soundInstance.SoundId == "rbxassetid://" .. id) then
 			soundInstance = Instance.new("Sound", GUI)
 			soundInstance.Volume = PREVIEW_VOLUME
 			soundInstance.SoundId = "rbxassetid://" .. id
 			soundInstance.Looped = true
 			soundInstance:Play()
 		end
-	elseif (not soundInstance) or (not soundInstance.SoundId == "rbxassetid://" .. id) then
-		soundInstance = Instance.new("Sound", GUI)
-		soundInstance.Volume = PREVIEW_VOLUME
-		soundInstance.SoundId = "rbxassetid://" .. id
-		soundInstance.Looped = true
-		soundInstance:Play()
 	end
 end
 
@@ -930,7 +960,7 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	
 	btn.MouseButton2Click:connect(function()
 		btn.Text = '  Set Id to clipboard'
-		setclipboard(id)
+		setclipboard(tostring(id))
 		wait(0.3)
 		btn.Text = ("  " .. txt)
 	end)
@@ -1061,7 +1091,7 @@ MainTextBox.FocusLost:connect(function(enter)
 end)
 
 function testAudio(id) -- not released
-	local Sound = Instance.new("Sound", game.Players.LocalPlayer)
+	local Sound = Instance.new("Sound", LocalPlr)
 	Sound.Volume = 0
 	Sound.SoundId = id
 
