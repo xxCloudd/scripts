@@ -447,10 +447,6 @@ local exportbtn = addSettingsButton("Export audios to /workspace/",200)
 
 addSettingsText()
 
-addSettingsHeader("Other")
-
-addSettingsText()
-
 addSettingsHeader("How do I use this GUI?")
 addSettingsText("Left Mouse Button: Preview / Boombox")
 addSettingsText("Right Mouse Button: Set to clipboard")
