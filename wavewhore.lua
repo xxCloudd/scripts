@@ -452,7 +452,7 @@ addSettingsHeader("Other")
 addSettingsText()
 
 addSettingsHeader("How do I use this GUI?")
-addSettingsText("Left Mouse Button: Preview")
+addSettingsText("Left Mouse Button: Preview / Boombox")
 addSettingsText("Right Mouse Button: Set to clipboard")
 addSettingsText('Check the ★ to add the audio to your favorites!')
 
