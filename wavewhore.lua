@@ -5,22 +5,20 @@ if getgenv().MjXRqQs7cjVu8 then -- reload
 end
 
 local GUI = Instance.new("ScreenGui", game.CoreGui) 
-GUI.Name = ""
+GUI.Name = "wave・whore"
 getgenv().MjXRqQs7cjVu8 = GUI
+
 
 local LocalPlr = game:GetService("Players").LocalPlayer
 
-local PREVIEW_VOLUME = 1
-local FavoritesSortType = "new-old"
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
-local page -- search / fav / settings
-local version = "1.8"
+
+local version = "1.8.1"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
-local MainSortType = 3
-local onlineSearchLoadingResults = false
+
 local soundInstance
-local playOnBoombox = false
+local page
 local AUDIOS
 
 if not pcall(function() readfile(data_file) end) then
@@ -56,14 +54,30 @@ end
 
 SaveFavorites()
 
+
+local OnlineSearchPage = Instance.new("Flag", GUI)
+local FavoritesPage = Instance.new("Flag", GUI)
+local SettingsPage = Instance.new("Flag", GUI)
+
+OnlineSearchPage.Name = "OnlineSearchPage"
+FavoritesPage.Name = "FavoritesPage"
+SettingsPage.Name = "SettingsPage"
+
 local Frame = Instance.new("Frame", GUI)
-local CloseButton = Instance.new("TextButton", Frame)
-local MainTextBox = Instance.new("TextBox", Frame)
-local MainScrollingFrame = Instance.new("ScrollingFrame", Frame)
-local mainTextLabel = Instance.new("TextLabel", Frame)
+Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 5)
+
+local FrameButtons = Instance.new("Folder", Frame)
+FrameButtons.Name = "FrameButtons"
+
+local CloseButton = Instance.new("TextButton", FrameButtons)
+local MainTextBox = Instance.new("TextBox", OnlineSearchPage)
+local MainScrollingFrame = Instance.new("ScrollingFrame", OnlineSearchPage)
+local PageLabel = Instance.new("TextLabel", FrameButtons)
 local window_width = 350
 
-Instance.new("UICorner",Frame).CornerRadius = UDim.new(0, 5)
+
+
+
 
 function addProperty(instance, properties)
 	for i, v in pairs(properties) do
@@ -85,7 +99,7 @@ addProperty(Frame, {
 	BorderColor3 = Color3.fromRGB(120,120,120),
 	BackgroundTransparency=0,
 	BorderSizePixel=0,
-	Name='',
+	Name = 'MainFrame',
 	Size=UDim2.new(0,window_width,0,183)
 })
 
@@ -99,7 +113,7 @@ addProperty(CloseButton, {
 	Size = UDim2.new(0,18,0,18),
 	Font = 'SourceSansBold',
 	Text = 'X',
-	Name = '',
+	Name = 'CloseButton',
 	TextColor3 = Color3.fromRGB(200,200,200),
 	TextSize = 14,
 	AutoButtonColor=false
@@ -121,7 +135,7 @@ addProperty(MainTextBox, {
 	ClearTextOnFocus = false,
 	TextWrapped = true,
 	Font = 'SourceSansSemibold',
-	Name = ''
+	Name = 'OnlineSearchTextBox'
 })
 
 addProperty(MainScrollingFrame, {
@@ -135,14 +149,14 @@ addProperty(MainScrollingFrame, {
 	TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
 	ScrollBarImageColor3 = Color3.fromRGB(100,100,100),
 	CanvasSize = UDim2.new(0,0,0,0),
-	Name = ''
+	Name = 'OnlineSearchScrollingFrame'
 })
 
-addProperty(mainTextLabel, {
+addProperty(PageLabel, {
 	TextStrokeTransparency = .5,
 	TextColor3 = Color3.fromRGB(200,200,200),
 	BackgroundColor3 = Color3.fromRGB(255,255,255),
-	Name = '',
+	Name = 'PageLabel',
 	BackgroundTransparency = 1,
 	BorderSizePixel = 0,
 	Size = UDim2.new(0,386,0,18),
@@ -157,8 +171,8 @@ Frame.Position = UDim2.new(-1, 0, .5, -(Frame.Size.Y.Offset/2))
 local minimizeButton = CloseButton:clone()
 
 addProperty(minimizeButton, {
-	Name = '',
-	Parent = Frame,
+	Name = 'MinimizeButton',
+	Parent = FrameButtons,
 	Text = '—',
 	Position = UDim2.new(1,-36,0,0)
 })
@@ -166,39 +180,34 @@ addProperty(minimizeButton, {
 local favButton = minimizeButton:clone()
 
 addProperty(favButton, {
-	Parent = Frame,
+	Parent = FrameButtons,
 	TextScaled = false,
 	TextSize = 17,
+	Name = 'FavoritesPageButton',
 	TextYAlignment = 'Top',
 	Text = '★',
 	Position = UDim2.new(1,(-18)*4,0,0)
 })
 
 local FavoritesScrollingFrame = MainScrollingFrame:clone()
-FavoritesScrollingFrame.Parent = Frame
-
-local ScriptNameLabel = mainTextLabel:Clone()
-
-addProperty(ScriptNameLabel, {
-	Text = ("  wavewhore・v" .. version),
-	Parent = Frame,
-	Visible = false
-})
+FavoritesScrollingFrame.Parent = FavoritesPage
+FavoritesScrollingFrame.Name = "FavoritesScrollingFrame"
 
 local SettingsButton = minimizeButton:clone()
 
 addProperty(SettingsButton, {
-	Parent = Frame,
+	Parent = FrameButtons,
 	Text = 'S',
+	Name = 'SettingsPageButton',
 	Font = 'SourceSansSemibold',
 	Position = UDim2.new(1,(-18)*5,0,0)
 })
 
-local searchButton = Instance.new("ImageButton", Frame)
+local searchButton = Instance.new("ImageButton", FrameButtons)
 
 addProperty(searchButton, {
 	Active = false,
-	Name = '',
+	Name = 'OnlineSearchPageButton',
 	Image = "rbxassetid://3229239834",
 	Size = UDim2.new(0,19,0,18),
 	BackgroundTransparency = 1,
@@ -208,11 +217,14 @@ addProperty(searchButton, {
 local favSearchTextBox = MainTextBox:clone()
 
 addProperty(favSearchTextBox, {
-	Parent = Frame,
-	PlaceholderText = "Search Favorites"
+	Parent = FavoritesPage,
+	PlaceholderText = "Search Favorites",
+	Name = "FavoritesTextBox"
 })
 
-local MainSortTypeButton = Instance.new("TextButton", Frame)
+local FavoritesSortType = "new-old"
+
+local MainSortTypeButton = Instance.new("TextButton", OnlineSearchPage)
 
 addProperty(MainSortTypeButton, {
 	Text = FavoritesSortType,
@@ -225,24 +237,14 @@ addProperty(MainSortTypeButton, {
 	TextColor3 = Color3.fromRGB(140,140,140),
 	AutoButtonColor = false,
 	BorderMode = "Inset",
+	Text = 'revelance',
+	Name = 'OnlineSearchSortTypeButton',
 	TextSize = 14,
 	TextStrokeTransparency = 0.5,
 	Active = false
 })
 
-if MainSortType == 0 then
-	MainSortType = 1
-	MainSortTypeButton.Text = "most fav"
---elseif MainSortType == 1 then
-	--	MainSortType = 2
-	--	MainSortTypeButton.Text = "Bestselling"
-elseif MainSortType == 1 then
-	MainSortType = 3
-	MainSortTypeButton.Text = "recent"
-else
-	MainSortType = 0
-	MainSortTypeButton.Text = "relevance"
-end
+local MainSortType = 3
 
 MainSortTypeButton.MouseButton1Click:connect(function()
 	local txt = MainSortTypeButton.Text
@@ -250,9 +252,6 @@ MainSortTypeButton.MouseButton1Click:connect(function()
 	if MainSortType == 0 then
 		MainSortType = 1
 		MainSortTypeButton.Text = "most fav"
-	--elseif MainSortType == 1 then
-	--	MainSortType = 2
-	--	MainSortTypeButton.Text = "Bestselling"
 	elseif MainSortType == 1 then
 		MainSortType = 3
 		MainSortTypeButton.Text = "recent"
@@ -264,7 +263,8 @@ end)
 
 
 local FavoritesSortTypeButton = MainSortTypeButton:clone()
-FavoritesSortTypeButton.Parent = Frame
+FavoritesSortTypeButton.Parent = FavoritesPage
+FavoritesSortTypeButton.Name = "FavoritesSortTypeButton"
 FavoritesSortTypeButton.Text = FavoritesSortType
 
 FavoritesSortTypeButton.MouseButton1Click:connect(function()
@@ -286,7 +286,8 @@ end)
 local SettingsScrollingFrame = MainScrollingFrame:clone()
 
 addProperty(SettingsScrollingFrame, {
-	Parent = Frame,
+	Parent = SettingsPage,
+	Name = "SettingsScrollingFrame",
 	Position = UDim2.new(0,0,0,20),
 	Size = UDim2.new(1,0,1,-20)
 })
@@ -295,7 +296,6 @@ local SettingsUIGridLayout = Instance.new("UIGridLayout", SettingsScrollingFrame
 
 addProperty(SettingsUIGridLayout, {
 	SortOrder = "LayoutOrder",
-	Name = "",
 	CellPadding = UDim2.new(0,0,0,0),
 	CellSize = UDim2.new(1,0,0,20)
 })
@@ -389,21 +389,6 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	return Box
 end
 
-
-local FavoritesTextLabel = mainTextLabel:Clone()
-addProperty(FavoritesTextLabel, {
-	Text = "  wavewhore・Favorites",
-	Parent = Frame,
-	Position = UDim2.new(0,0,0,0)
-}) 
-
-local SettingsIdTextLabel = mainTextLabel:Clone()
-addProperty(SettingsIdTextLabel, {
-	Text = "  wavewhore・Settings",
-	Parent = Frame,
-	Position = UDim2.new(0,0,0,0)
-}) 
-
 addSettingsHeader("Search Settings")
 
 local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
@@ -475,6 +460,8 @@ ShowRobloxAudiosButton.MouseButton1Click:connect(function()
 	end
 	refreshFavoritesList()
 end)
+
+local playOnBoombox = false
 
 playOnBoomboxButton.MouseButton1Click:connect(function()
 	if not playOnBoombox then
@@ -596,46 +583,44 @@ SettingsIdAddButton.MouseButton1Click:connect(function()
 	SettingsIdAddButton.Text = "Save to Favorites"
 end)
 
-local Pages = {
-	Search = {mainTextLabel, MainScrollingFrame, MainTextBox, MainSortTypeButton},
-	Favorites = {FavoritesTextLabel, favSearchTextBox, FavoritesScrollingFrame, FavoritesSortTypeButton},
-	Settings = {SettingsScrollingFrame, SettingsIdTextLabel}
-}
+local Pages = {}
 
-local oldBooleans = {}
+for _, page in pairs(GUI:GetChildren()) do
+    if page:IsA("Flag") then
+        Pages[page.Name] = {}
+        for i, page_content in pairs(page:GetChildren()) do
+            Pages[page.Name][i] = page_content
+        end
+    end
+end
+
+local oldpage
 
 minimizeButton.MouseButton1Click:connect(function()
     if Frame.Size == UDim2.new(0, window_width, 0, 183) then
-
-        for i, GUIElement in pairs(Frame:GetChildren())do
-            if GUIElement ~= CloseButton and GUIElement ~= minimizeButton and GUIElement ~= ScriptNameLabel and not GUIElement:IsA('UICorner') then
-				table.insert(oldBooleans, {
-                	Element = GUIElement,
-                	Bool = GUIElement.Visible
-                })
-
-                GUIElement.Visible = false
-            end
-        end
-
-        ScriptNameLabel.Visible = true
-
-        tween(Frame, .2, {
+        oldpage = page
+        
+        showPage()
+        page = nil
+        
+        SettingsButton.Visible = false
+        searchButton.Visible = false
+        favButton.Visible = false
+        
+        tween(Frame, .15, {
 			Size = UDim2.new(0,window_width,0,18)
 		})
 
     elseif Frame.Size == UDim2.new(0, window_width, 0, 18) then
-        ScriptNameLabel.Visible = false
-
-        tween(Frame, .2, {
+        tween(Frame, .15, {
 			Size = UDim2.new(0, window_width, 0, 183)
 		})
-
-        for i, GUIElement in pairs(oldBooleans) do
-            GUIElement["Element"].Visible = GUIElement["Bool"]
-        end
-
-        oldBooleans = {}
+		
+		SettingsButton.Visible = true
+        searchButton.Visible = true
+        favButton.Visible = true
+		
+		showPage(oldpage)
     end
 end)
 
@@ -742,41 +727,52 @@ function removeFromFavorites(id)
 
 end
 
-function showPage(pg)
+function showPage(page_to_show)
 
-	if page == pg then return end
-
-	local function viewContent(pg, Bool)
-		for i,v in pairs(Pages[pg]) do 
-			v.Visible = Bool
+	if page == page_to_show then return end
+	    
+	local function viewContent(page_to_show, Bool)
+		for i, page_content in pairs(Pages[page_to_show]) do 
+		    if Bool == true then
+		        page_content.Parent = Frame
+		    else
+		        page_content.Parent = GUI[page_to_show]
+		    end
 		end
 	end
 
-	viewContent("Search", false)
-	viewContent("Favorites", false)
-	viewContent("Settings", false)
+	viewContent("OnlineSearchPage", false)
+	viewContent("FavoritesPage", false)
+	viewContent("SettingsPage", false)
 
-	if pg == "search" then
-		viewContent("Search", true)
-	elseif pg == "fav" then
-		viewContent("Favorites", true)
-	elseif pg == "settings" then
-		viewContent("Settings", true)
+    if page_to_show == nil then
+        PageLabel.Text = ("  wavewhore・v" .. version)
+        return
+    end
+
+    viewContent(page_to_show, true)
+
+	if page_to_show == "OnlineSearchPage" then
+		PageLabel.Text = "  wavewhore・Online Search"
+	elseif page_to_show == "FavoritesPage" then
+		PageLabel.Text = "  wavewhore・Favorites"
+	elseif page_to_show == "SettingsPage" then
+		PageLabel.Text = "  wavewhore・Settings"
 	end
 
-	page = pg
+	page = page_to_show
 end
 
 favButton.MouseButton1Click:connect(function()
-	showPage("fav")
+	showPage("FavoritesPage")
 end)
 
 searchButton.MouseButton1Click:connect(function()
-	showPage("search")
+	showPage("OnlineSearchPage")
 end)
 
 SettingsButton.MouseButton1Click:connect(function()
-	showPage("settings")
+	showPage("SettingsPage")
 end)
 
 --// frame drag
@@ -878,14 +874,14 @@ function playAudio(id)
 			else
 				soundInstance:Destroy()
 				soundInstance = Instance.new("Sound", GUI)
-				soundInstance.Volume = PREVIEW_VOLUME
+				soundInstance.Volume = 1
 				soundInstance.SoundId = "rbxassetid://" .. id
 				soundInstance.Looped = true
 				soundInstance:Play()
 			end
 		elseif (not soundInstance) or (not soundInstance.SoundId == "rbxassetid://" .. id) then
 			soundInstance = Instance.new("Sound", GUI)
-			soundInstance.Volume = PREVIEW_VOLUME
+			soundInstance.Volume = 1
 			soundInstance.SoundId = "rbxassetid://" .. id
 			soundInstance.Looped = true
 			soundInstance:Play()
@@ -1007,6 +1003,8 @@ function Search(search, PageNumber)
 	return DecodedResults
 end
 
+local onlineSearchLoadingResults = false
+
 MainTextBox.FocusLost:connect(function(enter)
 	if enter then
 		local search = MainTextBox.Text
@@ -1098,6 +1096,6 @@ end
 
 refreshFavoritesList()
 
-showPage("fav")
+showPage("FavoritesPage")
 
 tween(Frame, .25, {Position = UDim2.new(0, 10, .5, -(Frame.Size.Y.Offset / 2))})
