@@ -8,6 +8,9 @@ local GUI = Instance.new("ScreenGui", game.CoreGui)
 GUI.Name = "wave・whore"
 getgenv().MjXRqQs7cjVu8 = GUI
 
+if syn then
+syn.protect_gui(GUI)
+end
 
 local LocalPlr = game:GetService("Players").LocalPlayer
 
@@ -964,6 +967,10 @@ function createNew(Parent, txt, id, isARobloxAudio)
 		
 		if Play ~= "StopSound" then
 			tween(btn, .1, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
+		elseif playOnBoombox == true and Play == "StopSound" then
+		    tween(btn, .1, {BackgroundColor3 = Color3.fromRGB(35, 35, 35)})
+		    wait(.1)
+		    tween(btn, .1, {BackgroundColor3 = Color3.fromRGB(25, 25, 25)})
 		end
 	end)
 	
