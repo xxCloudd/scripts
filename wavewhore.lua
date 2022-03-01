@@ -607,7 +607,9 @@ local closedGUI = false
 local closeDeb = false
 
 minimizeButton.MouseButton1Click:connect(function()
-    if not closedGUI and not closeDeb then
+	if closeDeb then return end
+
+    if not closedGUI then
         closeDeb = true
         
         oldpage = page
@@ -625,7 +627,7 @@ minimizeButton.MouseButton1Click:connect(function()
         wait(.15)
         closeDeb = false
         closedGUI = true
-    elseif closedGUI and not closeDeb then
+    else
         closeDeb = true
         tween(Frame, .15, {
 			Size = UDim2.new(0, window_width, 0, 175)
