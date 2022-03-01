@@ -106,7 +106,7 @@ addProperty(Frame, {
 	BackgroundTransparency=0,
 	BorderSizePixel=0,
 	Name = 'MainFrame',
-	Size=UDim2.new(0,window_width,0,183)
+	Size=UDim2.new(0,window_width,0,175)
 })
 
 addProperty(CloseButton, {
@@ -148,15 +148,15 @@ addProperty(MainScrollingFrame, {
 	BackgroundColor3 = Color3.fromRGB(0,0,0),
 	BackgroundTransparency = 0.9,
 	BorderColor3 = Color3.fromRGB(60, 60, 60),
-	Position = UDim2.new(0,0,0.196721315,0),
-	Size = UDim2.new(1,0,0,147),
-	ScrollBarThickness = 4,
+	Size = UDim2.new(1,0,0,175-36),
+	ScrollBarThickness = 6,
 	BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
 	TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
 	ScrollBarImageColor3 = Color3.fromRGB(100,100,100),
 	CanvasSize = UDim2.new(0,0,0,0),
 	Name = 'OnlineSearchScrollingFrame'
 })
+MainScrollingFrame.Position = UDim2.new(0,0,1,-MainScrollingFrame.Size.Y.Offset)
 
 addProperty(PageLabel, {
 	TextStrokeTransparency = .5,
