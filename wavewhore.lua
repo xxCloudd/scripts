@@ -603,7 +603,7 @@ end
 local oldpage
 
 minimizeButton.MouseButton1Click:connect(function()
-    if Frame.Size == UDim2.new(0, window_width, 0, 183) then
+    if Frame.Size == UDim2.new(0, window_width, 0, 175) then
         oldpage = page
         
         showPage()
@@ -612,16 +612,16 @@ minimizeButton.MouseButton1Click:connect(function()
         SettingsButton.Visible = false
         searchButton.Visible = false
         favButton.Visible = false
-        
+        wait(.2)
         tween(Frame, .15, {
 			Size = UDim2.new(0,window_width,0,18)
 		})
 
     elseif Frame.Size == UDim2.new(0, window_width, 0, 18) then
         tween(Frame, .15, {
-			Size = UDim2.new(0, window_width, 0, 183)
+			Size = UDim2.new(0, window_width, 0, 175)
 		})
-		
+		wait(.2)
 		SettingsButton.Visible = true
         searchButton.Visible = true
         favButton.Visible = true
