@@ -602,8 +602,14 @@ end
 
 local oldpage
 
+
+local closedGUI = false
+local closeDeb = false
+
 minimizeButton.MouseButton1Click:connect(function()
-    if Frame.Size == UDim2.new(0, window_width, 0, 175) then
+    if not closedGUI and not closeDeb then
+        closeDeb = true
+        
         oldpage = page
         
         showPage()
@@ -616,8 +622,11 @@ minimizeButton.MouseButton1Click:connect(function()
         tween(Frame, .15, {
 			Size = UDim2.new(0,window_width,0,18)
 		})
-
-    elseif Frame.Size == UDim2.new(0, window_width, 0, 18) then
+        wait(.15)
+        closeDeb = false
+        closedGUI = true
+    elseif closedGUI and not closeDeb then
+        closeDeb = true
         tween(Frame, .15, {
 			Size = UDim2.new(0, window_width, 0, 175)
 		})
@@ -627,6 +636,8 @@ minimizeButton.MouseButton1Click:connect(function()
         favButton.Visible = true
 		
 		showPage(oldpage)
+		closeDeb = false
+		closedGUI = false
     end
 end)
 
