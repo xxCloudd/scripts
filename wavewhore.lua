@@ -77,7 +77,15 @@ FrameButtons.Name = "FrameButtons"
 
 local CloseButton = Instance.new("TextButton", FrameButtons)
 local MainTextBox = Instance.new("TextBox", OnlineSearchPage)
-local MainScrollingFrame = Instance.new("ScrollingFrame", OnlineSearchPage)
+
+local frameMainScrollingFrame = Instance.new("Frame", OnlineSearchPage)
+frameMainScrollingFrame.Name = "FrameMainScrollingFrame"
+frameMainScrollingFrame.Size = UDim2.new(1,0,0,175-36)
+frameMainScrollingFrame.Position = UDim2.new(0,0,1,-frameMainScrollingFrame.Size.Y.Offset)
+frameMainScrollingFrame.BackgroundTransparency = 1
+
+local MainScrollingFrame = Instance.new("ScrollingFrame", frameMainScrollingFrame)
+
 local PageLabel = Instance.new("TextLabel", FrameButtons)
 local window_width = 350
 
@@ -101,6 +109,7 @@ function clearMainList()
 end
 
 addProperty(Frame, {
+    Active = true,
 	BackgroundColor3 = Color3.fromRGB(25,25,25),
 	BorderColor3 = Color3.fromRGB(120,120,120),
 	BackgroundTransparency=0,
@@ -148,15 +157,15 @@ addProperty(MainScrollingFrame, {
 	BackgroundColor3 = Color3.fromRGB(0,0,0),
 	BackgroundTransparency = 0.9,
 	BorderColor3 = Color3.fromRGB(60, 60, 60),
-	Size = UDim2.new(1,0,0,175-36),
+	Size = frameMainScrollingFrame.Size,
 	ScrollBarThickness = 6,
+	ScrollingEnabled = false,
 	BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
 	TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
 	ScrollBarImageColor3 = Color3.fromRGB(100,100,100),
 	CanvasSize = UDim2.new(0,0,0,0),
 	Name = 'OnlineSearchScrollingFrame'
 })
-MainScrollingFrame.Position = UDim2.new(0,0,1,-MainScrollingFrame.Size.Y.Offset)
 
 addProperty(PageLabel, {
 	TextStrokeTransparency = .5,
@@ -195,8 +204,9 @@ addProperty(favButton, {
 	Position = UDim2.new(1,(-18)*4,0,0)
 })
 
-local FavoritesScrollingFrame = MainScrollingFrame:clone()
-FavoritesScrollingFrame.Parent = FavoritesPage
+local frameFavoritesScrollingFrame = frameMainScrollingFrame:clone()
+frameFavoritesScrollingFrame.Parent = FavoritesPage
+local FavoritesScrollingFrame = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
 FavoritesScrollingFrame.Name = "FavoritesScrollingFrame"
 
 local SettingsButton = minimizeButton:clone()
@@ -289,13 +299,16 @@ FavoritesSortTypeButton.MouseButton1Click:connect(function()
 	refreshFavoritesList()
 end)
 
-local SettingsScrollingFrame = MainScrollingFrame:clone()
+local frameSettingsScrollingFrame = frameMainScrollingFrame:clone()
+frameSettingsScrollingFrame.Parent = SettingsPage
+frameSettingsScrollingFrame.Size = UDim2.new(1,0,1,-20)
+frameSettingsScrollingFrame.Position = UDim2.new(0,0,0,20)
+
+local SettingsScrollingFrame = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
 
 addProperty(SettingsScrollingFrame, {
-	Parent = SettingsPage,
 	Name = "SettingsScrollingFrame",
-	Position = UDim2.new(0,0,0,20),
-	Size = UDim2.new(1,0,1,-20)
+	Size = UDim2.new(1,0,1,0)
 })
 
 local SettingsUIGridLayout = Instance.new("UIGridLayout", SettingsScrollingFrame)
@@ -1119,6 +1132,36 @@ MainTextBox.FocusLost:connect(function(enter)
 		onlineSearchLoadingResults = false
 		MainTextBox.TextEditable = true
 	end
+end)
+
+frameMainScrollingFrame.MouseWheelForward:connect(function()
+    local scrollF = frameMainScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0,40)
+end)
+
+frameMainScrollingFrame.MouseWheelBackward:connect(function()
+    local scrollF = frameMainScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0,40)
+end)
+
+frameFavoritesScrollingFrame.MouseWheelForward:connect(function()
+    local scrollF = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0,40)
+end)
+
+frameFavoritesScrollingFrame.MouseWheelBackward:connect(function()
+    local scrollF = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0,40)
+end)
+
+frameSettingsScrollingFrame.MouseWheelForward:connect(function()
+    local scrollF = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0,20)
+end)
+
+frameSettingsScrollingFrame.MouseWheelBackward:connect(function()
+    local scrollF = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0,20)
 end)
 
 function testAudio(id) -- not released
