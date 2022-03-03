@@ -206,6 +206,8 @@ addProperty(favButton, {
 
 local frameFavoritesScrollingFrame = frameMainScrollingFrame:clone()
 frameFavoritesScrollingFrame.Parent = FavoritesPage
+frameFavoritesScrollingFrame.Name = "FrameFavoritesScrollingFrame"
+
 local FavoritesScrollingFrame = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
 FavoritesScrollingFrame.Name = "FavoritesScrollingFrame"
 
@@ -303,6 +305,7 @@ local frameSettingsScrollingFrame = frameMainScrollingFrame:clone()
 frameSettingsScrollingFrame.Parent = SettingsPage
 frameSettingsScrollingFrame.Size = UDim2.new(1,0,1,-20)
 frameSettingsScrollingFrame.Position = UDim2.new(0,0,0,20)
+frameSettingsScrollingFrame.Name = "FrameSettingsScrollingFrame"
 
 local SettingsScrollingFrame = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
 
