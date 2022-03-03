@@ -243,14 +243,14 @@ addProperty(MainSortTypeButton, {
 	TextColor3 = Color3.fromRGB(140,140,140),
 	AutoButtonColor = false,
 	BorderMode = "Inset",
-	Text = 'revelance',
+	Text = 'relevance',
 	Name = 'OnlineSearchSortTypeButton',
 	TextSize = 14,
 	TextStrokeTransparency = 0.5,
 	Active = false
 })
 
-local MainSortType = 3
+local MainSortType = 0
 
 MainSortTypeButton.MouseButton1Click:connect(function()
 	local txt = MainSortTypeButton.Text
