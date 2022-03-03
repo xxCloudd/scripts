@@ -83,15 +83,29 @@ frameMainScrollingFrame.Name = "FrameMainScrollingFrame"
 frameMainScrollingFrame.Size = UDim2.new(1,0,0,175-36)
 frameMainScrollingFrame.Position = UDim2.new(0,0,1,-frameMainScrollingFrame.Size.Y.Offset)
 frameMainScrollingFrame.BackgroundTransparency = 1
+frameMainScrollingFrame.ClipsDescendants = true
+
+local fakeScroll = Instance.new("ScrollingFrame", frameMainScrollingFrame)
+
+fakeScroll.Size = UDim2.new(0,10,1,0)
+fakeScroll.BackgroundColor3 = Color3.fromRGB(25,25,25)
+fakeScroll.ZIndex=2
+
+fakeScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+fakeScroll.ScrollBarThickness = 10
+fakeScroll.Position = UDim2.new(1,-10,0,0)
+fakeScroll.BorderSizePixel = 1
+fakeScroll.ScrollingDirection = "Y"
+fakeScroll.BorderColor3 = Color3.fromRGB(60,60,60)
+fakeScroll.ScrollBarImageColor3 = Color3.fromRGB(120, 120, 120)
+fakeScroll.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+fakeScroll.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+fakeScroll.Name = "FakeScroll"
 
 local MainScrollingFrame = Instance.new("ScrollingFrame", frameMainScrollingFrame)
 
 local PageLabel = Instance.new("TextLabel", FrameButtons)
 local window_width = 350
-
-
-
-
 
 function addProperty(instance, properties)
 	for i, v in pairs(properties) do
@@ -106,6 +120,7 @@ end
 function clearMainList()
     MainScrollingFrame:ClearAllChildren()
     MainScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    --Parent.Parent.FakeScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 end
 
 addProperty(Frame, {
@@ -158,7 +173,7 @@ addProperty(MainScrollingFrame, {
 	BackgroundTransparency = 0.9,
 	BorderColor3 = Color3.fromRGB(60, 60, 60),
 	Size = frameMainScrollingFrame.Size,
-	ScrollBarThickness = 6,
+	ScrollBarThickness = 0,
 	ScrollingEnabled = false,
 	BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
 	TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png",
@@ -208,7 +223,15 @@ local frameFavoritesScrollingFrame = frameMainScrollingFrame:clone()
 frameFavoritesScrollingFrame.Parent = FavoritesPage
 frameFavoritesScrollingFrame.Name = "FrameFavoritesScrollingFrame"
 
-local FavoritesScrollingFrame = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+function getActualScrollingFrame(frame)
+    for i,v in pairs(frame:GetChildren()) do 
+        if v:isA("ScrollingFrame") and v.Name ~= "FakeScroll" then
+            return v
+        end
+    end
+end
+
+local FavoritesScrollingFrame = getActualScrollingFrame(frameFavoritesScrollingFrame)
 FavoritesScrollingFrame.Name = "FavoritesScrollingFrame"
 
 local SettingsButton = minimizeButton:clone()
@@ -307,7 +330,7 @@ frameSettingsScrollingFrame.Size = UDim2.new(1,0,1,-20)
 frameSettingsScrollingFrame.Position = UDim2.new(0,0,0,20)
 frameSettingsScrollingFrame.Name = "FrameSettingsScrollingFrame"
 
-local SettingsScrollingFrame = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
+local SettingsScrollingFrame = getActualScrollingFrame(frameSettingsScrollingFrame)
 
 addProperty(SettingsScrollingFrame, {
 	Name = "SettingsScrollingFrame",
@@ -324,6 +347,7 @@ addProperty(SettingsUIGridLayout, {
 
 function refreshSettingsScrollingFrameCanvas()
 	SettingsScrollingFrame.CanvasSize = UDim2.new(0,0,0,(#SettingsScrollingFrame:GetChildren()*20)-20)
+	--SettingsScrollingFrame.Parent.FakeScroll.CanvasSize = UDim2.new(0,0,0,(#SettingsScrollingFrame:GetChildren()*20)-20)
 end
 
 function addSettingsHeader(TEXT)
@@ -410,6 +434,56 @@ function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
 	refreshSettingsScrollingFrameCanvas()
 	return Box
 end
+
+
+function scrlup(scrollF, i)
+    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0, i)
+end
+function scrldn(scrollF, i)
+    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0, i)
+end
+
+function scrollButtons(frame)
+    
+    local scrollF = getActualScrollingFrame(frame)
+    local fakeScroll = frame.FakeScroll
+    
+    function updateFakeScroll()
+        fakeScroll.CanvasSize = scrollF.CanvasSize
+        fakeScroll.CanvasPosition =  scrollF.CanvasPosition
+    end
+    
+    scrollF:GetPropertyChangedSignal("CanvasSize"):connect(updateFakeScroll)
+    scrollF:GetPropertyChangedSignal("CanvasPosition"):connect(updateFakeScroll)
+    
+    fakeScroll:GetPropertyChangedSignal("CanvasPosition"):connect(function()
+        scrollF.CanvasPosition = frame.FakeScroll.CanvasPosition
+    end)
+    
+    frame.MouseWheelForward:connect(function()
+        scrlup(scrollF, 40)
+        wait(.05)
+    end)
+    frame.MouseWheelBackward:connect(function()
+        scrldn(scrollF, 40)
+        wait(.05)
+    end)
+    
+    
+    local function u()
+        scrlup(scrollF, 20)
+        wait(.025)
+    end
+    local function d()
+        scrldn(scrollF, 20)
+        wait(.025)
+    end
+end
+
+scrollButtons(frameMainScrollingFrame)
+scrollButtons(frameFavoritesScrollingFrame)
+scrollButtons(frameSettingsScrollingFrame)
+
 
 addSettingsHeader("Search Settings")
 
@@ -894,7 +968,7 @@ do
 		TextTruncate = "AtEnd",
 		TextStrokeTransparency = .5,
 		BackgroundColor3 = Color3.fromRGB(25,25,25),
-		Size = UDim2.new(1,0,0,20),
+		Size = UDim2.new(1,-20,0,20),
 		TextWrapped = true,
 		BackgroundTransparency = 0,
 		TextColor3 = (isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),
@@ -1027,6 +1101,7 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	end)
 	
 	Parent.CanvasSize = Parent.CanvasSize + UDim2.new(0,0,0,20)
+	--Parent.Parent.FakeScroll.CanvasSize = Parent.CanvasSize + UDim2.new(0,0,0,20)
 end
 
 favSearchTextBox.Changed:connect(function(property)
@@ -1135,36 +1210,6 @@ MainTextBox.FocusLost:connect(function(enter)
 		onlineSearchLoadingResults = false
 		MainTextBox.TextEditable = true
 	end
-end)
-
-frameMainScrollingFrame.MouseWheelForward:connect(function()
-    local scrollF = frameMainScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
-    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0,40)
-end)
-
-frameMainScrollingFrame.MouseWheelBackward:connect(function()
-    local scrollF = frameMainScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
-    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0,40)
-end)
-
-frameFavoritesScrollingFrame.MouseWheelForward:connect(function()
-    local scrollF = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
-    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0,40)
-end)
-
-frameFavoritesScrollingFrame.MouseWheelBackward:connect(function()
-    local scrollF = frameFavoritesScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
-    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0,40)
-end)
-
-frameSettingsScrollingFrame.MouseWheelForward:connect(function()
-    local scrollF = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
-    scrollF.CanvasPosition = scrollF.CanvasPosition - Vector2.new(0,20)
-end)
-
-frameSettingsScrollingFrame.MouseWheelBackward:connect(function()
-    local scrollF = frameSettingsScrollingFrame:FindFirstChildOfClass("ScrollingFrame")
-    scrollF.CanvasPosition = scrollF.CanvasPosition + Vector2.new(0,20)
 end)
 
 function testAudio(id) -- not released
