@@ -9,7 +9,7 @@ GUI.Name = "wave・whore"
 getgenv().MjXRqQs7cjVu8 = GUI
 
 if syn then
-syn.protect_gui(GUI)
+--syn.protect_gui(GUI)
 end
 
 local LocalPlr = game:GetService("Players").LocalPlayer
