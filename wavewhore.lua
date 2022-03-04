@@ -544,11 +544,11 @@ ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)ClearAudioListData.Bo
 
 addSettingsText()
 
-local reloadScriptButton = addSettingsButton("Reload GUI", 100)
-reloadScriptButton.TextColor3 = Color3.fromRGB(83, 43, 117)reloadScriptButton.BorderColor3 = Color3.fromRGB(83, 43, 117)
+local reloadScriptButton = addSettingsButton("Reload GUI", 80)
+reloadScriptButton.TextColor3 = Color3.fromRGB(95, 66, 120)reloadScriptButton.BorderColor3 = Color3.fromRGB(95, 66, 120)
 
 
-addSettingsText()
+--addSettingsText()
 
 addSettingsHeader("Made by xxCloudd・wavewhore v"..version)
 
