@@ -544,7 +544,14 @@ ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)ClearAudioListData.Bo
 
 addSettingsText()
 
+local reloadScriptButton = addSettingsButton("Reload GUI", 130)
+addSettingsText()
+
 addSettingsHeader("Made by xxCloudd・wavewhore v"..version)
+
+reloadScriptButton.MouseButton1Click:connect(function()
+	loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/wavewhore.lua')()
+end)
 
 ShowRobloxAudiosButton.MouseButton1Click:connect(function()
 	if showrobloxaudios == false then
