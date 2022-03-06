@@ -14,8 +14,7 @@ function NEW(a, b, c)
 	return d
 end
 
-local GUI = Instance.new("ScreenGui", game.CoreGui) 
-GUI.Name = "wave・whore"
+local GUI = NEW("ScreenGui", game.CoreGui, {Name = "wave・whore"}) 
 getgenv().MjXRqQs7cjVu8 = GUI
 
 if syn then
@@ -26,7 +25,7 @@ local LocalPlr = game:GetService("Players").LocalPlayer
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 
-local version = "1.8.5"
+local version = "1.8.6"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 
@@ -1256,7 +1255,7 @@ testAudiosButton.MouseButton1Click:connect(function()
     if testaudiosDeb then return end
     testaudiosDeb = true
     
-    local waitTime = #AUDIOS * .15
+    local waitTime = 3 + (#AUDIOS * .15)
     
     print("\n\n\n\nstarting, please wait " .. waitTime .." sec\n")
     --game:GetService("JointsService")
