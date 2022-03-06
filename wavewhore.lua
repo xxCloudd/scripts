@@ -4,6 +4,16 @@ if getgenv().MjXRqQs7cjVu8 then -- reload
 	getgenv().MjXRqQs7cjVu8:Destroy()
 end
 
+function NEW(a, b, c)
+	local d = Instance.new(a, b)
+	if c then
+		for i,v in next,c do
+			d[i] = v
+		end
+	end
+	return d
+end
+
 local GUI = Instance.new("ScreenGui", game.CoreGui) 
 GUI.Name = "wave・whore"
 getgenv().MjXRqQs7cjVu8 = GUI
@@ -533,22 +543,28 @@ addSettingsText("Left Mouse Button: Preview / Boombox")
 addSettingsText("Right Mouse Button: Set to clipboard")
 addSettingsText('Check the ★ to add the audio to your favorites!')
 
-local rbxAudioExample = addSettingsText('This is a Roblox Audio')rbxAudioExample.TextColor3 = Color3.new(0.5, 0.25, 0.25)local rbxAudioExample
+addSettingsText('This is a Roblox Audio').TextColor3 = Color3.new(0.5, 0.25, 0.25)
 
 addSettingsText('This is not a Roblox Audio')
 
 addSettingsText()
 
-local ClearAudioListData = addSettingsButton("Clear Data", 100)
-ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)ClearAudioListData.BorderColor3 = Color3.new(0.5, 0.25, 0.25)
-
+local testAudiosButton = addSettingsButton("Test Audios", 80)
+testAudiosButton.TextColor3 = Color3.fromRGB(138, 117, 32)testAudiosButton.BorderColor3 = Color3.fromRGB(138, 117, 32)
+addSettingsText("Press F9 to watch the process, WIP so its kinda shitty rn").TextColor3 = Color3.fromRGB(138, 117, 32)
 addSettingsText()
 
 local reloadScriptButton = addSettingsButton("Reload GUI", 80)
 reloadScriptButton.TextColor3 = Color3.fromRGB(95, 66, 120)reloadScriptButton.BorderColor3 = Color3.fromRGB(95, 66, 120)
 
 
---addSettingsText()
+addSettingsText()
+
+
+local ClearAudioListData = addSettingsButton("Clear Data", 100)
+ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)ClearAudioListData.BorderColor3 = Color3.new(0.5, 0.25, 0.25)
+
+addSettingsText()
 
 addSettingsHeader("Made by xxCloudd・wavewhore v"..version)
 
@@ -822,6 +838,15 @@ function addToAudiosTable(name, id)
 	})
 end
 
+function removefromAudiosTable(id)
+	for i, audio in pairs(AUDIOS) do
+        if audio["ID"] == id then
+            table.remove(AUDIOS, i)
+            break
+        end
+    end
+end
+
 function addToFavorites(name, id)
 	if isFavorited(id) then return end
 
@@ -834,14 +859,9 @@ function addToFavorites(name, id)
 end
 
 function removeFromFavorites(id)
-    for i, audio in pairs(AUDIOS) do
-        if audio["ID"] == id then
-            table.remove(AUDIOS, i)
-            break
-        end
-    end
+    removefromAudiosTable(id)
+    
     SaveFavorites()
-
     refreshFavoritesList() -- Update list on GUI
 
 end
@@ -967,6 +987,14 @@ function isFavorited(id)
     for i, audio in pairs(AUDIOS) do
         if audio["ID"] == id then
             return audio["ID"]
+        end
+    end
+end
+
+function getNameFromId(id)
+    for i, audio in pairs(AUDIOS) do
+        if audio["ID"] == id then
+            return audio["Name"]
         end
     end
 end
@@ -1222,15 +1250,65 @@ MainTextBox.FocusLost:connect(function(enter)
 	end
 end)
 
-function testAudio(id) -- not released
-	local Sound = Instance.new("Sound", LocalPlr)
-	Sound.Volume = 0
-	Sound.SoundId = id
+local testaudiosDeb=false
 
-	wait(3)
+testAudiosButton.MouseButton1Click:connect(function()
+    if testaudiosDeb then return end
+    testaudiosDeb = true
+    
+    local waitTime = #AUDIOS * .15
+    
+    print("\n\n\n\nstarting, please wait " .. waitTime .." sec\n")
+    --game:GetService("JointsService")
+    local folder = NEW("Folder", GUI, {Name = game:GetService("HttpService"):GenerateGUID(false)})
+    local FailedAudios = {}
+    
+    for i,v in pairs(AUDIOS) do 
+        local Sound = NEW("Sound", folder, {Name = v["Name"], Volume = 0, SoundId = ("rbxassetid://" .. v["ID"])})
+	end
+	
+	wait(waitTime)
+	
+	for i, v in pairs(folder:GetChildren()) do 
+	    if v.IsLoaded == false then 
+	        table.insert(FailedAudios, {Name=v.Name,ID=v.SoundId:sub(#"rbxassetid:// ")})
+	    end
+	end 
+	
+	for i,v in pairs(FailedAudios) do 
+	    print("   ",i,":",v.Name,":",v.ID)
+	end
 
-	print(Sound.TimeLength)
-end
+    print("   failed audios: ".. #FailedAudios)
+    
+    
+    local bindable = NEW("BindableFunction", nil, {OnInvoke=function(a)
+        if a=="Yes" then
+            for i,v in pairs(FailedAudios) do 
+                removefromAudiosTable(tonumber(v.ID))
+            end
+            SaveFavorites()
+            refreshFavoritesList()
+            testaudiosDeb = false
+        end
+        print("   process finished")
+    end})
+    
+    if folder then
+        folder:destroy()
+    end
+    
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+    	Title = "Delete?",
+    	Text = "Do you want to delete not working audios?",
+    	Duration = 1e12,
+    	Callback = bindable,
+    	Button1 = "Yes",
+    	Button2 = "No"
+    })
+    
+    print("   !! sent a notification prompt to delete failed audios !!")
+end)
 
 refreshFavoritesList()
 
