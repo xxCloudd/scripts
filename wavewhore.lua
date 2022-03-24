@@ -494,6 +494,11 @@ scrollButtons(frameFavoritesScrollingFrame)
 scrollButtons(frameSettingsScrollingFrame)
 
 
+
+addSettingsText("update: as of 22 march 2022 roblox made all audios private so pray")
+addSettingsText("for them to enable the ''playable audios for all experiences''")
+
+addSettingsText()
 addSettingsHeader("Search Settings")
 
 local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
@@ -1258,7 +1263,7 @@ testAudiosButton.MouseButton1Click:connect(function()
     local waitTime = 3 + (#AUDIOS * .15)
     
     print("\n\n\n\nstarting, please wait " .. waitTime .." sec\n")
-    --game:GetService("JointsService")
+
     local folder = NEW("Folder", GUI, {Name = game:GetService("HttpService"):GenerateGUID(false)})
     local FailedAudios = {}
     
