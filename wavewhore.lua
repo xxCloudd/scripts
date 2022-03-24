@@ -495,7 +495,7 @@ scrollButtons(frameSettingsScrollingFrame)
 
 
 
-addSettingsText("update: as of 22nd march 2022 roblox made all audios private so pray")
+addSettingsText("update: as of 22 march 2022 roblox made all audios private so pray")
 addSettingsText("for them to enable the ''playable audios for all experiences''")
 
 addSettingsText()
