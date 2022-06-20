@@ -1,27 +1,66 @@
--- exe when frenzy is available
--- busy so ill finish l8r
-
-game:service"StarterGui":SetCore("SendNotification", {
-	Title = "fjt auto";
-	Text = "made by bvthxry/almost finished so expect some bugs";
-	Duration = 1e12;
-})
+notifications = true
 
 lp = game.Players.LocalPlayer
-teamname = lp.Team.Name
+
+notify = function(a, b)
+    if notifications then
+        game:service"StarterGui":SetCore("SendNotification",{Title="fjt auto",Text=a,Duration=b})
+    end
+end
+
+notify("made by bvthxry (wait 5s)", 5)
+
+wait(5)
+
+fireproximityprompt = fireproximityprompt or function(Obj, Amount, Skip)
+    if Obj.ClassName == "ProximityPrompt" then 
+        Amount = Amount or 1
+        local PromptTime = Obj.HoldDuration
+        if Skip then 
+            Obj.HoldDuration = 0
+        end
+        for i = 1, Amount do 
+            Obj:InputHoldBegin()
+            if not Skip then 
+                wait(Obj.HoldDuration)
+            end
+            Obj:InputHoldEnd()
+        end
+        Obj.HoldDuration = PromptTime
+    else 
+        error("userdata<ProximityPrompt> expected")
+    end
+end
+
+touch = function(part)
+    firetouchinterest(part, lp.Character.Head, 1)
+    firetouchinterest(part, lp.Character.Head, 0)
+end
 
 wfc = function(part, str)
     return part:WaitForChild(str)
 end
 
-ffc = function(part, str)
-    return part:FindFirstChild(str)
+ffc = function(part, str, bool)
+    return part:FindFirstChild(str, bool)
 end
 
+if not lp.Team then
+    touch(ffc(workspace, "Entrance", true))
+    
+    repeat wait() until lp.Team ~= nil
+    
+    notify("tycoon '" .. lp.Team.Name .. "' claimed")
+    wait(1)
+end
+
+teamname = lp.Team.Name
+
 rTycoon = function()
-    local t = wfc(workspace.Tycoons,teamname)
+    local t = wfc(workspace.Tycoons, teamname)
     wfc(t, "Buttons")
     wfc(t, "Drops")
+    wfc(t, "Purchased")
     return t
 end
 
@@ -52,11 +91,6 @@ returnMoney = function()
     return lp.leaderstats.Money.Value
 end
 
-touch = function(part)
-    firetouchinterest(part, lp.Character.Head, 1)
-    firetouchinterest(part, lp.Character.Head, 0)
-end
-
 attemptprestige = function()
     local btns = rTycoon().Buttons
     
@@ -68,14 +102,15 @@ attemptprestige = function()
         wait(.5)
         fireproximityprompt(statue.StatueBottom.PrestigePrompt)
         
-        wait(2)
+        wait(4)
         
         autopick()
         spawn(buybest)
+        notify("prestige done", 3)
         return false
     end
     
-    local r1,r2,r3,r4=ffc(btns,"RoberryTree1"),ffc(btns,"RoberryTree2"),ffc(btns,"RoberryTree3"),ffc(btns,"RoberryTree4")
+    local r1, r2, r3, r4 = ffc(btns,"RoberryTree1"), ffc(btns,"RoberryTree2"), ffc(btns,"RoberryTree3"), ffc(btns,"RoberryTree4")
     
     if r1 then
         touch(r1)
@@ -99,7 +134,6 @@ end
 
 
 function buybest()
-    
     local attempt = attemptprestige()
     
     if attempt == false then return end
@@ -110,7 +144,7 @@ function buybest()
         if returnMoney() >= price and ffc(rTycoon().Buttons, tree) then 
             local Tree = rTycoon().Buttons[tree]
             touch(Tree)
-            print("Bought " .. tree)
+            notify("Bought " .. tree, 3)
             break
         end
     end
@@ -118,26 +152,38 @@ end
 
 autopick()
 
+notify("auto-picking fruits", 5)
+
 repeat
+    
+    if workspace.ObbyParts.ObbyStartPart.Color == Color3.new(1,0,0) then
+        notify("waiting until frenzy time is available (~5min)", 20)
+        repeat wait() until workspace.ObbyParts.ObbyStartPart.Color == Color3.new(0,1,0)
+    end
     
     local x = lp.Character.HumanoidRootPart
     
-    touch(workspace.ObbyParts.RealObbyStartPart)--x.CFrame = CFrame.new(0, 3, 142)
-    wait(.5)
-    touch(workspace.ObbyParts.VictoryPart)--x.CFrame = CFrame.new(0, 4, 410)
+    touch(workspace.ObbyParts.RealObbyStartPart)
+    wait()
+    touch(workspace.ObbyParts.VictoryPart)
+    
+    notify("frenzy time triggered, waiting 30 sec", 10)
     
     for i = 1, 31 do--wait(31)
         attemptprestige()
         wait(1)
     end
     
+    notify("upgrading", 5)
+    
     buybest()
+    
     
     if returnMoney() > 50 then
         local btn = ffc(rTycoon().Buttons,"JuiceSpeedUpgrade1")
         if btn then 
             touch(btn)
-            print("Bought" .. btn.Name)
+            notify("Bought" .. btn.Name, 3)
         end
     end
     
@@ -148,7 +194,7 @@ repeat
             if btn then 
                 touch(btn)
                 wait(.5)
-                print("Bought" .. btn.Name)
+                notify("Bought" .. btn.Name, 3)
             end
         end
     end
@@ -160,11 +206,11 @@ repeat
             if btn then 
                 touch(btn)
                 wait(.5)
-                print("Bought" .. btn.Name)
+                notify("Bought" .. btn.Name, 3)
             end
         end
     end
     
-    wait(4*60+30)
+    --wait(4*60+30)
     
 until 0==1
