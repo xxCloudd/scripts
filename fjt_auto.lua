@@ -123,7 +123,7 @@ repeat
     local jp = jb.PromptAttachment.StartPrompt
     
     if lp.Character.PrimaryPart then
-        lp.Character:SetPrimaryPartCFrame(CFrame.new(jb.Position)+Vector3.new(2, lp.Character.Humanoid.HipHeight+jb.Size.Y+.5, 0))
+        lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
         fireproximityprompt(jp)
         buy()
     end
