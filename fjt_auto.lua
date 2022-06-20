@@ -1,3 +1,12 @@
+-- exe when frenzy is available
+-- busy so ill finish l8r
+
+game:service"StarterGui":SetCore("SendNotification", {
+	Title = "fjt auto";
+	Text = "made by bvthxry/almost finished so expect some bugs";
+	Duration = 1e12;
+})
+
 lp = game.Players.LocalPlayer
 teamname = lp.Team.Name
 
