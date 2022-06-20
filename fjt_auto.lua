@@ -6,9 +6,10 @@ notify = function(a, b)
     if notifications then
         game:service"StarterGui":SetCore("SendNotification",{Title="fjt auto",Text=a,Duration=b})
     end
+    warn(" :: fjt auto :: " .. a)
 end
 
-notify("made by bvthxry (wait 5s)", 5)
+notify("made by bvthxry (wait 5s)\nopen the console for notifs", 5)
 
 wait(5)
 
