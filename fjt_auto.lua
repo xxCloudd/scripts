@@ -86,6 +86,7 @@ autopick = function()
     rTycoon().Drops.ChildAdded:connect(function(c)
         game.ReplicatedStorage.CollectFruit:fireServer(c)
     end)
+    notify("auto-picking fruits", 15)
 end
 
 returnMoney = function()
@@ -154,7 +155,6 @@ function buybest()
 end
 
 autopick()
-notify("auto-picking fruits", 15)
 
 repeat
     if workspace.ObbyParts.ObbyStartPart.Color == Color3.new(1,0,0) then
@@ -195,7 +195,7 @@ repeat
         end
     end
     
-    if returnMoney() > 120000 then
+    if returnMoney() > 150000 then
         local s = "JuiceSpeedUpgrade"
         for i = 5, 8 do 
             local btn = ffc(rTycoon().Buttons,s..i)
