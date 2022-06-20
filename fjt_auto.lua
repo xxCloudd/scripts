@@ -152,7 +152,7 @@ end
 
 autopick()
 
-notify("auto-picking fruits", 5)
+notify("auto-picking fruits", 15)
 
 repeat
     
