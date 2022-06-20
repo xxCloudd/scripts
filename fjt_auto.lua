@@ -16,11 +16,15 @@ touch = function(part)
 end
 
 wfc = function(part, str)
+    if part == nil then return nil else
     return part:WaitForChild(str)
+    end
 end
 
 ffc = function(part, str, bool)
+    if part == nil then return nil else
     return part:FindFirstChild(str, bool)
+    end
 end
 
 if not lp.Team then
