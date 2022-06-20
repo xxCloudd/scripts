@@ -181,7 +181,7 @@ repeat
         local btn = ffc(rTycoon().Buttons,"JuiceSpeedUpgrade1")
         if btn then 
             touch(btn)
-            notify("Bought" .. btn.Name, 3)
+            --notify("Bought" .. btn.Name, 3)
         end
     end
     
@@ -192,7 +192,7 @@ repeat
             if btn then 
                 touch(btn)
                 wait(.5)
-                notify("Bought" .. btn.Name, 3)
+                --notify("Bought" .. btn.Name, 3)
             end
         end
     end
@@ -204,7 +204,7 @@ repeat
             if btn then 
                 touch(btn)
                 wait(.5)
-                notify("Bought" .. btn.Name, 3)
+                --notify("Bought" .. btn.Name, 3)
             end
         end
     end
