@@ -95,9 +95,13 @@ end
 
 attemptprestige = function()
     local btns = rTycoon().Buttons
-    
+
     if ffc(btns, "Prestige") and returnMoney() >= (lp.leaderstats.Prestige.Value + 1)*1e7 then 
         touch(btns.Prestige)
+        wait(.5)
+    end
+    
+    if ffc(rTycoon().Purchased, "Golden Tree Statue") then
         local statue = wfc(rTycoon().Purchased, "Golden Tree Statue")
         
         lp.Character.HumanoidRootPart.CFrame = statue.StatueBottom.CFrame
@@ -155,6 +159,8 @@ function buybest()
 end
 
 autopick()
+
+attemptprestige()
 
 repeat
     if workspace.ObbyParts.ObbyStartPart.Color == Color3.new(1,0,0) then
