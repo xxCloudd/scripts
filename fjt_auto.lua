@@ -1,41 +1,18 @@
-notifications = true
-
 lp = game.Players.LocalPlayer
 
-notify = function(a, b)
-    if notifications then
-        game:service"StarterGui":SetCore("SendNotification",{Title="fjt auto",Text=a,Duration=b})
-    end
-    warn(" :: fjt auto :: " .. a)
-end
-
-notify("made by bvthxry (wait 5s)\nopen the console for notifs", 5)
-
-wait(5)
-
-fireproximityprompt = fireproximityprompt or function(Obj, Amount, Skip)
-    if Obj.ClassName == "ProximityPrompt" then 
-        Amount = Amount or 1
-        local PromptTime = Obj.HoldDuration
-        if Skip then 
-            Obj.HoldDuration = 0
-        end
-        for i = 1, Amount do 
-            Obj:InputHoldBegin()
-            if not Skip then 
-                wait(Obj.HoldDuration)
-            end
-            Obj:InputHoldEnd()
-        end
-        Obj.HoldDuration = PromptTime
-    else 
-        error("userdata<ProximityPrompt> expected")
-    end
+fireproximityprompt = fireproximityprompt or function(o,a,s)
+    if o:isA"ProximityPrompt"then a=a or 1
+    local p=o.HoldDuration if s then o.HoldDuration=0
+    end for i=1,a do o:InputHoldBegin()if not s then 
+    wait(o.HoldDuration)end o:InputHoldEnd()end
+    o.HoldDuration=p end
 end
 
 touch = function(part)
-    firetouchinterest(part, lp.Character.Head, 1)
-    firetouchinterest(part, lp.Character.Head, 0)
+    if ffc(lp.Character, "Head") then
+        firetouchinterest(part, lp.Character.Head, 1)
+        firetouchinterest(part, lp.Character.Head, 0)
+    end
 end
 
 wfc = function(part, str)
@@ -48,11 +25,7 @@ end
 
 if not lp.Team then
     touch(ffc(workspace, "Entrance", true))
-    
-    repeat wait() until lp.Team ~= nil
-    
-    notify("tycoon '" .. lp.Team.Name .. "' claimed")
-    wait(1)
+    repeat wait() until lp.Team ~= nil and ffc(lp,"leaderstats")
 end
 
 teamname = lp.Team.Name
@@ -65,147 +38,79 @@ rTycoon = function()
     return t
 end
 
-Trees = {
-{"CoconutTree1", 2000000},
-{"CoconutTree2", 3000000},
-{"PearTree1", 500000},
-{"PeachTree1", 150000},
-{"CherryTree1", 75000},
-{"PineappleTree1", 40000},
-{"LimeTree1", 20000},
-{"BlueberryBush1", 7500},
-{"StrawberryBush1", 3000},
-{"RaspberryBush1", 1500},
-{"GrapeVine1", 750},
-{"LemonTree1", 300},
-{"AppleTree1", 100},
-{"OrangeTree1", 0}
-}
-
 autopick = function()
     rTycoon().Drops.ChildAdded:connect(function(c)
         game.ReplicatedStorage.CollectFruit:fireServer(c)
     end)
-    notify("auto-picking fruits", 15)
 end
 
 returnMoney = function()
     return lp.leaderstats.Money.Value
 end
 
-attemptprestige = function()
-    local btns = rTycoon().Buttons
-
-    if ffc(btns, "Prestige") and returnMoney() >= (lp.leaderstats.Prestige.Value + 1)*1e7 then 
-        touch(btns.Prestige)
-        wait(.5)
-    end
-    
-    if ffc(rTycoon().Purchased, "Golden Tree Statue") then
-        local statue = wfc(rTycoon().Purchased, "Golden Tree Statue")
-        
-        lp.Character.HumanoidRootPart.CFrame = statue.StatueBottom.CFrame
-        wait(.5)
-        fireproximityprompt(statue.StatueBottom.PrestigePrompt)
-        
-        wait(4)
-        
-        autopick()
-        spawn(buybest)
-        notify("prestige done", 3)
-        return false
-    end
-    
-    local r1, r2, r3, r4 = ffc(btns,"RoberryTree1"), ffc(btns,"RoberryTree2"), ffc(btns,"RoberryTree3"), ffc(btns,"RoberryTree4")
-    
-    if r1 then
-        touch(r1)
-    end
-    if r2 then
-        touch(r2)
-    end
-    if r3 then
-        touch(r3)
-    end
-    if r4 then
-        touch(r4)
-    end
-    
-    if not r1 and not r2 and not r3 and not r4 then
-        return false
-    end
-    
-    return true
+function retrievecost(button)
+    local t = button.ButtonLabel.CostLabel.Text
+    if t == "FREE!" then return 0 else return tonumber((t:gsub(",",""))) end
 end
 
+uselessbuttons = {"JuiceSpeedUpgrade8","AutoCollect","OrangeButton3"}
 
-function buybest()
-    local attempt = attemptprestige()
-    if attempt == false then return end
-    for i, val in pairs(Trees) do  
-        local tree, price = val[1], val[2]
+function buy()
+    local btns = rTycoon().Buttons
+    
+    local lowestbutton = {cost=9e18,name=""}
+    
+    for i, button in pairs(btns:children()) do
+        if not table.find(uselessbuttons, button.Name) and retrievecost(button) < lowestbutton.cost then
+            lowestbutton = {cost=retrievecost(button), name=button.Name}
+        end
+    end
+    
+    if returnMoney() >= lowestbutton.cost then
+        local button = ffc(btns, lowestbutton.name)
+        repeat wait() touch(button) until button.Parent ~= btns
         
-        if returnMoney() >= price and ffc(rTycoon().Buttons, tree) then 
-            local Tree = rTycoon().Buttons[tree]
-            touch(Tree)
-            notify("Bought " .. tree, 3)
-            break
+        if lowestbutton.name == "Prestige" then
+            local statue = wfc(rTycoon().Purchased, "Golden Tree Statue")
+            lp.Character.HumanoidRootPart.CFrame = statue.StatueBottom.CFrame
+            wait(.1)
+            fireproximityprompt(statue.StatueBottom.PrestigePrompt)
+            wait(1)
+            autopick()
         end
     end
 end
+
+spawn(function() -- auto frenzy
+    local osp = workspace.ObbyParts.ObbyStartPart
+    while true do
+        if osp.Color == Color3.new(1,0,0) then
+            repeat wait() until osp.Color == Color3.new(0,1,0)
+        end
+        
+        if not lp.Character.PrimaryPart then repeat wait() until lp.Character.PrimaryPart ~= nil end
+        
+        touch(workspace.ObbyParts.RealObbyStartPart)
+        wait()
+        touch(workspace.ObbyParts.VictoryPart)
+        wait(1.5)
+    end
+end)
 
 autopick()
 
-attemptprestige()
+for i,v in pairs(rTycoon().Drops:children()) do
+    game.ReplicatedStorage.CollectFruit:fireServer(c)
+end
 
 repeat
-    if workspace.ObbyParts.ObbyStartPart.Color == Color3.new(1,0,0) then
-        notify("waiting until frenzy time is available (~5min)", 20)
-        repeat wait() until workspace.ObbyParts.ObbyStartPart.Color == Color3.new(0,1,0)
+    local jb = ffc(rTycoon(),"StartJuiceMakerButton",true)
+    local jp = jb.PromptAttachment.StartPrompt
+    
+    if lp.Character.PrimaryPart then
+        lp.Character:SetPrimaryPartCFrame(CFrame.new(jb.Position)+Vector3.new(2, lp.Character.Humanoid.HipHeight+jb.Size.Y+.5, 0))
+        fireproximityprompt(jp)
+        buy()
     end
-    
-    touch(workspace.ObbyParts.RealObbyStartPart)
-    wait()
-    touch(workspace.ObbyParts.VictoryPart)
-    notify("frenzy time triggered, waiting 30 sec", 10)
-    
-    for i = 1, 31 do
-        attemptprestige()
-        wait(1)
-    end
-    
-    notify("upgrading", 5)
-    buybest()
-    
-    if returnMoney() > 50 then
-        local btn = ffc(rTycoon().Buttons,"JuiceSpeedUpgrade1")
-        if btn then 
-            touch(btn)
-            --notify("Bought" .. btn.Name, 3)
-        end
-    end
-    
-    if returnMoney() > 2000 then
-        local s = "JuiceSpeedUpgrade"
-        for i = 2, 4 do 
-            local btn = ffc(rTycoon().Buttons,s..i)
-            if btn then 
-                touch(btn)
-                wait(.5)
-                --notify("Bought" .. btn.Name, 3)
-            end
-        end
-    end
-    
-    if returnMoney() > 150000 then
-        local s = "JuiceSpeedUpgrade"
-        for i = 5, 8 do 
-            local btn = ffc(rTycoon().Buttons,s..i)
-            if btn then 
-                touch(btn)
-                wait(.5)
-                --notify("Bought" .. btn.Name, 3)
-            end
-        end
-    end
+    wait(.1)
 until 0==1
