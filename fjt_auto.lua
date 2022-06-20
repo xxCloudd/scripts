@@ -115,15 +115,19 @@ attemptprestige = function()
     
     if r1 then
         touch(r1)
+        notify("Bought RoberryTree1", 3)
     end
     if r2 then
         touch(r2)
+        notify("Bought RoberryTree2", 3)
     end
     if r3 then
         touch(r3)
+        notify("Bought RoberryTree3", 3)
     end
     if r4 then
         touch(r4)
+        notify("Bought RoberryTree4", 3)
     end
     
     if not r1 and not r2 and not r3 and not r4 then
@@ -136,9 +140,7 @@ end
 
 function buybest()
     local attempt = attemptprestige()
-    
     if attempt == false then return end
-    
     for i, val in pairs(Trees) do  
         local tree, price = val[1], val[2]
         
@@ -152,33 +154,26 @@ function buybest()
 end
 
 autopick()
-
 notify("auto-picking fruits", 15)
 
 repeat
-    
     if workspace.ObbyParts.ObbyStartPart.Color == Color3.new(1,0,0) then
         notify("waiting until frenzy time is available (~5min)", 20)
         repeat wait() until workspace.ObbyParts.ObbyStartPart.Color == Color3.new(0,1,0)
     end
     
-    local x = lp.Character.HumanoidRootPart
-    
     touch(workspace.ObbyParts.RealObbyStartPart)
     wait()
     touch(workspace.ObbyParts.VictoryPart)
-    
     notify("frenzy time triggered, waiting 30 sec", 10)
     
-    for i = 1, 31 do--wait(31)
+    for i = 1, 31 do
         attemptprestige()
         wait(1)
     end
     
     notify("upgrading", 5)
-    
     buybest()
-    
     
     if returnMoney() > 50 then
         local btn = ffc(rTycoon().Buttons,"JuiceSpeedUpgrade1")
@@ -211,7 +206,4 @@ repeat
             end
         end
     end
-    
-    --wait(4*60+30)
-    
 until 0==1
