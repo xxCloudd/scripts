@@ -93,6 +93,15 @@ function buy()
     end
 end
 
+function juice()
+    local jb = ffc(rTycoon(), "StartJuiceMakerButton", true)
+    local jp = jb.PromptAttachment.StartPrompt
+    
+    if ffc(lp.Character, "HumanoidRootPart") then
+        lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
+        fireproximityprompt(jp)
+    end
+end
 
 spawn(function() -- auto frenzy
     local osp = workspace.ObbyParts.ObbyStartPart
@@ -100,8 +109,6 @@ spawn(function() -- auto frenzy
         if osp.Color == Color3.new(1,0,0) then
             repeat wait() until osp.Color == Color3.new(0,1,0)
         end
-        
-        if not lp.Character.PrimaryPart then repeat wait() until lp.Character.PrimaryPart ~= nil end
         
         touch(workspace.ObbyParts.RealObbyStartPart)
         wait()
@@ -116,20 +123,14 @@ for i,v in pairs(rTycoon().Drops:children()) do
     game.ReplicatedStorage.CollectFruit:fireServer(c)
 end
 
-wait(1)
+wait(1) -- w8 for the tycoon to load
 
 if ffc(rTycoon().Purchased, "Golden Tree Statue") then
     prestige()
 end
 
 repeat
-    local jb = ffc(rTycoon(),"StartJuiceMakerButton",true)
-    local jp = jb.PromptAttachment.StartPrompt
-    
-    if lp.Character.PrimaryPart then
-        lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
-        fireproximityprompt(jp)
-        buy()
-    end
+    juice()
+    buy()
     wait(.1)
 until 0==1
