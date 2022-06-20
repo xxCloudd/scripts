@@ -120,19 +120,15 @@ attemptprestige = function()
     
     if r1 then
         touch(r1)
-        notify("Bought RoberryTree1", 3)
     end
     if r2 then
         touch(r2)
-        notify("Bought RoberryTree2", 3)
     end
     if r3 then
         touch(r3)
-        notify("Bought RoberryTree3", 3)
     end
     if r4 then
         touch(r4)
-        notify("Bought RoberryTree4", 3)
     end
     
     if not r1 and not r2 and not r3 and not r4 then
