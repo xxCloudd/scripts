@@ -55,6 +55,19 @@ end
 
 uselessbuttons = {"JuiceSpeedUpgrade8","AutoCollect"}
 
+function prestige()
+    local statue = wfc(rTycoon().Purchased, "Golden Tree Statue")
+    lp.Character.HumanoidRootPart.CFrame = statue.StatueBottom.CFrame
+    wait(.1)
+    repeat wait()
+        if statue and ffc(ffc(statue, "StatueBottom"), "PrestigePrompt") then
+            fireproximityprompt(statue.StatueBottom.PrestigePrompt)
+        end
+    until ffc(rTycoon().Purchased, "Golden Tree Statue") == nil
+    wait(1)
+    autopick()
+end
+
 function buy()
     local btns = rTycoon().Buttons
     
@@ -71,15 +84,11 @@ function buy()
         repeat wait() touch(button) until button.Parent ~= btns
         
         if lowestbutton.name == "Prestige" then
-            local statue = wfc(rTycoon().Purchased, "Golden Tree Statue")
-            lp.Character.HumanoidRootPart.CFrame = statue.StatueBottom.CFrame
-            wait(.1)
-            fireproximityprompt(statue.StatueBottom.PrestigePrompt)
-            wait(1)
-            autopick()
+            prestige()
         end
     end
 end
+
 
 spawn(function() -- auto frenzy
     local osp = workspace.ObbyParts.ObbyStartPart
@@ -101,6 +110,12 @@ autopick()
 
 for i,v in pairs(rTycoon().Drops:children()) do
     game.ReplicatedStorage.CollectFruit:fireServer(c)
+end
+
+wait(1)
+
+if ffc(rTycoon().Purchased, "Golden Tree Statue") then
+    prestige()
 end
 
 repeat
