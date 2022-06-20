@@ -53,7 +53,7 @@ function retrievecost(button)
     if t == "FREE!" then return 0 else return tonumber((t:gsub(",",""))) end
 end
 
-uselessbuttons = {"JuiceSpeedUpgrade8","AutoCollect","OrangeButton3"}
+uselessbuttons = {"JuiceSpeedUpgrade8","AutoCollect"}
 
 function buy()
     local btns = rTycoon().Buttons
