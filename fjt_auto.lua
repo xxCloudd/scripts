@@ -86,10 +86,6 @@ function buy()
     if returnMoney() >= lowestbutton.cost then
         local button = ffc(btns, lowestbutton.name)
         repeat wait() touch(button) until button.Parent ~= btns
-        
-        if lowestbutton.name == "Prestige" then
-            prestige()
-        end
     end
 end
 
@@ -98,8 +94,10 @@ function juice()
     local jp = jb.PromptAttachment.StartPrompt
     
     if ffc(lp.Character, "HumanoidRootPart") then
-        lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
-        fireproximityprompt(jp)
+        pcall(function()
+            lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
+            fireproximityprompt(jp)
+        end)
     end
 end
 
@@ -123,14 +121,13 @@ for i,v in pairs(rTycoon().Drops:children()) do
     game.ReplicatedStorage.CollectFruit:fireServer(c)
 end
 
-wait(1) -- w8 for the tycoon to load
-
-if ffc(rTycoon().Purchased, "Golden Tree Statue") then
-    prestige()
-end
-
 repeat
     juice()
     buy()
+    
+    if ffc(rTycoon().Purchased, "Golden Tree Statue") then
+        prestige()
+    end
+    
     wait(.1)
 until 0==1
