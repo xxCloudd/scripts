@@ -1,5 +1,7 @@
 lp = game.Players.LocalPlayer
 
+game.StarterGui:SetCore("SendNotification",{Title = "fruit juice tycoon auto", Text = "made by bvthxry, enjoy", Duration = 5})
+
 fireproximityprompt = fireproximityprompt or function(o,a,s)
     if o:isA"ProximityPrompt"then a=a or 1
     local p=o.HoldDuration if s then o.HoldDuration=0
