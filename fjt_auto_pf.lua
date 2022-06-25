@@ -110,7 +110,7 @@ end
 function attemptObby()
     local osp = workspace.ObbyParts.ObbyStartPart
     if osp.Color == Color3.new(0,1,0) then
-        lp.Character.Humanoid.Health = 0
+        lp.Character.Humanoid.Health = 0 -- covers the sus up
         wait(3)
         touch(workspace.ObbyParts.RealObbyStartPart)
         wait()
