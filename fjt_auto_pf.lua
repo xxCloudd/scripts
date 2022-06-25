@@ -49,7 +49,9 @@ end
 autopick = function()
     rTycoon().Drops.ChildAdded:connect(function(c)
         wait(5)
-        game.ReplicatedStorage.CollectFruit:fireServer(c)
+        if c then
+            game.ReplicatedStorage.CollectFruit:fireServer(c)
+        end
     end)
 end
 
