@@ -1,8 +1,8 @@
 lp = game.Players.LocalPlayer
 
-game.StarterGui:SetCore("SendNotification",{Title = "fruit juice tycoon auto", Text = "made by bvthxry, enjoy", Duration = 5})
+game.StarterGui:SetCore("SendNotification", {Title = "fruit juice tycoon auto", Text = "made by bvthxry, enjoy", Duration = 5})
 
-fireproximityprompt = fireproximityprompt or function(o,a,s)
+fpp = fireproximityprompt or function(o,a,s)
     if o:isA"ProximityPrompt"then a=a or 1
     local p=o.HoldDuration if s then o.HoldDuration=0
     end for i=1,a do o:InputHoldBegin()if not s then 
@@ -59,7 +59,7 @@ function retrievecost(button)
     if t == "FREE!" then return 0 else return tonumber((t:gsub(",",""))) end
 end
 
-uselessbuttons = {"JuiceSpeedUpgrade8","AutoCollect"}
+uselessbuttons = {"JuiceSpeedUpgrade8", "AutoCollect"}
 
 function prestige()
     local statue = wfc(rTycoon().Purchased, "Golden Tree Statue")
@@ -67,7 +67,7 @@ function prestige()
     wait(.1)
     repeat wait()
         if statue and ffc(ffc(statue, "StatueBottom"), "PrestigePrompt") then
-            fireproximityprompt(statue.StatueBottom.PrestigePrompt)
+            fpp(statue.StatueBottom.PrestigePrompt)
         end
     until ffc(rTycoon().Purchased, "Golden Tree Statue") == nil
     wait(1)
@@ -98,24 +98,19 @@ function juice()
     if ffc(lp.Character, "HumanoidRootPart") then
         pcall(function()
             lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
-            fireproximityprompt(jp)
+            fpp(jp)
         end)
     end
 end
 
-spawn(function() -- auto frenzy
-    local osp = workspace.ObbyParts.ObbyStartPart
-    while true do
-        if osp.Color == Color3.new(1,0,0) then
-            repeat wait() until osp.Color == Color3.new(0,1,0)
-        end
-        
+function attemptObby()
+    if lp:GetAttribute("ObbyCooldown") == 0 then
         touch(workspace.ObbyParts.RealObbyStartPart)
         wait()
         touch(workspace.ObbyParts.VictoryPart)
-        wait(1.5)
+        repeat wait() until lp:GetAttribute("ObbyCooldown") > 0
     end
-end)
+end
 
 autopick()
 
@@ -126,10 +121,9 @@ end
 repeat
     juice()
     buy()
-    
     if ffc(rTycoon().Purchased, "Golden Tree Statue") then
         prestige()
     end
-    
+    attemptObby()
     wait(.1)
 until 0==1
