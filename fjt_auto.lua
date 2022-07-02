@@ -11,9 +11,8 @@ fpp = fireproximityprompt or function(o,a,s)
 end
 
 touch = function(part)
-    if ffc(lp.Character, "Head") then
-        firetouchinterest(part, lp.Character.Head, 1)
-        firetouchinterest(part, lp.Character.Head, 0)
+    if ffc(lp.Character, "HumanoidRootPart") and part then
+        lp.Character.HumanoidRootPart.CFrame = part.CFrame
     end
 end
 
@@ -94,7 +93,6 @@ end
 function juice()
     local jb = ffc(rTycoon(), "StartJuiceMakerButton", true)
     local jp = jb.PromptAttachment.StartPrompt
-    
     if ffc(lp.Character, "HumanoidRootPart") then
         pcall(function()
             lp.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(jb.Position.X+2, 3,jb.Position.Z))
@@ -106,8 +104,9 @@ end
 function attemptObby()
     if lp:GetAttribute("ObbyCooldown") == 0 then
         touch(workspace.ObbyParts.RealObbyStartPart)
-        wait()
+        wait(.5)
         touch(workspace.ObbyParts.VictoryPart)
+        lp.CharacterAdded:wait()
         repeat wait() until lp:GetAttribute("ObbyCooldown") > 0
     end
 end
