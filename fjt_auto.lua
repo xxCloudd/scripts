@@ -103,11 +103,13 @@ end
 
 function attemptObby()
     if lp:GetAttribute("ObbyCooldown") == 0 then
-        touch(workspace.ObbyParts.RealObbyStartPart)
+        repeat
+            touch(workspace.ObbyParts.RealObbyStartPart)
+            wait(.5)
+            touch(workspace.ObbyParts.VictoryPart)
+        wait(.1) 
+        until lp:GetAttribute("ObbyCooldown") > 0
         wait(.5)
-        touch(workspace.ObbyParts.VictoryPart)
-        lp.CharacterAdded:wait()
-        repeat wait() until lp:GetAttribute("ObbyCooldown") > 0
     end
 end
 
