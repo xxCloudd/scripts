@@ -25,7 +25,7 @@ local LocalPlr = game:GetService("Players").LocalPlayer
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 
-local version = "1.8.6"
+local version = "1.9"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 
