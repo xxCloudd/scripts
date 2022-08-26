@@ -211,11 +211,19 @@ for i, split in pairs(splits) do
         end
     end)
     
-    repeat wait() until touched == true
+    repeat game.RunService.Stepped:wait() until touched == true
     PartTouchConnection:disconnect()
     nextsplit()
 end
 
-endrunpart.Touched:wait()
+local touched = false 
+local PartTouchConnection = endrunpart.Touched:connect(function(hit)
+    if hit:IsA("BasePart") and hit:IsDescendantOf(game.Players.LocalPlayer.Character) then
+        touched = true
+    end
+end)
+
+repeat game.RunService.Stepped:wait() until touched == true
+PartTouchConnection:disconnect()
 nextsplit()
 stoptimer()
