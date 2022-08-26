@@ -158,17 +158,61 @@ function starttimer()
     Timer.TextColor3 = Color3.new(.5,.8,.5)
 end
 
+closeButton = Instance.new("TextButton", titlelabel)
+closeButton.Text = "X"
+closeButton.Size = UDim2.new(0, 20, 0, 20)
+closeButton.Position = UDim2.new(1, -20, 0, 0)
+closeButton.TextColor3 = Color3.new(.7,.7,.7)
+closeButton.Font = "Arial"
+closeButton.BackgroundTransparency = 1
+closeButton.TextSize = 14
+
+resetButton = closeButton:clone()
+resetButton.Parent = titlelabel
+resetButton.Position = closeButton.Position - UDim2.new(0,20,0,0)
+resetButton.Text = "R"
+
+function reset()
+    
+    -- wip
+    
+    do return end 
+    
+    Timer.Text = "0:00.00 "
+    Timer.TextColor3 = Color3.new(.7,.7,.7)
+    currentsplit = nil
+    updatecurrentsplit()
+    
+    for i, split in pairs(splits) do
+        split.button.time.Text = "-"
+    end
+end
+
+resetButton.MouseButton1Click:connect(reset)
+
+closeButton.MouseButton1Click:connect(function()
+    if PartTouchConnection then
+        PartTouchConnection:disconnect()
+    end
+    if runningTimer then
+        runningTimer:disconnect()
+    end
+    gui:Destroy()
+end)
+
+
+local PartTouchConnection
 for i, split in pairs(splits) do
     local touched = false 
     
-    local conn = split.autosplitpart.Touched:connect(function(hit)
+    local PartTouchConnection = split.autosplitpart.Touched:connect(function(hit)
         if hit:IsA("BasePart") and hit:IsDescendantOf(game.Players.LocalPlayer.Character) then
             touched = true
         end
     end)
     
     repeat wait() until touched == true
-    conn:disconnect()
+    PartTouchConnection:disconnect()
     nextsplit()
 end
 
