@@ -158,7 +158,17 @@ function starttimer()
 end
 
 for i, split in pairs(splits) do
-    split.autosplitpart.Touched:wait()
+    local touched = false 
+    
+    local conn = split.autosplitpart.Touched:connect(function(hit)
+        print(hit)
+        if hit:IsA("BasePart") and hit:IsDescendantOf(game.Players.LocalPlayer.Character) then
+            touched = true
+        end
+    end)
+    
+    repeat wait() until touched == true
+    conn:disconnect()
     nextsplit()
 end
 
