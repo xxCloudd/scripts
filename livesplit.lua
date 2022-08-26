@@ -161,7 +161,6 @@ for i, split in pairs(splits) do
     local touched = false 
     
     local conn = split.autosplitpart.Touched:connect(function(hit)
-        print(hit)
         if hit:IsA("BasePart") and hit:IsDescendantOf(game.Players.LocalPlayer.Character) then
             touched = true
         end
