@@ -34,6 +34,7 @@ titlelabel.Active = true
 titlelabel.Text = title
 titlelabel.Size = UDim2.new(0, 250, 0, 40)
 titlelabel.Name = "Title"
+titlelabel.Position = UDim2.new(.1,0,.2,0)
 titlelabel.BorderSizePixel = 0
 titlelabel.BorderColor3 = Color3.new(.7,.7,.7)
 titlelabel.BackgroundColor3 = Color3.new(.1,.1,.1)
