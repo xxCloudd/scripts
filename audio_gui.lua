@@ -1,5 +1,3 @@
---// Made by xxCloudd
-
 if getgenv().MjXRqQs7cjVu8 then -- reload
 	getgenv().MjXRqQs7cjVu8:Destroy()
 end
@@ -14,7 +12,7 @@ function NEW(a, b, c)
 	return d
 end
 
-local GUI = NEW("ScreenGui", game.CoreGui, {Name = "wave・whore"}) 
+local GUI = NEW("ScreenGui", game.CoreGui, {Name = "UAS"}) 
 getgenv().MjXRqQs7cjVu8 = GUI
 
 if syn then
@@ -25,7 +23,7 @@ local LocalPlr = game:GetService("Players").LocalPlayer
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 
-local version = "1.9"
+local version = "1.9.1"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 
@@ -200,7 +198,7 @@ addProperty(PageLabel, {
 	BorderSizePixel = 0,
 	Size = UDim2.new(0,386,0,18),
 	Font = 'SourceSansBold',
-	Text = "  SoundSpace・Online Search",
+	Text = "  UAS・Online Search",
 	TextSize = 12,
 	TextXAlignment = Enum.TextXAlignment.Left
 })
@@ -492,100 +490,58 @@ end
 scrollButtons(frameMainScrollingFrame)
 scrollButtons(frameFavoritesScrollingFrame)
 scrollButtons(frameSettingsScrollingFrame)
-
 addSettingsHeader("Search Settings")
-
 local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
-
 addSettingsText()
-
 addSettingsHeader("Play on Boombox")
 addSettingsText("Must hold boombox first")
-
 local playOnBoomboxButton = addSettingsButton("Disabled", 70)
-
 addSettingsText()
-
 addSettingsHeader("Add Audio Manually")
-
 local SettingsIdTextBoxNAME = addSettingsBox("Audio Name Input",200)
-
 local SettingsIdTextBoxID = addSettingsBox("Id Input",120)
-
 local SettingsIdAddButton = addSettingsButton("Add", 190)
-
 addSettingsText()
-
 addSettingsHeader("Import from file")
 addSettingsText("/workspace/filename.txt (must be .txt)")
 addSettingsText('e.g. "0123456789 audioname"')
-
-
 local importfilenamebox = addSettingsBox("Filename", 130)
-
 local importbtn = addSettingsButton("Import", 140)
-
 addSettingsText()
-
 addSettingsHeader("Export to file")
 addSettingsText("will be exported as .txt to /workspace/")
-
 local exportfilenamebox = addSettingsBox("Filename", 130)
-
 local exportbtn = addSettingsButton("Export audios to /workspace/",200)
-
 addSettingsText()
-
 addSettingsHeader("How do I use this GUI?")
 addSettingsText("Left Mouse Button: Preview / Boombox")
 addSettingsText("Right Mouse Button: Set to clipboard")
 addSettingsText('Check the ★ to add the audio to your favorites!')
-
 addSettingsText('This is a Roblox Audio').TextColor3 = Color3.new(0.5, 0.25, 0.25)
-
 addSettingsText('This is not a Roblox Audio')
-
 addSettingsText()
-
 local reloadScriptButton = addSettingsButton("Reload GUI", 80)
 reloadScriptButton.TextColor3 = Color3.fromRGB(95, 66, 120)reloadScriptButton.BorderColor3 = Color3.fromRGB(95, 66, 120)
-
-
 addSettingsText()
-
-
 local ClearAudioListData = addSettingsButton("Clear Data", 100)
 ClearAudioListData.TextColor3 = Color3.new(0.5, 0.25, 0.25)ClearAudioListData.BorderColor3 = Color3.new(0.5, 0.25, 0.25)
-
 addSettingsText()
-
-addSettingsHeader("Made by bvthxry・SoundSpace v"..version)
+addSettingsHeader("Made by bvthxry・Unnamed Audio Searcher v"..version)
 
 reloadScriptButton.MouseButton1Click:connect(function()
 	loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/audio_gui.lua')()
 end)
 
 ShowRobloxAudiosButton.MouseButton1Click:connect(function()
-	if showrobloxaudios == false then
-		showrobloxaudios = true
-		 ShowRobloxAudiosButton.Text = "Show Roblox Audios: ON"
-	else
-		showrobloxaudios = false
-		ShowRobloxAudiosButton.Text = "Show Roblox Audios: OFF"
-	end
+	showrobloxaudios = not showrobloxaudios
+	ShowRobloxAudiosButton.Text = "Show Roblox Audios: " .. (showrobloxaudios and "ON" or "OFF")
 	refreshFavoritesList()
 end)
 
 local playOnBoombox = false
-
 playOnBoomboxButton.MouseButton1Click:connect(function()
-	if not playOnBoombox then
-		playOnBoombox = true
-		playOnBoomboxButton.Text = "Enabled"
-	else
-		playOnBoombox = false
-		playOnBoomboxButton.Text = "Disabled"
-	end
+	playOnBoombox = not playOnBoombox
+	playOnBoomboxButton.Text = (playOnBoombox and "Enabled" or "Disabled")
 end)
 
 ClearAudioListData.MouseButton1Click:connect(function()
@@ -878,18 +834,18 @@ function showPage(page_to_show)
 	viewContent("SettingsPage", false)
 
     if page_to_show == nil then
-        PageLabel.Text = ("  SoundSpace・v" .. version)
+        PageLabel.Text = ("  UAS・v" .. version)
         return
     end
 
     viewContent(page_to_show, true)
 
 	if page_to_show == "OnlineSearchPage" then
-		PageLabel.Text = "  SoundSpace・Online Search"
+		PageLabel.Text = "  UAS・Online Search"
 	elseif page_to_show == "FavoritesPage" then
-		PageLabel.Text = "  SoundSpace・Favorites"
+		PageLabel.Text = "  UAS・Favorites"
 	elseif page_to_show == "SettingsPage" then
-		PageLabel.Text = "  SoundSpace・Settings"
+		PageLabel.Text = "  UAS・Settings"
 	end
 
 	page = page_to_show
