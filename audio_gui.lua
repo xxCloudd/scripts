@@ -1098,17 +1098,7 @@ favSearchTextBox.Changed:connect(function(property)
 end)
 
 function checkIfHasCharacters(str)
-	local check = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_01234567889'
-	local _check = false
-
-	for i = 1, #check do
-		if string.find(str, check:sub(i,i)) then
-			_check = true
-			break
-		end
-	end
-
-	return _check
+	return string.match(str, "%w") ~= nil
 end
 
 function Search(search, PageNumber)
