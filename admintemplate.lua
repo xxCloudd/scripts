@@ -1,3 +1,5 @@
+--made by bvthxry
+
 local cmds = {}
 
 addcmd = function(aliases, func) -- addcmd({'test1','test2'}, func)
