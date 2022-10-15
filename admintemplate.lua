@@ -10,7 +10,7 @@ addcmd = function(aliases, func) -- addcmd({'test1','test2'}, func)
 end
 
 execmd = function(s)
-    local args = s:split(" ")
+    local args = s:lower():split(" ")
     local cmdinput = args[1]
     table.remove(args, 1) -- .cmd is not an arg!!
     
