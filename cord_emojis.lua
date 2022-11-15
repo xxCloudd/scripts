@@ -16,7 +16,6 @@ local getchat = function()
     }
 end
 
-local bindable = Instance.new("BindableEvent")
 local cache = {}
 local dependencies = {
     ['Emojis'] = game:GetService("HttpService"):JSONDecode(game:HttpGet('https://raw.githubusercontent.com/Aidez/emojiscopy/master/main')),
@@ -134,7 +133,7 @@ game:GetService("RunService").Heartbeat:Connect(function()
     if cache[dependencies['Chat'].chatbar] == nil then
         cache[dependencies['Chat'].chatbar] = true
         dependencies['Chat'] = getchat()
-        bindable:Fire(dependencies['Chat'])
+        THING(dependencies['Chat'])
     end
 end)
 
@@ -147,7 +146,7 @@ game:GetService("UserInputService").InputBegan:Connect(function(k)
     end
 end)
 
-bindable.Event:Connect(function(tbl)
+THING = function(tbl)
     local bar = tbl.chatbar
     bar.ZIndex = 2
     bar.Parent.TextLabel.ZIndex = 3
@@ -173,4 +172,4 @@ bindable.Event:Connect(function(tbl)
         clone.PlaceholderText = ''
         focused = false
     end)
-end)
+end
