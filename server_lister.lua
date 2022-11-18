@@ -37,11 +37,12 @@ refreshing = false
 refresh = function()
 	if refreshing then return end
 	refreshing = true
-	Frame.listing.Text = ""
+	Frame.listing.Text = "..."
+	Frame.ScrollingFrame.CanvasSize = UDim2.new(0,0,0,0)
 	
 	for i, v in pairs(Frame.ScrollingFrame:GetChildren()) do 
-		if v:isA("TextButton") then
-			v:destroy()
+		if v:isA("Frame") then
+			v:Destroy()
 		end
 	end
 	
@@ -53,7 +54,7 @@ refresh = function()
 	end
 	
 	Frame.ScrollingFrame.CanvasSize = UDim2.new(0,0,0, #list * 20)
-	Frame.listing.Text = "Listing" .. #list .. " servers"
+	Frame.listing.Text = "Listing " .. #list .. " servers"
 	refreshing = false
 end
 
