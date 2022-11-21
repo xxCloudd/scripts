@@ -3,6 +3,50 @@ gui.Parent = game.CoreGui
 
 Frame = gui.Frame
 
+
+do
+    local function tween(instance, speed, properties)
+	    game:GetService("TweenService"):Create(instance, TweenInfo.new(speed), properties):Play()
+    end
+    
+	local dragToggle = nil
+	local dragSpeed = 0.1
+	local dragInput = nil
+	local dragStart = nil
+	local dragPos = nil
+	
+	local function updateInput(input)
+		local Delta = input.Position - dragStart
+		local Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + Delta.X, startPos.Y.Scale, startPos.Y.Offset + Delta.Y)
+		tween(Frame, dragSpeed, {Position = Position})
+	end
+	
+	Frame.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+			dragToggle = true
+			dragStart = input.Position
+			startPos = Frame.Position
+			input.Changed:Connect(function()
+				if (input.UserInputState == Enum.UserInputState.End) then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+	
+	Frame.InputChanged:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			dragInput = input
+		end
+	end)
+	
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if (input == dragInput and dragToggle) then
+			updateInput(input)
+		end
+	end)
+end
+
 new = function(jobId, players, ping)
     local Button = gui.Frame.Button.Button:Clone()
     Button.Name = jobId
@@ -10,14 +54,22 @@ new = function(jobId, players, ping)
     Button.JobId.Text = jobId
     Button.Ping.Text = ping
     Button.Players.Text = players
-
-    for i, v in pairs(Button:GetChildren()) do 
-	    v.MouseButton1Click:Connect(function()
-	    	game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobId, game.Players.LocalPlayer)
-	    end)
+    
+    if game.JobId == jobId then
+        local red = Color3.fromRGB(192, 117, 117)
+        Button.JobId.BackgroundColor3 = red
+        Button.Ping.BackgroundColor3 = red
+        Button.Players.BackgroundColor3 = red
+    else
+        for i, v in pairs(Button:GetChildren()) do 
+	        v.MouseButton1Click:Connect(function()
+	        	game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, jobId, game.Players.LocalPlayer)
+	        end)
+        end
     end
     
     Button.Parent = Frame.ScrollingFrame
+    
 end
 
 function getServerList()
