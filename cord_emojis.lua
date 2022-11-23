@@ -6,9 +6,13 @@ local config = {
 }
 
 repeat wait() until game.IsLoaded
+repeat wait() until game:GetService("Players").LocalPlayer
+
+local lp = game:GetService("Players").LocalPlayer
+
+lp:WaitForChild("PlayerGui")
 
 local getchat = function()
-    local lp = game:GetService("Players").LocalPlayer
     return {
         main = lp.PlayerGui.Chat,
         chatbar = lp.PlayerGui.Chat.Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar,
