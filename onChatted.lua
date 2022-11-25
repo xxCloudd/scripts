@@ -9,4 +9,3 @@ end
 onChatted(game.Players.LocalPlayer, function(c)
     print(c)
 end)
-
