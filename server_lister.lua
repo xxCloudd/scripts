@@ -51,15 +51,18 @@ new = function(jobId, players, ping)
     local Button = gui.Frame.Button.Button:Clone()
     Button.Name = jobId
     
-    Button.JobId.Text = jobId
+    Button.ID.Text = toID(jobId)
     Button.Ping.Text = ping
     Button.Players.Text = players
     
     if game.JobId == jobId then
-        local red = Color3.fromRGB(192, 117, 117)
-        Button.JobId.BackgroundColor3 = red
+        local red = Color3.fromRGB(255, 212, 212)
+        Button.ID.BackgroundColor3 = red
         Button.Ping.BackgroundColor3 = red
         Button.Players.BackgroundColor3 = red
+        Button.ID.BorderSizePixel = 0
+        Button.Ping.BorderSizePixel = 0
+        Button.Players.BorderSizePixel = 0
     else
         for i, v in pairs(Button:GetChildren()) do 
 	        v.MouseButton1Click:Connect(function()
@@ -71,6 +74,15 @@ new = function(jobId, players, ping)
     Button.Parent = Frame.ScrollingFrame
     
 end
+
+function toID(Str)
+    local x = 1 
+    for i = 1, #Str do 
+        x = x + string.byte(Str:sub(i, i))
+    end
+    return x + ((string.find(Str,"f"))or 0)*100
+end 
+
 
 function getServerList()
 	local cursor
