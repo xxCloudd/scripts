@@ -193,41 +193,65 @@ gui.Frame.close.MouseButton1Click:connect(function()
     gui:destroy()
 end)
 
+gui.Frame.teleportwin.MouseButton1Click:connect(function()
+	game.Players.LocalPlayer.PlayerGui.Teleport.Enabled = true
+end)
+
+gui.Frame.sendtradebutton.MouseButton1Click:connect(function()
+	local p = game:service'Players':findFirstChild(gui.Frame.sendtradebox.Text)
+	if not p then return end
+    workspace.__REMOTES.Game.Trading:InvokeServer("InvSend", p)
+end)
+
+local rInventory = workspace.__REMOTES.Game.Inventory
 for i, v in pairs(gui.Frame.ScrollingFrame:children()) do 
     if v:isA("Frame") then
         v.deletepet.MouseButton1Click:Connect(function()
-            workspace.__REMOTES.Game.Inventory:InvokeServer("Delete",v.petId.Value)
+            rInventory:InvokeServer("Delete",v.petId.Value)
         end)
 
         v.equippet.MouseButton1Click:Connect(function()
-            workspace.__REMOTES.Game.Inventory:InvokeServer(v.isEquipped.Value == true and "Unequip" or "Equip",v.petId.Value)
+            local txt = v.isEquipped.Value == true and "Unequip" or "Equip"
+            rInventory:InvokeServer(txt,v.petId.Value)
         end)
     end
     
 end
 
+local GOS = workspace.__REMOTES.Core["Get Other Stats"]
 while running do
     wait(.1)
-    local Save = workspace.__REMOTES.Core:FindFirstChild("Get Other Stats"):InvokeServer()[l.Name].Save
+    local Save = GOS:InvokeServer()[l.Name].Save
     local mooncoins = Save.MoonCoins
     local coins = Save.Coins
     local snowcoins = Save.SnowCoins
-    gui.Frame.Coinslabel.Text="  Coins: "..coins.."\n  MoonCoins: "..mooncoins.."\n  SnowCoins: "..snowcoins
+    gui.Frame.Coinslabel.Text=
+    "  Coins: "..coins.."\n  MoonCoins: "..mooncoins.."\n  SnowCoins: "..snowcoins
 
     for i, v in pairs(gui.Frame.ScrollingFrame:children()) do 
         if v:isA("Frame") then
             v.petId.Value = 0
             v.TextLabel.Text = ""
             v.isEquipped.Value = false
+            v.equippet.Visible = false
+            v.deletepet.Visible = false
+            v.equippet.Text = "EQ"
         end
     end
 
     local pets = getPets(Save)
-
+    
+    table.sort(pets, function(a,b) return a.lvl>b.lvl end)
     for petNumber, petData in pairs(pets) do
         local frame = gui.Frame.ScrollingFrame[tostring(petNumber)]
         frame.petId.Value = petData.id
-        frame.TextLabel.Text = (petData.equipped and " [EQ]" or " ").. petData.type .. petData.name
+        
+        frame.TextLabel.Text =
+        (petData.equipped and " [EQ]" or " ").. petData.type .. petData.name
+        
         frame.isEquipped.Value = petData.equipped
+        frame.equippet.Text = (petData.equipped and "UQ" or "EQ")
+        frame.equippet.Visible = true
+        frame.deletepet.Visible = true
     end
 end
