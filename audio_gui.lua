@@ -23,7 +23,7 @@ local LocalPlr = game:GetService("Players").LocalPlayer
 
 local data_file = "INGAME_AUDIO_SEARCHER_DATA.xyz"
 
-local version = "1.9.1"
+local version = "1.9.2"
 local sortFavoritesAlphabetically = false
 local showrobloxaudios = false
 
@@ -77,7 +77,9 @@ local ReferenceInstances = Instance.new("NegateOperation", GUI)
 ReferenceInstances.Name = "ReferenceInstances"
 
 local Frame = Instance.new("Frame", GUI)
-Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 5)
+local shadow = Instance.new('UIStroke', Frame)
+shadow.Transparency = .5
+shadow.Thickness=1.5
 
 local FrameButtons = Instance.new("Folder", Frame)
 FrameButtons.Name = "FrameButtons"
@@ -490,35 +492,33 @@ end
 scrollButtons(frameMainScrollingFrame)
 scrollButtons(frameFavoritesScrollingFrame)
 scrollButtons(frameSettingsScrollingFrame)
-addSettingsHeader("Search Settings")
+addSettingsHeader("- Search Settings -")
 local ShowRobloxAudiosButton = addSettingsButton("Show Roblox Audios: OFF", 150)
 addSettingsText()
-addSettingsHeader("Play on Boombox")
+addSettingsHeader("- Play on Boombox -")
 addSettingsText("Must hold boombox first")
 local playOnBoomboxButton = addSettingsButton("Disabled", 70)
 addSettingsText()
-addSettingsHeader("Add Audio Manually")
+addSettingsHeader("- Add Audio Manually -")
 local SettingsIdTextBoxNAME = addSettingsBox("Audio Name Input",200)
 local SettingsIdTextBoxID = addSettingsBox("Id Input",120)
 local SettingsIdAddButton = addSettingsButton("Add", 190)
 addSettingsText()
-addSettingsHeader("Import from file")
+addSettingsHeader("- Import from file -")
 addSettingsText("/workspace/filename.txt (must be .txt)")
 addSettingsText('e.g. "0123456789 audioname"')
 local importfilenamebox = addSettingsBox("Filename", 130)
 local importbtn = addSettingsButton("Import", 140)
 addSettingsText()
-addSettingsHeader("Export to file")
+addSettingsHeader("- Export to file -")
 addSettingsText("will be exported as .txt to /workspace/")
 local exportfilenamebox = addSettingsBox("Filename", 130)
 local exportbtn = addSettingsButton("Export audios to /workspace/",200)
 addSettingsText()
-addSettingsHeader("How do I use this GUI?")
+addSettingsHeader("- Help -")
 addSettingsText("Left Mouse Button: Preview / Boombox")
-addSettingsText("Right Mouse Button: Set to clipboard")
-addSettingsText('Check the ★ to add the audio to your favorites!')
-addSettingsText('This is a Roblox Audio').TextColor3 = Color3.new(0.5, 0.25, 0.25)
-addSettingsText('This is not a Roblox Audio')
+addSettingsText("Right Mouse Button: Set ID to clipboard")
+addSettingsText('Roblox Audios are highlighted like this').TextColor3 = Color3.new(0.5, 0.25, 0.25)
 addSettingsText()
 local reloadScriptButton = addSettingsButton("Reload GUI", 80)
 reloadScriptButton.TextColor3 = Color3.fromRGB(95, 66, 120)reloadScriptButton.BorderColor3 = Color3.fromRGB(95, 66, 120)
@@ -1102,7 +1102,7 @@ function checkIfHasCharacters(str)
 end
 
 function Search(search, PageNumber)
-	local Results = game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=" .. PageNumber .. "&SortType=" .. MainSortType .. "&Keyword=" .. (search:gsub('/',''):gsub(" ","_"):lower()))
+	local Results = game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=" .. PageNumber .. "&SortType=" .. MainSortType .. "&Keyword=" .. (search:gsub('/',''):gsub(" ","+"):lower()))
 	local DecodedResults = JSONDecode(Results)
 
 	return DecodedResults
