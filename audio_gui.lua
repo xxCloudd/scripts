@@ -87,8 +87,40 @@ local Frame = NEW('Frame', GUI, {
 NEW('UIStroke', Frame, {Transparency = .5, Thickness = 1.5}) -- shadow
 
 local FrameButtons = NEW('Folder', Frame, {Name = 'FrameButtons'})
-local CloseButton = NEW('TextButton', FrameButtons)
-local MainTextBox = NEW('TextBox', OnlineSearchPage)
+
+local CloseButton = NEW('TextButton', FrameButtons, {
+	TextStrokeTransparency = .5,
+	BackgroundTransparency = 1,
+	BorderColor3 = Color3.fromRGB(1,1,1),
+	BorderSizePixel = 2,
+	Position = UDim2.new(1,-18,0,0),
+	Size = UDim2.new(0,18,0,18),
+	Font = 'SourceSansBold',
+	Text = 'X',
+	Name = 'CloseButton',
+	TextColor3 = Color3.fromRGB(200,200,200),
+	TextSize = 14,
+	AutoButtonColor=false
+})
+
+local MainTextBox = NEW('TextBox', OnlineSearchPage, {
+	BackgroundColor3 = Color3.fromRGB(35,35,35),
+	TextStrokeTransparency = .5,
+	BorderSizePixel = 0,
+	BorderColor3 = Color3.fromRGB(1,1,1),
+	Position = UDim2.new(0,0,0,18),
+	Size = UDim2.new(1,-10,0,18),
+	Font = Enum.Font.SourceSansItalic,
+	PlaceholderColor3 = Color3.fromRGB(150,150,150),
+	PlaceholderText = 'Online Search',
+	Text = '',
+	TextColor3 = Color3.fromRGB(200,200,200),
+	TextSize = 14,
+	ClearTextOnFocus = false,
+	TextWrapped = true,
+	Font = 'SourceSansSemibold',
+	Name = 'OnlineSearchTextBox'
+})
 
 local frameMainScrollingFrame = NEW('Frame', OnlineSearchPage, {
 	Name = 'FrameMainScrollingFrame',
@@ -150,41 +182,6 @@ function clearMainList()
     MainScrollingFrame:ClearAllChildren()
     MainScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 end
-
-
-addProperty(CloseButton, {
-	TextStrokeTransparency = .5,
-	BackgroundTransparency = 1,
-	BorderColor3 = Color3.fromRGB(1,1,1),
-	BorderSizePixel = 2,
-	Position = UDim2.new(1,-18,0,0),
-	Size = UDim2.new(0,18,0,18),
-	Font = 'SourceSansBold',
-	Text = 'X',
-	Name = 'CloseButton',
-	TextColor3 = Color3.fromRGB(200,200,200),
-	TextSize = 14,
-	AutoButtonColor=false
-})
-
-addProperty(MainTextBox, {
-	BackgroundColor3 = Color3.fromRGB(35,35,35),
-	TextStrokeTransparency = .5,
-	BorderSizePixel = 0,
-	BorderColor3 = Color3.fromRGB(1,1,1),
-	Position = UDim2.new(0,0,0,18),
-	Size = UDim2.new(1,-10,0,18),
-	Font = Enum.Font.SourceSansItalic,
-	PlaceholderColor3 = Color3.fromRGB(150,150,150),
-	PlaceholderText = 'Online Search',
-	Text = '',
-	TextColor3 = Color3.fromRGB(200,200,200),
-	TextSize = 14,
-	ClearTextOnFocus = false,
-	TextWrapped = true,
-	Font = 'SourceSansSemibold',
-	Name = 'OnlineSearchTextBox'
-})
 
 Frame.Position = UDim2.new(-1, 0, .5, -(Frame.Size.Y.Offset/2))
 
