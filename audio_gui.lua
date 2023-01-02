@@ -2,12 +2,16 @@ if getgenv().MjXRqQs7cjVu8 then -- reload
 	getgenv().MjXRqQs7cjVu8:Destroy()
 end
 
+function addProperty(a, b)
+	for p,v in next,b do
+		a[p] = v
+	end
+end
+
 function NEW(a, b, c)
-	local d = Instance.new(a, b)
+	local d = Instance.new(a, b or nil)
 	if c then
-		for i,v in next,c do
-			d[i] = v
-		end
+		addProperty(d, c)
 	end
 	return d
 end
@@ -65,36 +69,35 @@ end
 SaveFavorites()
 
 
-local OnlineSearchPage = Instance.new("Flag", GUI)
-local FavoritesPage = Instance.new("Flag", GUI)
-local SettingsPage = Instance.new("Flag", GUI)
+local OnlineSearchPage = NEW("Flag", GUI)
+local FavoritesPage = NEW("Flag", GUI)
+local SettingsPage = NEW("Flag", GUI)
 
 OnlineSearchPage.Name = "OnlineSearchPage"
 FavoritesPage.Name = "FavoritesPage"
 SettingsPage.Name = "SettingsPage"
 
-local ReferenceInstances = Instance.new("NegateOperation", GUI)
+local ReferenceInstances = NEW("NegateOperation", GUI)
 ReferenceInstances.Name = "ReferenceInstances"
 
-local Frame = Instance.new("Frame", GUI)
-local shadow = Instance.new('UIStroke', Frame)
-shadow.Transparency = .5
-shadow.Thickness=1.5
+local Frame = NEW("Frame", GUI)
 
-local FrameButtons = Instance.new("Folder", Frame)
+NEW('UIStroke', Frame, {Transparency = .5, Thickness=1.5}) -- shadow
+
+local FrameButtons = NEW("Folder", Frame)
 FrameButtons.Name = "FrameButtons"
 
-local CloseButton = Instance.new("TextButton", FrameButtons)
-local MainTextBox = Instance.new("TextBox", OnlineSearchPage)
+local CloseButton = NEW("TextButton", FrameButtons)
+local MainTextBox = NEW("TextBox", OnlineSearchPage)
 
-local frameMainScrollingFrame = Instance.new("Frame", OnlineSearchPage)
+local frameMainScrollingFrame = NEW("Frame", OnlineSearchPage)
 frameMainScrollingFrame.Name = "FrameMainScrollingFrame"
 frameMainScrollingFrame.Size = UDim2.new(1,0,0,175-36)
 frameMainScrollingFrame.Position = UDim2.new(0,0,1,-frameMainScrollingFrame.Size.Y.Offset)
 frameMainScrollingFrame.BackgroundTransparency = 1
 frameMainScrollingFrame.ClipsDescendants = true
 
-local fakeScroll = Instance.new("ScrollingFrame", frameMainScrollingFrame)
+local fakeScroll = NEW("ScrollingFrame", frameMainScrollingFrame)
 
 fakeScroll.Size = UDim2.new(0,10,1,0)
 fakeScroll.BackgroundColor3 = Color3.fromRGB(25,25,25)
@@ -111,16 +114,10 @@ fakeScroll.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 fakeScroll.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 fakeScroll.Name = "FakeScroll"
 
-local MainScrollingFrame = Instance.new("ScrollingFrame", frameMainScrollingFrame)
+local MainScrollingFrame = NEW("ScrollingFrame", frameMainScrollingFrame)
 
-local PageLabel = Instance.new("TextLabel", FrameButtons)
+local PageLabel = NEW("TextLabel", FrameButtons)
 local window_width = 350
-
-function addProperty(instance, properties)
-	for i, v in pairs(properties) do
-		instance[i] = v
-	end
-end
 
 function tween(instance, speed, properties)
 	game:GetService("TweenService"):Create(instance, TweenInfo.new(speed), properties):Play()
@@ -164,7 +161,7 @@ addProperty(MainTextBox, {
 	BorderSizePixel = 0,
 	BorderColor3 = Color3.fromRGB(1,1,1),
 	Position = UDim2.new(0,0,0,18),
-	Size = UDim2.new(1,(-18*4),0,18),
+	Size = UDim2.new(1,-10,0,18),
 	Font = Enum.Font.SourceSansItalic,
 	PlaceholderColor3 = Color3.fromRGB(150,150,150),
 	PlaceholderText = "Online Search",
@@ -253,7 +250,7 @@ addProperty(SettingsButton, {
 	Position = UDim2.new(1,(-18)*5,0,0)
 })
 
-local searchButton = Instance.new("ImageButton", FrameButtons)
+local searchButton = NEW("ImageButton", FrameButtons)
 
 addProperty(searchButton, {
 	Active = false,
@@ -274,9 +271,7 @@ addProperty(favSearchTextBox, {
 
 local FavoritesSortType = "new-old"
 
-local MainSortTypeButton = Instance.new("TextButton", OnlineSearchPage)
-
-addProperty(MainSortTypeButton, {
+local FavoritesSortTypeButton = NEW("TextButton", FavoritesPage, {
 	Text = FavoritesSortType,
 	Size = UDim2.new(0,(18*4),0,18),
 	Position = UDim2.new(1,-(18*4),0,18),
@@ -287,35 +282,12 @@ addProperty(MainSortTypeButton, {
 	TextColor3 = Color3.fromRGB(140,140,140),
 	AutoButtonColor = false,
 	BorderMode = "Inset",
-	Text = 'relevance',
-	Name = 'OnlineSearchSortTypeButton',
+	Text = FavoritesSortType,
+	Name = 'FavoritesSortTypeButton',
 	TextSize = 14,
 	TextStrokeTransparency = 0.5,
 	Active = false
 })
-
-local MainSortType = 0
-
-MainSortTypeButton.MouseButton1Click:connect(function()
-	local txt = MainSortTypeButton.Text
-
-	if MainSortType == 0 then
-		MainSortType = 1
-		MainSortTypeButton.Text = "most fav"
-	elseif MainSortType == 1 then
-		MainSortType = 3
-		MainSortTypeButton.Text = "recent"
-	else
-		MainSortType = 0
-		MainSortTypeButton.Text = "relevance"
-	end
-end)
-
-
-local FavoritesSortTypeButton = MainSortTypeButton:clone()
-FavoritesSortTypeButton.Parent = FavoritesPage
-FavoritesSortTypeButton.Name = "FavoritesSortTypeButton"
-FavoritesSortTypeButton.Text = FavoritesSortType
 
 FavoritesSortTypeButton.MouseButton1Click:connect(function()
 	local txt = FavoritesSortTypeButton.Text
@@ -346,7 +318,7 @@ addProperty(SettingsScrollingFrame, {
 	Size = UDim2.new(1,0,1,0)
 })
 
-local SettingsUIGridLayout = Instance.new("UIGridLayout", SettingsScrollingFrame)
+local SettingsUIGridLayout = NEW("UIGridLayout", SettingsScrollingFrame)
 
 addProperty(SettingsUIGridLayout, {
 	SortOrder = "LayoutOrder",
@@ -360,7 +332,7 @@ function refreshSettingsScrollingFrameCanvas()
 end
 
 function addSettingsHeader(TEXT)
-	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
+	local Header = NEW("TextLabel", SettingsScrollingFrame)
 	addProperty(Header, {
 		BackgroundTransparency = 1,
 		TextStrokeTransparency = .5,
@@ -376,7 +348,7 @@ function addSettingsHeader(TEXT)
 end
 
 function addSettingsText(TEXT)
-	local Header = Instance.new("TextLabel", SettingsScrollingFrame)
+	local Header = NEW("TextLabel", SettingsScrollingFrame)
 	addProperty(Header, {
 		BackgroundTransparency = 1,
 		TextStrokeTransparency = .5,
@@ -392,10 +364,10 @@ function addSettingsText(TEXT)
 end
 
 function addSettingsButton(TEXT, X_SIZE)
-	local Frame = Instance.new("Frame", SettingsScrollingFrame)
+	local Frame = NEW("Frame", SettingsScrollingFrame)
 	Frame.BackgroundTransparency = 1
 
-	local Button = Instance.new("TextButton", Frame)
+	local Button = NEW("TextButton", Frame)
 	addProperty(Button, {
 		Active = false,
 		TextSize = 14,
@@ -419,9 +391,9 @@ function addSettingsButton(TEXT, X_SIZE)
 end
 
 function addSettingsBox(PLACEHOLDERTEXT, X_SIZE)
-	local Frame = Instance.new("Frame", SettingsScrollingFrame)
+	local Frame = NEW("Frame", SettingsScrollingFrame)
 	Frame.BackgroundTransparency=1
-	local Box = Instance.new("TextBox", Frame)
+	local Box = NEW("TextBox", Frame)
 	addProperty(Box, {
 		TextSize = 14,
 		Size = UDim2.new(0, X_SIZE, 0, 16),
@@ -942,14 +914,14 @@ end
 
 function getNameFromId(id)
     for i, audio in pairs(AUDIOS) do
-        if audio["ID"] == id then
+		if audio["ID"] == id then
             return audio["Name"]
         end
     end
 end
 
 do
-    local btn = Instance.new("TextButton", ReferenceInstances)
+    local btn = NEW("TextButton", ReferenceInstances)
 	addProperty(btn, {
 		Active = false,
 		TextTruncate = "AtEnd",
@@ -958,7 +930,7 @@ do
 		Size = UDim2.new(1,-20,0,20),
 		TextWrapped = true,
 		BackgroundTransparency = 0,
-		TextColor3 = (isARobloxAudio and Color3.new(.5,.25,.25) or Color3.fromRGB(140,140,140)),
+		TextColor3 = Color3.fromRGB(140,140,140),
 		AutoButtonColor = false,
 		TextSize = 16,
 		Name = "AudioButton",
@@ -968,7 +940,7 @@ do
 	})
 	
 	
-	local fav = Instance.new("TextButton", btn)
+	local fav = NEW("TextButton", btn)
 	addProperty(fav, {
 		Active = false,
 		TextStrokeTransparency = 0.5,
@@ -1009,14 +981,14 @@ function playAudio(id)
 				return "StopSound"
 			else
 				soundInstance:Destroy()
-				soundInstance = Instance.new("Sound", GUI)
+				soundInstance = NEW("Sound", GUI)
 				soundInstance.Volume = 1
 				soundInstance.SoundId = "rbxassetid://" .. id
 				soundInstance.Looped = true
 				soundInstance:Play()
 			end
 		elseif (not soundInstance) or (not soundInstance.SoundId == "rbxassetid://" .. id) then
-			soundInstance = Instance.new("Sound", GUI)
+			soundInstance = NEW("Sound", GUI)
 			soundInstance.Volume = 1
 			soundInstance.SoundId = "rbxassetid://" .. id
 			soundInstance.Looped = true
@@ -1030,6 +1002,9 @@ function createNew(Parent, txt, id, isARobloxAudio)
 	if Parent:FindFirstChild(id) then return end
 	
 	local btn = ReferenceInstances.AudioButton:clone()
+	if isARobloxAudio then 
+		btn.TextColor3 = Color3.new(.5,.25,.25)
+	end
 	btn.Parent = Parent
 	
 	local fav = btn.fav
@@ -1102,7 +1077,7 @@ function checkIfHasCharacters(str)
 end
 
 function Search(search, PageNumber)
-	local Results = game:HttpGet("https://search.roblox.com/catalog/json?Category=9&PageNumber=" .. PageNumber .. "&SortType=" .. MainSortType .. "&Keyword=" .. (search:gsub('/',''):gsub(" ","+"):lower()))
+	local Results = game:HttpGet('https://search.roblox.com/catalog/json?Category=9&PageNumber=' .. PageNumber .. '&Keyword=' .. (search:gsub('/',''):gsub(' ','+'):lower()))
 	local DecodedResults = JSONDecode(Results)
 
 	return DecodedResults
@@ -1122,14 +1097,9 @@ MainTextBox.FocusLost:connect(function(enter)
 		
 		onlineSearchLoadingResults = true
 
-		if search == "" then
-			MainTextBox.Text = ('Loading the "' .. MainSortTypeButton.Text .. '" category')
-		else
-			MainTextBox.Text = ('Loading "' .. search .. '"..')
-		end
-
+		MainTextBox.Text = ('Loading "' .. search .. '"..')
 		MainTextBox.TextEditable = false
-		
+
 		local loadedresults = 0
 		local totalresults = {}
 		
@@ -1173,7 +1143,7 @@ MainTextBox.FocusLost:connect(function(enter)
 				local name = audio.Name
 				local id = audio.AssetId
 
-				if audio.CreatorID == 1 then
+				if audio.Creator == 'Roblox' then
 					if showrobloxaudios then
 						createNew(MainScrollingFrame, name, id, true)
 					end
