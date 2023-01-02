@@ -140,7 +140,6 @@ addProperty(Frame, {
 })
 
 addProperty(CloseButton, {
-	Active = false,
 	TextStrokeTransparency = .5,
 	BackgroundTransparency = 1,
 	BorderColor3 = Color3.fromRGB(1,1,1),
@@ -253,7 +252,6 @@ addProperty(SettingsButton, {
 local searchButton = NEW("ImageButton", FrameButtons)
 
 addProperty(searchButton, {
-	Active = false,
 	Name = 'OnlineSearchPageButton',
 	Image = "rbxassetid://3229239834",
 	Size = UDim2.new(0,19,0,18),
@@ -286,7 +284,6 @@ local FavoritesSortTypeButton = NEW("TextButton", FavoritesPage, {
 	Name = 'FavoritesSortTypeButton',
 	TextSize = 14,
 	TextStrokeTransparency = 0.5,
-	Active = false
 })
 
 FavoritesSortTypeButton.MouseButton1Click:connect(function()
@@ -369,7 +366,6 @@ function addSettingsButton(TEXT, X_SIZE)
 
 	local Button = NEW("TextButton", Frame)
 	addProperty(Button, {
-		Active = false,
 		TextSize = 14,
 		Size = UDim2.new(0, X_SIZE, 0, 16),
 		Font = "SourceSansBold",
@@ -923,7 +919,6 @@ end
 do
     local btn = NEW("TextButton", ReferenceInstances)
 	addProperty(btn, {
-		Active = false,
 		TextTruncate = "AtEnd",
 		TextStrokeTransparency = .5,
 		BackgroundColor3 = Color3.fromRGB(25,25,25),
@@ -942,7 +937,6 @@ do
 	
 	local fav = NEW("TextButton", btn)
 	addProperty(fav, {
-		Active = false,
 		TextStrokeTransparency = 0.5,
 		BackgroundColor3 = Color3.fromRGB(25,25,25),
 		Size = UDim2.new(0,20,0,20),
