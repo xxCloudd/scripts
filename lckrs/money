@@ -1,0 +1,5 @@
+while wait''do
+for i,v in pairs(workspace.Drops:children())do
+fireclickdetector(v.ClickDetector)
+end
+end
