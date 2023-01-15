@@ -1,0 +1,64 @@
+gui = Instance.new('ScreenGui', game.CoreGui)
+
+Frame = Instance.new('ScrollingFrame', gui)
+Frame.Size = UDim2.new(0, 300, 0, 500)
+Frame.Draggable = true
+Frame.Active = true
+Frame.CanvasSize=UDim2.new(0,0,0,0)
+Frame.AutomaticCanvasSize='XY'
+Frame.Position = UDim2.new(0.01,0,0.4,0)
+Frame.BackgroundColor3=Color3.new(.3,.3,.3)
+
+Sort = Instance.new('UIGridLayout', Frame)
+Sort.CellSize = UDim2.new(0,80,0,80)
+
+close = Instance.new('TextButton', Frame)
+close.Position = UDim2.new(1,-15, 0, 0)
+close.Size = UDim2.new(0, 15, 0, 15)
+close.Text = 'X'
+close.MouseButton1Click:connect(function()
+    gui:Destroy()
+end)
+
+for i, folder in pairs(game.ReplicatedStorage.Customize:children()) do
+    for i, obj in pairs(folder:children()) do
+        local Data = require(obj.InfoMod)
+        local Name = Data.Title
+        local Cost = Data.Cost
+        local img = Instance.new('ViewportFrame', Frame)
+        
+        local showobj = obj:clone()
+        showobj.Parent = img
+        showobj.Primary.Transparency = 1
+        showobj:moveTo(Vector3.new(0,-.1,0))
+        
+        local viewportCamera = Instance.new("Camera", img)
+        img.CurrentCamera = viewportCamera
+        viewportCamera.CameraSubject = showobj.Primary
+        viewportCamera.CameraType = 'Scriptable'
+        viewportCamera.FieldOfView=3
+        
+        local btn = Instance.new("TextButton", img)
+        btn.Size=UDim2.new(1,0,1,0)
+        btn.BackgroundTransparency = 1
+        btn.TextScaled = true
+        btn.TextColor3 = Color3.new(.9,.9,.9)
+        btn.TextStrokeTransparency=.5
+        btn.Text = '\n\n\n\n'..Name .. '\n['..Cost..']'  
+        btn.MouseButton1Click:connect(function()
+            local StarterGui = game:GetService("StarterGui")
+            local b=Instance.new("BindableFunction")
+            b.OnInvoke=function()
+                game.ReplicatedStorage.Events.BuyItem:invokeServer(showobj.Name)
+            end
+            StarterGui:SetCore("SendNotification", {
+            	Title = "Buy ".. Name,
+            	Text = 'For ['..Cost..']',
+            	Duration = 5,
+            	Callback = b,
+            	Button1 = "Yes",
+            	Button2 = "No"
+            })
+        end)
+    end
+end
