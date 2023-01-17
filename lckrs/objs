@@ -44,12 +44,24 @@ for i, folder in pairs(game.ReplicatedStorage.Customize:children()) do
         btn.TextScaled = true
         btn.TextColor3 = Color3.new(.9,.9,.9)
         btn.TextStrokeTransparency=.5
-        btn.Text = '\n\n\n\n'..Name .. '\n['..Cost..']'  
+        btn.Text = '\n\n\n\n'..Name .. '\n['..Cost..']' 
+        spawn(function()
+            repeat
+                local data = game.HttpService:JSONDecode(
+                    game.ReplicatedStorage.Data.Players[game.Players.LocalPlayer.userId].Value
+                )
+                img.BackgroundColor3 = Color3.new(not data.Items[showobj.Name]and .7 or .5,.5,.5)
+                wait(1)
+            until 0==1 or not gui
+        end)
         btn.MouseButton1Click:connect(function()
             local StarterGui = game:GetService("StarterGui")
             local b=Instance.new("BindableFunction")
             b.OnInvoke=function()
-                game.ReplicatedStorage.Events.BuyItem:invokeServer(showobj.Name)
+                spawn(function()
+                    game.ReplicatedStorage.Events.BuyItem:invokeServer(showobj.Name)
+                end)
+                b:destroy()
             end
             StarterGui:SetCore("SendNotification", {
             	Title = "Buy ".. Name,
