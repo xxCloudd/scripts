@@ -1,0 +1,36 @@
+local lp = game:GetService("Players").LocalPlayer
+local tycoon = function() return lp.TycoonReference.Value end
+local fti = firetouchinterest
+
+buy = function(button)
+    local h = lp.Character.Head
+    local t = button.Touch.TouchPart
+    fti(h,t,1)
+    fti(h,t,0)
+end
+
+collect = function()
+    local h = lp.Character.Head
+    local t = tycoon().StarterParts.Collector.CollectPart
+    fti(h,t,1)
+    fti(h,t,0)
+end
+
+rebirth = function()
+    local t = tycoon().PurchasesFolder:FindFirstChild'RebirthButton'
+    if t then
+        game.ReplicatedStorage.Events.Rebirth:FireServer(tycoon())
+    end
+end
+
+while task.wait(.1) do
+    pcall(function()
+        for i, btn in pairs(tycoon().ButtonsFolder:GetChildren()) do
+            if not btn:FindFirstChild'Gamepass' then
+                buy(btn)
+            end
+        end
+        collect()
+        rebirth()
+    end)
+end
