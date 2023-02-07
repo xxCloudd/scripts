@@ -76,15 +76,17 @@ local ReferenceInstances = NEW('NegateOperation', GUI, {Name = 'ReferenceInstanc
 
 local Frame = NEW('Frame', GUI, {
     Active = true,
-	BackgroundColor3 = Color3.fromRGB(25,25,25),
-	BorderColor3 = Color3.fromRGB(120,120,120),
-	BackgroundTransparency=0,
-	BorderSizePixel=0,
+	BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+	BorderColor3 = Color3.fromRGB(120, 120, 120),
+	BackgroundTransparency = 0,
+	BorderSizePixel = 1,
+	BorderColor3 = Color3.fromRGB(123, 123, 123),
 	Name = 'MainFrame',
+	BorderMode = 'Inset',
 	Size = UDim2.new(0,350,0,175)
 })
 
-NEW('UIStroke', Frame, {Transparency = .5, Thickness = 1.5}) -- shadow
+NEW('UIStroke', Frame, {Thickness = 1, LineJoinMode = 'Miter'})
 
 local FrameButtons = NEW('Folder', Frame, {Name = 'FrameButtons'})
 
