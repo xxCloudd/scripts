@@ -1,3 +1,4 @@
+asdfsdfsdf lolool 
 do local a,b,c,d,h=Instance.new,BrickColor.new,CFrame.new,Color3.new,Vector3.new
 function _(a)
     return function(b)
