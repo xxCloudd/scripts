@@ -7,7 +7,7 @@ function _(a)
 	    task.wait()
     end
 end
-o1=workspace
+o1=Instance.new("Folder",workspace)
 o2=a('Model',o1)
 o3=a('Model',o2)
 o4=a('Model',o3)
