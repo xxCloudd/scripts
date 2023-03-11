@@ -1,5 +1,4 @@
-asdfsdfsdf lolool 
-do local a,b,c,d,h=Instance.new,BrickColor.new,CFrame.new,Color3.new,Vector3.new
+do local a,b,c,d,h=function(a,b)task.wait(.04)return Instance.new(a,b) end,BrickColor.new,CFrame.new,Color3.new,Vector3.new
 function _(a)
     return function(b)
         for i,v in next,b do
