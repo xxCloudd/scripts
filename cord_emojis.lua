@@ -9,13 +9,13 @@ repeat wait() until game:IsLoaded()
 
 local lp = game:GetService("Players").LocalPlayer
 
-lp:WaitForChild("PlayerGui"):WaitForChild("Chat")
+local CCCCC = lp:WaitForChild("PlayerGui"):WaitForChild("Chat")
 
 local getchat = function()
     return {
-        main = lp.PlayerGui.Chat,
-        chatbar = lp.PlayerGui.Chat.Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar,
-        messages = lp.PlayerGui.Chat.Frame.ChatChannelParentFrame.Frame_MessageLogDisplay.Scroller
+        main = CCCCC,
+        chatbar = CCCCC.Frame.ChatBarParentFrame.Frame.BoxFrame.Frame.ChatBar,
+        messages = CCCCC.Frame.ChatChannelParentFrame.Frame_MessageLogDisplay.Scroller
     }
 end
 
