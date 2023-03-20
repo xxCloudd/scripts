@@ -5,12 +5,11 @@ local config = {
     ['EmojiReplace'] = true
 }
 
-repeat wait() until game.IsLoaded
-repeat wait() until game:GetService("Players").LocalPlayer
+repeat wait() until game:IsLoaded()
 
 local lp = game:GetService("Players").LocalPlayer
 
-lp:WaitForChild("PlayerGui")
+lp:WaitForChild("PlayerGui"):WaitForChild("Chat")
 
 local getchat = function()
     return {
