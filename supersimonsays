@@ -19,9 +19,9 @@ FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m, t)
     if t == 5.5 then -- Mid Game
         local h = FFC(l.Character, 'Humanoid')
         if m == 'Stand.' or m == 'Simon says sit.' or m == "Simon says don't stand." then
-            h.Sit = false
-        elseif m == 'Sit.' or m == 'Simon says stand.' or m == "Simon says don't sit." then
             h.Sit = true
+        elseif m == 'Sit.' or m == 'Simon says stand.' or m == "Simon says don't sit." then
+            h.Sit = false
         end
     end
     if t == 8 then -- End
