@@ -6,29 +6,41 @@ FFC, WFC = game.FindFirstChild, game.WaitForChild
 repeat wait() until l.Character
 
 thing = {
-    Out = {27, 41, 3},
-    Players = {20, 28, -16},
+    Out = {27, 41, math.random(-8, 8)},
+    Players = {20, 28, math.random(-14, 14)},
     Simon = {-77, 32, -14} -- myb not ncsry
 }
 
---WFC(WFC(game:GetService("ReplicatedStorage"), 'ClientEvents'), 'MessageClientEvent').OnClientEvent:connect(function(m, t)
 FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m, t)
     if m == l.Name and t == 3 then -- Simon
         syn.queue_on_teleport("loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()")
         game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
     end
+    if t == 5.5 then -- Mid Game
+        local h = FFC(l.Character, 'Humanoid')
+        if m == 'Stand.' or m == 'Simon says sit.' or m == "Simon says don't stand." then
+            h.Sit = false
+        elseif m == 'Sit.' or m == 'Simon says stand.' or m == "Simon says don't sit." then
+            h.Sit = true
+        end
+    end
+    if t == 8 then -- End
+        h.Sit = false
+    end
 end)
 
 game.RunService.Stepped:connect(function()
-    local h = FFC(l.Character, "Humanoid")
-    local hrp = h.RootPart
-    if h and hrp then
-        for i, coin in pairs(workspace.Coins:GetChildren()) do
-            firetouchinterest(hrp, coin, 1)
-            firetouchinterest(hrp, coin, 0)
+    for _, p in pairs(l.Character:GetChildren()) do
+        if p:IsA("Part") then
+            p.CanCollide = false
+            if p.Name == "HumanoidRootPart" then
+                for _, coin in pairs(workspace.Coins:GetChildren()) do
+                    firetouchinterest(p, coin, 1)
+                    firetouchinterest(p, coin, 0)
+                end
+                p.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0, math.pi/2, 0)
+                p.Velocity = Vector3.new(0, 0, 0)
+            end
         end
-        h:ChangeState(11)
-        hrp.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0, math.pi/2, 0)
-        hrp.Velocity = Vector3.new(0, 0, 0)
     end
 end)
