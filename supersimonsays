@@ -12,14 +12,6 @@ FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m,t)
         syn.queue_on_teleport"loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()"
         game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
     end
-    if t == 5.5 then
-        local h = FFC(l.Character,'Humanoid')
-        if m == 'Stand.' or m == 'Simon says sit.' or m == "Simon says don't stand." then
-            h.Sit = false
-        elseif m == 'Sit.' or m == 'Simon says stand.' or m == "Simon says don't sit." then
-            h.Sit = true
-        end
-    end
 end)
 
 game.RunService.Stepped:connect(function()
