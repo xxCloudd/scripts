@@ -1,5 +1,5 @@
 l = game.Players.LocalPlayer
-FFC = game.FindFirstChild
+FFC, WFC = game.FindFirstChild, game.WaitForChild
 
 thing = {
     Out = {27, 41, 3},
@@ -7,7 +7,7 @@ thing = {
     Simon = {-77, 32, -14} -- myb not ncsry
 }
 
-FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m,t)
+WFC(WFC(game:GetService("ReplicatedStorage"), 'ClientEvents'), 'MessageClientEvent').OnClientEvent:connect(function(m,t)
     if m == l.Name and t == 3 then -- Simon
         syn.queue_on_teleport"loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()"
         game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
