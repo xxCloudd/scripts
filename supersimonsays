@@ -11,10 +11,10 @@ thing = {
     Simon = {-77, 32, -14} -- myb not ncsry
 }
 
---WFC(WFC(game:GetService("ReplicatedStorage"), 'ClientEvents'), 'MessageClientEvent').OnClientEvent:connect(function(m,t)
-FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m,t)
+--WFC(WFC(game:GetService("ReplicatedStorage"), 'ClientEvents'), 'MessageClientEvent').OnClientEvent:connect(function(m, t)
+FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m, t)
     if m == l.Name and t == 3 then -- Simon
-        syn.queue_on_teleport"loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()"
+        syn.queue_on_teleport("loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()")
         game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
     end
 end)
@@ -28,7 +28,7 @@ game.RunService.Stepped:connect(function()
             firetouchinterest(hrp, coin, 0)
         end
         h:ChangeState(11)
-        hrp.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0,math.pi/2,0)
-        hrp.Velocity = Vector3.new(0,0,0)
+        hrp.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0, math.pi/2, 0)
+        hrp.Velocity = Vector3.new(0, 0, 0)
     end
 end)
