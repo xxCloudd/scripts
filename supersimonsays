@@ -1,0 +1,37 @@
+l = game.Players.LocalPlayer
+FFC = game.FindFirstChild
+
+thing = {
+    Out = {27, 41, 3},
+    Players = {20, 28, -16},
+    Simon = {-77, 32, -14} -- myb not ncsry
+}
+
+FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m,t)
+    if m == l.Name and t == 3 then -- Simon
+        syn.queue_on_teleport"loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()"
+        game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
+    end
+    if t == 5.5 then
+        local h = FFC(l.Character,'Humanoid')
+        if m == 'Stand.' or m == 'Simon says sit.' or m == "Simon says don't stand." then
+            h.Sit = false
+        elseif m == 'Sit.' or m == 'Simon says stand.' or m == "Simon says don't sit." then
+            h.Sit = true
+        end
+    end
+end)
+
+game.RunService.Stepped:connect(function()
+    local h = FFC(l.Character, "Humanoid")
+    local hrp = h.RootPart
+    if h and hrp then
+        for i, coin in pairs(workspace.Coins:GetChildren()) do
+            firetouchinterest(hrp, coin, 1)
+            firetouchinterest(hrp, coin, 0)
+        end
+        h:ChangeState(11)
+        hrp.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0,math.pi/2,0)
+        hrp.Velocity = Vector3.new(0,0,0)
+    end
+end)
