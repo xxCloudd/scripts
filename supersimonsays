@@ -7,26 +7,94 @@ repeat wait() until l.Character
 
 thing = {
     Out = {27, 41, math.random(-8, 8)},
-    Players = {20, 28, math.random(-14, 14)},
+    Players = {20, 27.9, math.random(-14, 14)},
     Simon = {-77, 32, -14} -- myb not ncsry
 }
+defaultthing = thing
+
+touch = function(o)
+    local h = FFC(l.Character, 'HumanoidRootPart')
+    if h then
+        firetouchinterest(h, p, 1)
+        firetouchinterest(h, p, 0)
+    end 
+end
+
+minigames = {
+    dodgeball = {map = 'Theme6',
+        {M = {"Simon says don't keep still to avoid the dodgeballs.", 'Simon says jump to avoid the dodgeballs.', 'Keep still to avoid the dodgeballs.'}, f = function()
+            thing.Players[2] = 35
+        end},
+        {M = {"Simon says don't jump to avoid the dodgeballs.", 'Simon says keep still to avoid the dodgeballs.', 'Jump to avoid the dodgeballs.'}, f = function()
+            thing = defaultthing
+        end}
+    },
+    dodgeball = {map = 'Theme6',
+        {M = {"Simon says don't sit", 'Simon says stand.', 'Sit.'}, f = function()
+            thing.Players[2] = 35
+        end},
+        {M = {"Simon says don't stand", 'Simon says sit.', 'Stand.'}, f = function()
+            thing = defaultthing
+        end}
+    },
+    sitting = {map = 'Theme4',
+        {M = {"Simon says don't sit", 'Simon says stand.', 'Sit.'}, f = function()
+            local h = FFC(l.Character, 'Humanoid')
+            if h then h.Sit = false end
+        end},
+        {M = {"Simon says don't stand", 'Simon says sit.', 'Stand.'}, f = function()
+            local h = FFC(l.Character, 'Humanoid')
+            if h then h.Sit = true end
+        end}
+    }
+}
+
+do -- dressing minigame
+    minigames.dressing = {map = 'Theme29'}
+    
+    for _, hat in pairs({'Builder', 'Pirate', 'Firefighter', 'Astronaut'}) do
+        table.insert(minigames.dressing, {M = {'Simon says dress like a ' .. hat:lower() .. '.'}, f = function()
+            touch(workspace.Theme29[hat])
+        end})
+        
+        table.insert(minigames.dressing, {M = {"Simon says don't dress like a " .. hat:lower() .. '.', 'Dress like a '.. hat:lower() .. '.'}, f = function()
+            local H = FFC(l.Character, hat)
+            if H then H:Destroy() end
+        end})
+    end
+end
 
 FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m, t)
+    
     if m == l.Name and t == 3 then -- Simon
         syn.queue_on_teleport("loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()")
         game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
     end
-    if t == 5.5 then -- Mid Game
+    
+    if t == 5.5 then -- Mid Game (Minigames)
+        
+        for i, v in pairs(minigames) do
+            if FFC(workspace, v.map) then
+                for _, V in ipairs(v) do 
+                    if table.find(V.M, m) then
+                        V.f()
+                        break
+                    end
+                end
+                break
+            end
+        end
+        
+    end
+    
+    if t == 8 then -- End
         local h = FFC(l.Character, 'Humanoid')
-        if m == 'Stand.' or m == 'Simon says sit.' or m == "Simon says don't stand." then
-            h.Sit = true
-        elseif m == 'Sit.' or m == 'Simon says stand.' or m == "Simon says don't sit." then
+        if h then
             h.Sit = false
         end
+        thing = defaultthing
     end
-    if t == 8 then -- End
-        h.Sit = false
-    end
+    
 end)
 
 game.RunService.Stepped:connect(function()
@@ -35,8 +103,7 @@ game.RunService.Stepped:connect(function()
             p.CanCollide = false
             if p.Name == "HumanoidRootPart" then
                 for _, coin in pairs(workspace.Coins:GetChildren()) do
-                    firetouchinterest(p, coin, 1)
-                    firetouchinterest(p, coin, 0)
+                    touch(coin)
                 end
                 p.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0, math.pi/2, 0)
                 p.Velocity = Vector3.new(0, 0, 0)
