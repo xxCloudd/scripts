@@ -6,7 +6,7 @@ FFC, WFC = game.FindFirstChild, game.WaitForChild
 repeat wait() until l.Character
 
 thing = {
-    Out = {27, 41, math.random(-8, 8)},
+    Out = {27, 40.9, math.random(-8, 8)},
     Players = {20, 27.9, math.random(-14, 14)},
     Simon = {-77, 32, -14} -- myb not ncsry
 }
@@ -26,14 +26,6 @@ minigames = {
             thing.Players[2] = 35
         end},
         {M = {"Simon says don't jump to avoid the dodgeballs.", 'Simon says keep still to avoid the dodgeballs.', 'Jump to avoid the dodgeballs.'}, f = function()
-            thing = defaultthing
-        end}
-    },
-    dodgeball = {map = 'Theme6',
-        {M = {"Simon says don't sit", 'Simon says stand.', 'Sit.'}, f = function()
-            thing.Players[2] = 35
-        end},
-        {M = {"Simon says don't stand", 'Simon says sit.', 'Stand.'}, f = function()
             thing = defaultthing
         end}
     },
