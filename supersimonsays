@@ -3,17 +3,20 @@ repeat wait() until game:IsLoaded()
 l = game.Players.LocalPlayer
 FFC, WFC = game.FindFirstChild, game.WaitForChild
 
+positions = {
+    Out     = { 27, 40.9, -14},
+    Players = { 20, 27.9, -14},
+    Simon   = {-77,   32, -14}
+}
+
+default_positions = positions
+
+oppositeDay = false
+
 repeat wait() until l.Character
 
-thing = {
-    Out = {27, 40.9, math.random(-8, 8)},
-    Players = {20, 27.9, math.random(-14, 14)},
-    Simon = {-77, 32, -14} -- myb not ncsry
-}
-defaultthing = thing
-
-touch = function(o)
-    local h = FFC(l.Character, 'HumanoidRootPart')
+touch = function(p)
+    local h = FFC(l.Character, 'Head')
     if h then
         firetouchinterest(h, p, 1)
         firetouchinterest(h, p, 0)
@@ -21,28 +24,28 @@ touch = function(o)
 end
 
 minigames = {
-    dodgeball = {map = 'Theme6',
+    dodgeball = {
         {M = {"Simon says don't keep still to avoid the dodgeballs.", 'Simon says jump to avoid the dodgeballs.', 'Keep still to avoid the dodgeballs.'}, f = function()
-            thing.Players[2] = 35
+            positions.Players[2] = 35
         end},
         {M = {"Simon says don't jump to avoid the dodgeballs.", 'Simon says keep still to avoid the dodgeballs.', 'Jump to avoid the dodgeballs.'}, f = function()
-            thing = defaultthing
+            positions = default_positions
         end}
     },
-    sitting = {map = 'Theme4',
+    sitting = {
         {M = {"Simon says don't sit", 'Simon says stand.', 'Sit.'}, f = function()
             local h = FFC(l.Character, 'Humanoid')
-            if h then h.Sit = false end
+            if h then h.Sit = oppositeDay end
         end},
         {M = {"Simon says don't stand", 'Simon says sit.', 'Stand.'}, f = function()
             local h = FFC(l.Character, 'Humanoid')
-            if h then h.Sit = true end
+            if h then h.Sit = (not oppositeDay) end
         end}
     }
 }
 
 do -- dressing minigame
-    minigames.dressing = {map = 'Theme29'}
+    minigames.dressing = {}
     
     for _, hat in pairs({'Builder', 'Pirate', 'Firefighter', 'Astronaut'}) do
         table.insert(minigames.dressing, {M = {'Simon says dress like a ' .. hat:lower() .. '.'}, f = function()
@@ -57,23 +60,26 @@ do -- dressing minigame
 end
 
 FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m, t)
+
+    if m == 'Opposite Day' and t == 3 then -- For sitting game
+        oppositeDay = true
+        return
+    end
     
     if m == l.Name and t == 3 then -- Simon
         syn.queue_on_teleport("loadstring(game:HttpGet'https://raw.githubusercontent.com/xxCloudd/scripts/main/supersimonsays')()")
         game.TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId)
+        return
     end
     
-    if t == 5.5 then -- Mid Game (Minigames)
+    if t == 5.5 or t == 7 then -- Mid Game (Minigames)
         
-        for i, v in pairs(minigames) do
-            if FFC(workspace, v.map) then
-                for _, V in ipairs(v) do 
-                    if table.find(V.M, m) then
-                        V.f()
-                        break
-                    end
+        for i, Game in next, minigames do
+            for i, msgs in next, Game do
+                if table.find(msgs.M, m) then
+                    msgs.f()
+                    break
                 end
-                break
             end
         end
         
@@ -81,10 +87,10 @@ FFC(game, 'MessageClientEvent', true).OnClientEvent:connect(function(m, t)
     
     if t == 8 then -- End
         local h = FFC(l.Character, 'Humanoid')
-        if h then
-            h.Sit = false
-        end
-        thing = defaultthing
+        if h then h.Sit = false end
+        
+        positions = default_positions
+        oppositeDay = false
     end
     
 end)
@@ -97,7 +103,7 @@ game.RunService.Stepped:connect(function()
                 for _, coin in pairs(workspace.Coins:GetChildren()) do
                     touch(coin)
                 end
-                p.CFrame = CFrame.new(unpack(thing[l.Team.Name])) * CFrame.Angles(0, math.pi/2, 0)
+                p.CFrame = CFrame.new(unpack(positions[l.Team.Name])) * CFrame.Angles(0, math.pi/2, 0)
                 p.Velocity = Vector3.new(0, 0, 0)
             end
         end
