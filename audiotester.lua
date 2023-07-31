@@ -196,4 +196,5 @@ return function(audiotable)
 		c.Name = audio.ID
 		c.Value = audio.Name
 	end
+	test.Text = 'Test Audios [' .. #audiotable ..']'
 end
