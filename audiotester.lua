@@ -85,6 +85,7 @@ ScrollingFrame.Size = UDim2.new(0, 196, 0, 141)
 ScrollingFrame.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollingFrame.ScrollBarThickness = 6
+ScrollingFrame.AutomaticCanvasSize = 'Y'
 ScrollingFrame.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
 
 UICorner_3.CornerRadius = UDim.new(0, 3)
@@ -133,6 +134,7 @@ TextLabel.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum
 TextLabel.TextColor3 = Color3.fromRGB(186, 186, 186)
 TextLabel.TextSize = 12
 TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.TextTruncate = 'AtEnd'
 
 -- Scripts:
 
@@ -147,7 +149,7 @@ test.MouseButton1Click:Connect(function()
 	elseif test.Text:match'Test Audios' then
 		local audios = audiotester:WaitForChild'Audios'
 		test.Text = '0/'..#audios:GetChildren()
-
+		local initialcount = #audios:GetChildren()
 
 		local logger = game:GetService("LogService").MessageOut:connect(function(log, Type)
 			if Type.Value == 3 and (log:gsub("%d+","")) == "Failed to load sound rbxassetid://: Unable to download sound data" then
@@ -166,13 +168,13 @@ test.MouseButton1Click:Connect(function()
 			repeat wait() until s.IsLoaded or not audios:FindFirstChild(id)
 			s:Stop()
 			s:Destroy()
-			test.Text = i..'/'..#audios:GetChildren()
+			test.Text = i..'/'..initialcount..' [✓ ' .. #audios:GetChildren()..']'
 
 			local newlbl=TextLabel:Clone()
 			if not audios:FindFirstChild(id) then 
 				newlbl.TextColor3 = Color3.fromRGB(189, 130, 130)
 			else
-				savedstr = savedstr .. id .. ' ' .. name
+				savedstr = savedstr .. id .. ' ' .. name .. '\n'
 			end
 			newlbl.Text = (' [%s] %s'):format(id, name)
 			newlbl.Parent = ScrollingFrame
@@ -180,7 +182,7 @@ test.MouseButton1Click:Connect(function()
 
 		logger:Disconnect()
 
-		test.Text = 'Set working audios to clipboard'
+		test.Text = 'Set ' .. #audios:GetChildren() .. ' working audios to clipboard'
 	end
 end)
 
