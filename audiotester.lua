@@ -21,7 +21,7 @@ local UICorner_4 = Instance.new("UICorner")
 --Properties:
 
 audiotester.Name = "audiotester"
-audiotester.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+audiotester.Parent = game.CoreGui
 audiotester.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 Frame.Parent = audiotester
@@ -183,6 +183,7 @@ ImageButton.MouseButton1Click:Connect(function()
 end)
 
 return function(audiotable)
+	print(audiotable)
 	local b = Instance.new('Folder',a)
 	b.Name='Audios'
 	for _,audio in pairs(audiotable) do
