@@ -17,8 +17,13 @@ local UIGridLayout = Instance.new("UIGridLayout")
 local title = Instance.new("TextLabel")
 local ImageButton = Instance.new("ImageButton")
 local UICorner_4 = Instance.new("UICorner")
-
+local UIStroke = Instance.new("UIStroke", ScrollingFrame)
 --Properties:
+
+UIStroke.Color = Color3.fromRGB(26,26,26)
+UIStroke.Thickness = 1
+UIStroke.ApplyStrokeMode = 'Border'
+UIStroke.LineJoinMode = 'Round'
 
 audiotester.Name = "audiotester"
 audiotester.Parent = game.CoreGui
@@ -184,7 +189,7 @@ end)
 
 return function(audiotable)
 	print(audiotable)
-	local b = Instance.new('Folder',a)
+	local b = Instance.new('Folder',audiotester)
 	b.Name='Audios'
 	for _,audio in pairs(audiotable) do
 		local id,name=audio[1],audio[2]
