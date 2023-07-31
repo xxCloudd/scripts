@@ -132,9 +132,9 @@ TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 TextLabel.BorderSizePixel = 0
 TextLabel.Size = UDim2.new(0, 200, 0, 50)
 TextLabel.FontFace = Font.new("rbxasset://fonts/families/Inconsolata.json", Enum.FontWeight.Bold)
-TextLabel.TextColor3 = Color3.fromRGB(186, 186, 186)
+TextLabel.TextColor3 = Color3.fromRGB(130, 189, 130)
 TextLabel.TextSize = 12
-TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.TextXAlignment = 'Left'
 TextLabel.TextTruncate = 'AtEnd'
 
 -- Scripts:
@@ -151,7 +151,7 @@ test.MouseButton1Click:Connect(function()
 		local audios = audiotester:WaitForChild'Audios'
 		test.Text = '0/'..#audios:GetChildren()
 		local initialcount = #audios:GetChildren()
-
+		local okcount = 0
 		local logger = game:GetService("LogService").MessageOut:connect(function(log, Type)
 			if Type.Value == 3 and (log:gsub("%d+","")) == "Failed to load sound rbxassetid://: Unable to download sound data" then
 				local id = log:match("%d+")
@@ -169,14 +169,16 @@ test.MouseButton1Click:Connect(function()
 			repeat wait() until s.IsLoaded or not audios:FindFirstChild(id)
 			s:Stop()
 			s:Destroy()
-			test.Text = i..'/'..initialcount..' [✓ ' .. #audios:GetChildren()..']'
+			
 
 			local newlbl=TextLabel:Clone()
 			if not audios:FindFirstChild(id) then 
 				newlbl.TextColor3 = Color3.fromRGB(189, 130, 130)
 			else
+				okcount = okcount + 1
 				savedstr = savedstr .. id .. ' ' .. name .. '\n'
 			end
+			test.Text = ('%s/%s [✓ %s]'):format(i, initialcount, okcount)
 			newlbl.Text = (' [%s] %s'):format(id, name)
 			newlbl.Parent = ScrollingFrame
 			ScrollingFrame.CanvasPosition = Vector2.new(0,2100000000)
