@@ -83,6 +83,7 @@ ScrollingFrame.BorderSizePixel = 0
 ScrollingFrame.Position = UDim2.new(0.024390243, 0, 0.174157307, 0)
 ScrollingFrame.Size = UDim2.new(0, 196, 0, 141)
 ScrollingFrame.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+ScrollingFrame.ScrollBarImageColor3 = Color3.new(.4,.4,.4)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 ScrollingFrame.ScrollBarThickness = 6
 ScrollingFrame.AutomaticCanvasSize = 'Y'
@@ -178,6 +179,7 @@ test.MouseButton1Click:Connect(function()
 			end
 			newlbl.Text = (' [%s] %s'):format(id, name)
 			newlbl.Parent = ScrollingFrame
+			ScrollingFrame.CanvasPosition = Vector2.new(0,2100000000)
 		end
 
 		logger:Disconnect()
