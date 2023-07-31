@@ -145,8 +145,8 @@ local setclipboard=print
 test.MouseButton1Click:Connect(function()
 	--remove dupes first
 
-	if test.Text == 'Set working audios to clipboard' then
-			setclipboard(tostring(savedstr))
+	if test.Text:match'clipboard' then
+		setclipboard(tostring(savedstr))
 	elseif test.Text:match'Test Audios' then
 		local audios = audiotester:WaitForChild'Audios'
 		test.Text = '0/'..#audios:GetChildren()
