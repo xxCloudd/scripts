@@ -36,6 +36,7 @@ Frame.BorderSizePixel = 0
 Frame.Position = UDim2.new(0.368027121, 0, 0.276315778, 0)
 Frame.Size = UDim2.new(0, 211, 0, 201)
 Frame.Draggable = true
+Frame.Active = true
 
 shadow.Name = "shadow"
 shadow.Parent = Frame
@@ -188,13 +189,11 @@ ImageButton.MouseButton1Click:Connect(function()
 end)
 
 return function(audiotable)
-	print(audiotable)
 	local b = Instance.new('Folder',audiotester)
-	b.Name='Audios'
+	b.Name = 'Audios'
 	for _,audio in pairs(audiotable) do
-		local id,name=audio[1],audio[2]
-		local c = Instance.new("StringValue",b)
-		c.Name = id
-		c.Value = name
+		local c = Instance.new("StringValue", b)
+		c.Name = audio.ID
+		c.Value = audio.Name
 	end
 end
