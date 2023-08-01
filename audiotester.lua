@@ -197,10 +197,22 @@ end)
 return function(audiotable)
 	local b = Instance.new('Folder',audiotester)
 	b.Name = 'Audios'
-	for _,audio in pairs(audiotable) do
+	-- remove dupes vv
+	local new = {}
+	do
+		local _ = {}
+		for i, v in pairs(audiotable) do
+			if not _[v.ID] then
+				_[v.ID] = 1
+				table.insert(new, v)
+			end
+		end
+	end
+	-- remove dupes ^^
+	for _,audio in pairs(new) do
 		local c = Instance.new("StringValue", b)
 		c.Name = audio.ID
 		c.Value = audio.Name
 	end
-	test.Text = 'Test Audios [' .. #audiotable ..']'
+	test.Text = 'Test Audios [' .. #new ..']'
 end
