@@ -3,10 +3,10 @@ function add(frame)
 		if frame:FindFirstChild'TextButton' then
 			local N = frame.Name
 			frame.TextButton.Text = N
-			frame.TextButton.Visible = N:match'E'~=nil
+			frame.TextButton.Visible = N:match'E'==nil
 		else
 			local a=Instance.new("TextButton",frame)
-			a.Visible = a.Text:match'E'~=nil
+			a.Visible = a.Text:match'E'==nil
 			a.Text=frame.Name
 			a.BackgroundTransparency = 1
 			a.Size = UDim2.new(1, 0, 0, 20)
