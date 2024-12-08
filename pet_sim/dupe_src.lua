@@ -6,6 +6,7 @@
     1.03 - removed extra 40s measure on first rejoin
     1.04 - brought it back, removed UI trade updating to avoid lag
     1.05 - added variable MAX_PETS_TO_DUPE to avoid network lag to not fail duping
+    1.06 - changed server size minimum 1 -> 2
 ]]
 
 ACC_TO_GIVE_PETS = _G.ACC_TO_GIVE_PETS or ""
@@ -40,7 +41,7 @@ if http_request then
 
     if body and body.data then
         for i, v in next, body.data do
-            if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= game.JobId then
+            if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.playing => 2 and v.id ~= game.JobId then
                 servers[#servers+1] = v
             end
         end
