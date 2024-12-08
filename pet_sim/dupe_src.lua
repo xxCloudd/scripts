@@ -1,6 +1,6 @@
 -- tar - 1rs - bv - :-)
 
-ACC_TO_GIVE_PETS = ""
+ACC_TO_GIVE_PETS = _G.ACC_TO_GIVE_PETS or ""
 
 -- // tar - 1rs - bv - :-)
 
