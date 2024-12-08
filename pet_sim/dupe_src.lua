@@ -1,11 +1,15 @@
--- tar - 1rs - bv - :-)
+--[[
+    Brought to you by tar/bv/1rs
+    1.03 - removed extra 40s measure
+]]
 
 ACC_TO_GIVE_PETS = _G.ACC_TO_GIVE_PETS or ""
 
 -- // tar - 1rs - bv - :-)
 
-Debris = game:GetService'Debris'
-TeleportService = game:GetService'TeleportService'
+local Debris = game:GetService'Debris'
+local TeleportService = game:GetService'TeleportService'
+local Ver = '1.03'
 
 if not game.Players:FindFirstChild(ACC_TO_GIVE_PETS) then
     local xd=Instance.new('Message',workspace)
@@ -57,7 +61,7 @@ if not queue_on_teleport then
 end
 
 queue_on_teleport([==[
-    local h = Instance.new('Hint',workspace)for i=40,0,-1 do h.Text='[2/4] '..i task.wait(1)end h.Text='[2/4] Teleporting back..'
+    local h = Instance.new('Hint',workspace)for i=2,0,-1 do h.Text='[2/4] '..i task.wait(1)end h.Text='[2/4] Teleporting back..'
 
     queue_on_teleport([=[
         hookfunction(getsenv(game.Players.LocalPlayer.PlayerGui.Scripts.GUIs.Trading).UpdateTrade,function()end)
