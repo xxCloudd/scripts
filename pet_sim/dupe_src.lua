@@ -10,7 +10,7 @@
 ]]
 
 ACC_TO_GIVE_PETS = _G.ACC_TO_GIVE_PETS or ""
-MAX_PETS_TO_DUPE = _G.ACC_TO_GIVE_PETS and tonumber(_G.ACC_TO_GIVE_PETS) or 665 -- Recommended: 100 - 125
+MAX_PETS_TO_DUPE = _G.MAX_PETS_TO_DUPE and tonumber(_G.MAX_PETS_TO_DUPE) or 665 -- Recommended: 100 - 125
 
 -- //
 
