@@ -16,7 +16,7 @@ MAX_PETS_TO_DUPE = _G.MAX_PETS_TO_DUPE and tonumber(_G.MAX_PETS_TO_DUPE) or 665 
 
 local Debris = game:GetService'Debris'
 local TeleportService = game:GetService'TeleportService'
-local Ver = '1.05'
+local Ver = '1.06'
 
 local M = Instance.new'Message'
 
