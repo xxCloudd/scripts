@@ -250,7 +250,7 @@ do  -- // GUI
 	TextLabel_4.TextWrapped = true
 	
 	local colorz = {
-		['true'] = Color3.new(0, 1, 0),
+		['true'] = Color3.new(0, .9, 1),
 		['nil'] = Color3.new(1, 1, 1)
 	}
 	
@@ -460,7 +460,7 @@ queue_on_teleport([==[
                 h.Text = '[4/4] ' .. i
                 task.wait(1)
             end
-            h.Text = '[4/4] Teleporting..'
+            h.Text = "[4/4] Teleporting.. (If it failed to teleport it's okay because your data already saved)"
 
             queue_on_teleport("local h = Instance.new('Hint',workspace) h.Text = 'Done' wait(10) h:Destroy()")
 
