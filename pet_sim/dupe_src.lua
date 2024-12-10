@@ -398,7 +398,9 @@ local IDs = ""
 
 if mode == 0 then
 	local totalToSend = 0
-	for _, v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets) do
+	local Pets = workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets
+	table.sort(Pets, function(a, b) return tonumber(a.xp) > tonumber(b.xp) end)
+	for _, v in pairs(Pets) do
 		totalToSend += 1
 
 		IDs = IDs .. v.id .. ','
