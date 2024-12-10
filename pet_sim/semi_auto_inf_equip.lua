@@ -37,12 +37,12 @@ repeat task.wait()
 	for _, p in pairs(getequippedpets()) do
 		task.spawn(function()
                 	T:InvokeServer("Add", lastTradeId, p.id)
-                	TotalIn += 1
+                	TotalIn = TotalIn + 1
             	end)
 	end
-	
+	print'well'
 	repeat task.wait(.1) until TotalIn == TotalE
-	
+	print'nice'
 	local curr = #getpets()
         workspace.__REMOTES.Game.Trading:InvokeServer("Ready", lastTradeId)
 	repeat task.wait(.1) until curr ~= #getpets()
@@ -63,8 +63,10 @@ repeat task.wait()
 			end
 		end
 	end 
+	print'h'
 	repeat task.wait() until TEquipped == TFoundNonEquipped
-	
+	print'ok'
 	ge = (absT==TFoundNonEquipped)
-	repeat task.wait() until curr <= #getpets()
+	repeat task.wait(.1) until curr <= #getpets()
+	print'restart'
 until #getequippedpets() == 0 or ge
