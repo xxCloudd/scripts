@@ -1,7 +1,5 @@
 --tar/bv
-
 local alt = ''
-
 --//
 function getsave()
 	return workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save
@@ -25,17 +23,14 @@ local ge = false
 local con
 repeat task.wait()
 	if con then con:Disconnect() con = nil end -- reset connection
-
 	local lastTradeId = nil
         
 	con = game:FindFirstChild('Trade Update', true).OnClientEvent:Connect(function(id, data, operation)
 		lastTradeId = id
 	end)
-
 	repeat task.wait(.25) until T:InvokeServer("InvSend", game.Players[alt]) == true
         
 	repeat task.wait() until lastTradeId
-
 	local TotalIn = 0
 	local TotalE = #getequippedpets()
 	print(TotalE)
@@ -49,27 +44,27 @@ repeat task.wait()
 	repeat task.wait(.1) until TotalIn == TotalE
 	
 	local curr = #getpets()
-
         workspace.__REMOTES.Game.Trading:InvokeServer("Ready", lastTradeId)
-
 	repeat task.wait(.1) until curr ~= #getpets()
-	
 	workspace.__REMOTES.Game.Trading:InvokeServer("Cancel", lastTradeId)
 
 	local TEquipped = 0
-	local teq = 0
+	local TFoundNonEquipped = 0
+	local absT = 0
 	for _, p in pairs(getpets()) do
-		TEquipped = TEquipped + 1
 		if not p.e then
-			teq = teq + 1
-			task.spawn(function()
-				print(p.id,IR:InvokeServer('Equip', p.id))
-			end)
-			if teq == mp then break end
+			absT = absT + 1
+			if TFoundNonEquipped ~= mp then
+				TFoundNonEquipped = TFoundNonEquipped + 1
+				task.spawn(function()
+					print(p.id,IR:InvokeServer('Equip', p.id))
+					TEquipped = TEquipped + 1
+				end)
+			end
 		end
 	end 
+	repeat task.wait() until TEquipped == TFoundNonEquipped
 	
-	ge = (TEquipped <= mp)
+	ge = (absT==TFoundNonEquipped)
 	repeat task.wait() until curr <= #getpets()
 until #getequippedpets() == 0 or ge
-	
