@@ -330,6 +330,7 @@ do  -- // GUI
 		elseif tonumber(pets.Text) > 665 then
 			pets.Text = 665
 		end
+		MAX_PETS_TO_DUPE = pets.Text
 	end)
 	
 	acc:GetPropertyChangedSignal'Text':connect(function()
