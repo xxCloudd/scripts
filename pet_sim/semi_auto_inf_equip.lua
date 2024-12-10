@@ -46,7 +46,7 @@ repeat task.wait()
 	local curr = #getpets()
         workspace.__REMOTES.Game.Trading:InvokeServer("Ready", lastTradeId)
 	repeat task.wait(.1) until curr ~= #getpets()
-	workspace.__REMOTES.Game.Trading:InvokeServer("Cancel", lastTradeId)
+	task.spawn(function()workspace.__REMOTES.Game.Trading:InvokeServer("Cancel", lastTradeId)end)
 
 	local TEquipped = 0
 	local TFoundNonEquipped = 0
