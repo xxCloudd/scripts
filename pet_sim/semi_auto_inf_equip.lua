@@ -54,24 +54,22 @@ repeat task.wait()
 
 	repeat task.wait(.1) until curr ~= #getpets()
 	
+	workspace.__REMOTES.Game.Trading:InvokeServer("Cancel", lastTradeId)
+
 	local TEquipped = 0
-	local TFoundNonEquipped = 0
-	local absT = 0
+	local teq = 0
 	for _, p in pairs(getpets()) do
+		TEquipped = TEquipped + 1
 		if not p.e then
-			absT = absT + 1
-			if TFoundNonEquipped ~= mp then
-				TFoundNonEquipped = TFoundNonEquipped + 1
-				task.spawn(function()
-					print(p.id,IR:InvokeServer('Equip', p.id))
-					TEquipped = TEquipped + 1
-				end)
-			end
+			teq = teq + 1
+			task.spawn(function()
+				print(p.id,IR:InvokeServer('Equip', p.id))
+			end)
+			if teq == mp then break end
 		end
 	end 
-	repeat task.wait() until TEquipped == TFoundNonEquipped
-	workspace.__REMOTES.Game.Trading:InvokeServer("Cancel", lastTradeId)
-	ge = (absT==TFoundNonEquipped)
+	
+	ge = (TEquipped <= mp)
 	repeat task.wait() until curr <= #getpets()
 until #getequippedpets() == 0 or ge
 	
