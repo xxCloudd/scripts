@@ -325,6 +325,11 @@ do  -- // GUI
 	
 	pets:GetPropertyChangedSignal'Text':connect(function()
 		pets.Text = string.match(pets.Text, '%d+')
+		if not tonumber(pets.Text) or tonumber(pets.Text) < 1 then
+			pets.Text = 1
+		elseif tonumber(pets.Text) > 665 then
+			pets.Text = 665
+		end
 	end)
 	
 	acc:GetPropertyChangedSignal'Text':connect(function()
