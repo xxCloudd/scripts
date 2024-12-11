@@ -9,6 +9,7 @@
     1.06 - changed server size minimum 1 -> 2
     1.07 - added ui interface - thx "GUI to Lua 3.2" for saving my time lol & thx (idk the scripter's name) for the snippet of making a draggable UI
     1.08 - minor fixes
+    1.09 - added a block thingy for the toggle
 ]]
 
 -- //
@@ -16,7 +17,7 @@
 local Debris = game:GetService'Debris'
 local TeleportService = game:GetService'TeleportService'
 local Dir = require(game.ReplicatedStorage['1 | Directory']).Pets
-local Ver = '1.08'
+local Ver = '1.09'
 
 -- \\
 
@@ -250,17 +251,18 @@ do  -- // GUI
 	TextLabel_4.TextSize = 17.000
 	TextLabel_4.TextWrapped = true
 	
-	local block = Instance.new'Frame'
+	local block = Instance.new('Frame', Frame)
 	block.Visible = true
 	block.BackgroundTransparency = .5
 	block.BorderSizePixel = 0
 	block.Position = ScrollingFrame.Position
 	block.Size = ScrollingFrame.Size
 	block.ZIndex = ScrollingFrame.ZIndex + 1
+	block.BackgroundColor3 = Color3.new(1, 1, 1)
 	
 	local colorz = {
-		['true'] = Color3.new(0, .9, .9),
-		['nil'] = Color3.new(.9, .9, .9)
+		['true'] = Color3.new(.4, .7, 0),
+		['nil'] = Color3.new(.8, .8, .8)
 	}
 	
 	local function LoadPets()
