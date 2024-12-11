@@ -250,6 +250,14 @@ do  -- // GUI
 	TextLabel_4.TextSize = 17.000
 	TextLabel_4.TextWrapped = true
 	
+	local block = Instance.new'Frame'
+	block.Visible = true
+	block.BackgroundTransparency = .5
+	block.BorderSizePixel = 0
+	block.Position = ScrollingFrame.Position
+	block.Size = ScrollingFrame.Size
+	block.ZIndex = ScrollingFrame.ZIndex + 1
+	
 	local colorz = {
 		['true'] = Color3.new(0, .9, .9),
 		['nil'] = Color3.new(.9, .9, .9)
@@ -316,12 +324,14 @@ do  -- // GUI
 		all.Text = 'X'
 		specific.Text = ''
 		mode = 0
+		block.Visible = true
 	end)
 
 	specific.MouseButton1Click:Connect(function()
 		all.Text = ''
 		specific.Text = 'X'
 		mode = 1
+		block.Visible = false
 	end)
 	
 	pets:GetPropertyChangedSignal'Text':connect(function()
