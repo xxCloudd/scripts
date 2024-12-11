@@ -258,7 +258,7 @@ do  -- // GUI
 	block.Position = ScrollingFrame.Position
 	block.Size = ScrollingFrame.Size
 	block.ZIndex = ScrollingFrame.ZIndex + 1
-	block.BackgroundColor3 = Color3.new(1, 1, 1)
+	block.BackgroundColor3 = Color3.new(0, 0, 0)
 	
 	local colorz = {
 		['true'] = Color3.new(.4, .7, 0),
