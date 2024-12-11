@@ -253,15 +253,14 @@ do  -- // GUI
 	
 	local block = Instance.new('Frame', Frame)
 	block.Visible = true
-	block.BackgroundTransparency = .5
+	block.BackgroundTransparency = .2
 	block.BorderSizePixel = 0
 	block.Position = ScrollingFrame.Position
 	block.Size = ScrollingFrame.Size
 	block.ZIndex = ScrollingFrame.ZIndex + 1
-	block.BackgroundColor3 = Color3.new(0, 0, 0)
 	
 	local colorz = {
-		['true'] = Color3.new(.4, .7, 0),
+		['true'] = Color3.fromRGB(0, 130, 180),
 		['nil'] = Color3.new(.8, .8, .8)
 	}
 	
