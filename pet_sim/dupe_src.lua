@@ -110,7 +110,7 @@ do  -- // GUI
 	Frame.BorderSizePixel = 0
 	Frame.Position = UDim2.new(0.38648814, 0, 0.13872759, 0)
 	Frame.Size = UDim2.new(0, 373, 0, 459)
-	Frame.ZIn = 2
+	Frame.ZIndex = 2
 
 	TextLabel.Parent = Frame
 	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
