@@ -10,14 +10,12 @@
     1.07 - added ui interface - thx "GUI to Lua 3.2" for saving my time lol & thx (idk the scripter's name) for the snippet of making a draggable UI
     1.08 - minor fixes
     1.09 - added a block thingy for the toggle
+    1.10 - fixed max pets to give problem, added autotoggle if trades are disabled, replaced required() because some exploits don't support it
 ]]
 
 -- //
 
-local Debris = game:GetService'Debris'
-local TeleportService = game:GetService'TeleportService'
-local Dir = require(game.ReplicatedStorage['1 | Directory']).Pets
-local Ver = '1.09'
+local Ver = '1.10'
 
 -- \\
 
@@ -26,6 +24,8 @@ local mode = 0
 local SERVER = nil
 local MAX_PETS_TO_DUPE = 125
 local ACC_TO_GIVE_PETS = ''
+local Debris = game:GetService'Debris'
+local TeleportService = game:GetService'TeleportService'
 
 function notify(M)
 	game.StarterGui:SetCore("SendNotification", {
@@ -34,6 +34,164 @@ function notify(M)
 		Duration = 5
 	})
 end
+
+local Dir = {
+	[77002] = 'Festive Dragon',
+	[9004] = 'Wavy Cheeta',
+	[7004] = 'Dragon',
+	[8004] = 'Demon',
+	[5004] = 'Bat',
+	[6004] = 'Ladybug',
+	[66010] = 'Skeleton Ghost',
+	[4004] = 'Seal',
+	[14001] = 'Revurse',
+	[2004] = 'Mouse',
+	[16012] = 'Cyborg Dominus',
+	[16010] = 'C0RE',
+	[77003] = 'Snow Spike',
+	[15005] = 'Green Gummy Bear',
+	[13007] = 'Space Dragon',
+	[10004] = 'Electric Slime',
+	[66002] = 'Zombie Dog',
+	[76002] = 'Festive Dog',
+	[15008] = 'Rainbow',
+	[16002] = 'Cyborg Dog',
+	[12003] = 'Angel',
+	[13001] = 'Alien',
+	[15010] = 'Ame Damnee',
+	[17003] = 'Dominus Noob',
+	[66003] = 'Spider',
+	[12007] = 'Mortuus',
+	[12005] = 'Ice Queen',
+	[11004] = 'Lava Watermelon',
+	[76004] = 'Festive Racoon',
+	[66004] = 'Pumpkin',
+	[16006] = 'Red Space Ranger',
+	[16001] = 'Cyborg Cat',
+	[11002] = 'Sherbert',
+	[76001] = 'Festive Cat',
+	[66001] = 'Zombie Cat',
+	[79003] = 'Giant Penguin',
+	[15007] = 'Cookie',
+	[1001] = 'Cat',
+	[3001] = 'Dalmatian',
+	[2001] = 'Brown Cat',
+	[5001] = 'Owl',
+	[90010] = 'Huge Cat',
+	[7001] = 'Watermelon',
+	[6001] = 'Cheeta',
+	[9001] = 'Fantasy Dragon',
+	[8001] = 'Bomb',
+	[66006] = 'Ghostdeeri',
+	[12004] = 'Fire King',
+	[90003] = 'Red Snake',
+	[78002] = 'Gingerbread',
+	[90004] = 'Purple Snake',
+	[10003] = 'Lava Turtle',
+	[15001] = 'Candy Cane',
+	[18002] = 'Spike',
+	[90011] = 'Giant Mortuus',
+	[17009] = 'Dominus Huge',
+	[78003] = 'Reindeer',
+	[2005] = 'White Bunny',
+	[1005] = 'Orange Cat',
+	[10002] = 'Lava Dalmatian',
+	[8005] = 'Cyclops',
+	[9005] = 'Wavy Tiger',
+	[4005] = 'Racoon',
+	[90002] = 'Green Snake',
+	[78004] = 'Festive Dominus',
+	[5005] = 'Bee',
+	[18006] = 'Agony',
+	[90006] = 'Dominus Partner',
+	[66007] = 'Sorrow',
+	[14003] = 'Space Owl',
+	[17007] = 'Dominus Rainbow',
+	[90001] = 'BIG Maskot',
+	[11005] = 'Wavy Bee',
+	[10006] = 'Dominus Messor',
+	[14004] = 'Space Cyclops',
+	[17001] = 'Dominus Pumpkin',
+	[12002] = 'Reaper',
+	[2002] = 'White Cat',
+	[3002] = 'Bear',
+	[4002] = 'Crocodile',
+	[5002] = 'Monkey',
+	[6002] = 'Tiger',
+	[7002] = 'Yeti',
+	[8002] = 'Ghost',
+	[9002] = 'Cherry Bomb',
+	[11006] = 'Unicorn',
+	[18005] = 'Hydra',
+	[77001] = 'Festive Seal',
+	[16011] = 'C0RE SH0CK',
+	[18004] = 'Chimera',
+	[1002] = 'Dog',
+	[12006] = 'Immortuos',
+	[18001] = 'Aesthetic Cat',
+	[14009] = '1NE',
+	[18003] = 'Magic Fox',
+	[17006] = 'Dominus Damnee',
+	[17008] = 'Dominus Electric',
+	[16004] = 'Cyborg',
+	[17002] = 'Dominus Cherry',
+	[10008] = 'Dominus Empyreus',
+	[14007] = 'Dark Saturn',
+	[17005] = 'Dominus HeadStack',
+	[13003] = 'Wooga',
+	[16003] = 'Computer',
+	[16007] = 'Friendly Cyborg',
+	[16009] = 'Cyborg Demon',
+	[12001] = 'Tank',
+	[16008] = 'RoVer',
+	[16005] = 'Space Ranger',
+	[15004] = 'Green Lollipop',
+	[66008] = 'Willow Wisp',
+	[13005] = 'Space Dog',
+	[66009] = 'Willow Wisp Green',
+	[90007] = 'Love Dog',
+	[11003] = 'Robot',
+	[1004] = 'Lamb',
+	[10001] = 'Lava Zebra',
+	[14005] = 'Space Bear',
+	[90008] = 'Noob',
+	[15009] = 'Dark Candy Corn',
+	[77004] = 'Ice Spike',
+	[13004] = 'Space Cat',
+	[15002] = 'Candy Corn',
+	[15011] = 'Domortuus',
+	[13006] = 'Space Bunny',
+	[15006] = 'Yellow Gummy Bear',
+	[78001] = 'Festive Ame Damnee',
+	[8003] = 'Cherry Monkey',
+	[14008] = 'ZER0',
+	[14006] = 'Saturn',
+	[17004] = 'Dominus Wavy',
+	[14002] = 'HeadStack',
+	[13002] = 'Puffer',
+	[76003] = 'Festive Bunny',
+	[3004] = 'Pig',
+	[15003] = 'Red Lollipop',
+	[78005] = 'Randolph',
+	[10007] = 'Dominus Frigidus',
+	[66005] = 'Skeleton',
+	[6003] = 'Zebra',
+	[5003] = 'Turtle',
+	[4003] = 'Platypus',
+	[3003] = 'Polar Bear',
+	[2003] = 'White Dog',
+	[1003] = 'Bunny',
+	[11001] = 'Zombie',
+	[10005] = 'Electric Ghost',
+	[7003] = 'Slime',
+	[3005] = 'Panda',
+	[79002] = 'Festive C0RE',
+	[4001] = 'Koala',
+	[90009] = 'Love Cat',
+	[9003] = 'Wavy Zebra',
+	[79001] = 'Festive Immortuos',
+	[90005] = 'Wavy Snake'
+}
 
 do  -- // GUI
 
@@ -295,7 +453,7 @@ do  -- // GUI
 		for _, v in pairs(Pets) do
 			local b = Instance.new('TextButton', ScrollingFrame)
 			local prefix = v.dm and v.r and'Glitched'or v.dm and'Dark Matter'or v.r and'Rainbow'or v.g and'Gold'or'Regular'
-			b.Text = ' ' .. fn(v.l) .. ' | ' .. prefix .. ' ' .. Dir[v.n].DisplayName
+			b.Text = ' ' .. fn(v.l) .. ' | ' .. prefix .. ' ' .. Dir[tonumber(v.n)]
 			b.Font = Enum.Font.Cartoon
 			b.TextSize = 15
 			b.BackgroundColor3 = colorz[tostring(selected_IDs[v.id])]
@@ -337,13 +495,16 @@ do  -- // GUI
 	end)
 	
 	pets:GetPropertyChangedSignal'Text':connect(function()
-		pets.Text = pets.Text and string.match(pets.Text, '%d+') or 1
-		if not tonumber(pets.Text) or tonumber(pets.Text) < 1 then
-			pets.Text = 1
-		elseif tonumber(pets.Text) > 665 then
-			pets.Text = 665
+		local N = tonumber(pets.Text)
+		N = N or 0
+		local Value = math.ceil(N)
+		if Value == nil or Value <= 0 then
+			Value = 1
+		elseif Value > 665 then
+			Value = 665
 		end
-		MAX_PETS_TO_DUPE = pets.Text
+		pets.Text = Value
+		MAX_PETS_TO_DUPE = Value
 	end)
 	
 	acc:GetPropertyChangedSignal'Text':connect(function()
@@ -420,7 +581,7 @@ if mode == 0 then
 	local Pets = workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets
 	table.sort(Pets, function(a, b) return tonumber(a.xp) > tonumber(b.xp) end)
 	for _, v in pairs(Pets) do
-		totalToSend += 1
+		totalToSend = totalToSend + 1
 
 		IDs = IDs .. v.id .. ','
 
@@ -458,6 +619,10 @@ queue_on_teleport([==[
             lastTradeId = id
         end)
         
+	if not workspace.__REMOTES.Core['Get Stats']:InvokeServer().Save.TradingEnabled then
+		workspace.__REMOTES.Game.Trading:InvokeServer("ToggleTrading")
+	end
+
         repeat task.wait(.25) until T:InvokeServer("InvSend", PLR) == true
         
         repeat task.wait() until lastTradeId
