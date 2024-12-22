@@ -11,11 +11,12 @@
     1.08 - minor fixes
     1.09 - added a block thingy for the toggle
     1.10 - fixed max pets to give problem, added autotoggle if trades are disabled, replaced required() because some exploits don't support it
+    1.11 - changed to 45s and removed the other waiting, added yet another QoL warning
 ]]
 
 -- //
 
-local Ver = '1.10'
+local Ver = '1.11'
 
 -- \\
 
@@ -537,6 +538,11 @@ do  -- // GUI
 			deb = false
 			return
 		end
+		if #workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets < 2 then
+			notify"You need to have more than 1 pet"
+			deb = false
+			return
+		end
 
 		-- servers
 		local servers = {}
@@ -598,7 +604,7 @@ end
 
 queue_on_teleport([==[
     local h = Instance.new('Hint',workspace)
-    for i = 40, 0, -1 do
+    for i = 2, 0, -1 do
         h.Text = '[2/4] ' .. i
         task.wait(1)
     end
@@ -645,7 +651,7 @@ queue_on_teleport([==[
         
         queue_on_teleport([[
             local h = Instance.new('Hint',workspace)
-            for i = 40, 0, -1 do
+            for i = 45, 0, -1 do
                 h.Text = '[4/4] ' .. i
                 task.wait(1)
             end
