@@ -12,6 +12,7 @@
     1.09 - added a block thingy for the toggle
     1.10 - fixed max pets to give problem, added autotoggle if trades are disabled, replaced required() because some exploits don't support it
     1.11 - changed to 45s and removed the other waiting, added yet another QoL warning
+    1.12 - added a duping possibility meter
 ]]
 
 -- //
@@ -610,11 +611,27 @@ queue_on_teleport([==[
     end
     h.Text = '[2/4] Teleporting back..'
 
+    local tptimestamp = os.clock()
+
     queue_on_teleport([=[
         hookfunction(getsenv(game.Players.LocalPlayer.PlayerGui.Scripts.GUIs.Trading).UpdateTrade, function() end)
 	local IDs = {]==] .. IDs .. [==[}
-        Instance.new('Hint', workspace).Text = '[3/4] Trading pets to account'
+        local hint = Instance.new('Hint', workspace)
+	hint.Text = '[3/4] Trading pets to account'
 
+	local tptimestamp = ]=] .. tptimestamp .. [=[
+	function perc()
+		local delta = os.clock() - tptimestamp - (40-15)
+		if delta < 0 then
+			delta = 0
+		end
+		return (string.format("%.1f",(100 - ((math.min(delta, 15)/15)*100))) .. '%')
+	end
+	task.spawn(function()
+		while task.wait() do
+			hint.Text = '[3/4] Trading pets to account | Dupe chance: ' .. perc() .. ' | ' .. (os.clock() - tptimestamp)
+		end
+	end)
         local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
 	
 	local PLR = game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
