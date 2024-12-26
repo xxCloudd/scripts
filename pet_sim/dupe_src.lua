@@ -629,7 +629,7 @@ queue_on_teleport([==[
 	end
 	task.spawn(function()
 		while task.wait() do
-			hint.Text = '[3/4] Trading pets to account | Dupe chance: ' .. perc() .. ' | ' .. (os.clock() - tptimestamp)
+			hint.Text = '[3/4] Trading pets to account | Dupe chance: ' .. perc() .. ' | ' .. string.format("%.1f",(os.clock() - tptimestamp)) .. ' elapsed'
 		end
 	end)
         local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
