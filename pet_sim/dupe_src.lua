@@ -621,11 +621,12 @@ queue_on_teleport([==[
 
 	local tptimestamp = ]=] .. tptimestamp .. [=[
 	function perc()
-		local delta = os.clock() - tptimestamp - (40-15)
+		local sec = 10
+		local delta = os.clock() - tptimestamp - (40-sec)
 		if delta < 0 then
 			delta = 0
 		end
-		return (string.format("%.1f",(100 - ((math.min(delta, 15)/15)*100))) .. '%')
+		return (string.format("%.1f",(100 - ((math.min(delta, sec)/sec)*100))) .. '%')
 	end
 	task.spawn(function()
 		while task.wait() do
