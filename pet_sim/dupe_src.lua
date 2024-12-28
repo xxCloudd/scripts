@@ -13,6 +13,7 @@
     1.10 - fixed max pets to give problem, added autotoggle if trades are disabled, replaced required() because some exploits don't support it
     1.11 - changed to 45s and removed the other waiting, added yet another QoL warning
     1.12 - added a duping possibility meter
+    1.13 - added inventory ui deletion to avoid performance lag while duping many pets
 ]]
 
 -- //
@@ -615,6 +616,9 @@ queue_on_teleport([==[
 
     queue_on_teleport([=[
         hookfunction(getsenv(game.Players.LocalPlayer.PlayerGui.Scripts.GUIs.Trading).UpdateTrade, function() end)
+	pcall(function()
+		game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Pets:ClearAllChildren()
+	end)
 	local IDs = {]==] .. IDs .. [==[}
         local hint = Instance.new('Hint', workspace)
 	hint.Text = '[3/4] Trading pets to account'
