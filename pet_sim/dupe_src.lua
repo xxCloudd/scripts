@@ -14,11 +14,12 @@
     1.11 - changed to 45s and removed the other waiting, added yet another QoL warning
     1.12 - added a duping possibility meter
     1.13 - added inventory ui deletion to avoid performance lag while duping many pets
+    1.14 - 29dec24 - fixed post-teleport execution if injected too early
 ]]
 
 -- //
 
-local Ver = '1.13'
+local Ver = '1.14'
 
 -- \\
 
