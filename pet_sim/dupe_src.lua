@@ -624,7 +624,7 @@ queue_on_teleport([==[
                 hookfunction(getsenv(game.Players.LocalPlayer:WaitForChild'PlayerGui':WaitForChild'Scripts':WaitForChild'GUIs':WaitForChild'Trading').UpdateTrade, function() end)
         end)
 	pcall(function()
-		game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Pets:ClearAllChildren()
+		game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Pets:Destroy()
 	end)
 	local IDs = {]==] .. IDs .. [==[}
         local hint = Instance.new('Hint', workspace)
