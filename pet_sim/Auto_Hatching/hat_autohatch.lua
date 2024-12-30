@@ -44,7 +44,7 @@ for i, v in pairs(Hats)do
 end
 local r = workspace.__REMOTES
 local b = false
-local mh = r.Core["Get Stats"]:InvokeServer().Save.MaxHats -- didnt test this one but it should work
+local mh = r.Core["Get Stats"]:InvokeServer().Save.HatSlots
 repeat task.wait()
 	local td, wt = {}, 0
 	local tb = mh - #r.Core["Get Stats"]:InvokeServer().Save.Hats
