@@ -609,7 +609,7 @@ queue_on_teleport([==[
     repeat task.wait() until game:IsLoaded()
 	
     local h = Instance.new('Hint',workspace)
-    for i = 35, 0, -1 do
+    for i = 0, 0, -1 do
         h.Text = '[2/4] ' .. i
         task.wait(1)
     end
