@@ -1,8 +1,7 @@
 -- do _G.FARMING = false to stop
 
-PET_ID = 74857084
-HAT_LVL = 439856 -- 0 = No hat
-CLEANER_PET_ID = 9642691 -- This is to break unused coins that build up and are bad for farming, use like a Dom Huge idk
+PET_ID = 12345670
+CLEANER_PET_ID = 12345670 -- This is to break unused coins that build up and are bad for farming, use like a Dom Huge idk
 
 -- Best configuration for Pets leveled under 2,250,000
 
@@ -16,7 +15,16 @@ function getLvl(ID)
     
     for i, pet in pairs(Stats.Save.Pets) do
         if pet.id == ID then
-            return pet.l
+            local l = pet.l
+            if pet.h then
+                for _, h in pairs(Stats.Save.Hats) do
+                    if h.id == pet.h then
+                        l = l + h.l
+                        break
+                    end
+                end
+            end
+            return l
         end
     end
 end
