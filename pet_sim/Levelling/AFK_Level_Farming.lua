@@ -40,7 +40,7 @@ repeat task.wait(.13)
         local cn = v:FindFirstChild'CoinName'
         if cn then
             if table.find(mineCoins, cn.Value) and os.clock() > lastMainPetCooldwn + .13 then
-                workspace.__REMOTES.Game.Coins:FireServer("Mine", v.Name, (PET_LVL + HAT_LVL)*2-1, PET_ID)
+                workspace.__REMOTES.Game.Coins:FireServer("Mine", v.Name, (PET_LVL)*2-1, PET_ID)
                 lastMainPetCooldwn = os.clock()
             elseif table.find(mineUnusedCoins, cn.Value) and os.clock() > lastBreakPetCooldwn + .13 and CLEANER_PET_LVL then
                 workspace.__REMOTES.Game.Coins:FireServer("Mine", v.Name, CLEANER_PET_LVL*2-1, CLEANER_PET_ID)
