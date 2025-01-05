@@ -1,6 +1,7 @@
 --[[
     Brought to you by tar/bv/1rs
-    1.00 - 16sep24 - unreleased/private, required manual server id inputs
+    beta - 29jul24 - [unreleased/private] very barebones, newfound dupe method
+    1.00 - 16sep24 - [unreleased/private] semi-automated required manual server id inputs
     1.01 - 05dec24 - released, no longer required manual server id inputting
     1.02 - 08dec24 - uploaded to github, changed from 35s to 40s
     1.03 - 08dec24 - removed extra 40s measure on first rejoin
