@@ -17,11 +17,12 @@
     1.13 - 28dec24 - added inventory ui deletion to avoid performance lag while duping many pets
     1.14 - 29dec24 - fixed post-teleport execution if injected too early
     1.15 - 01jan25 - changed the duping chance meter parameters and fixed a bug with the dupe button
+    1.16 - 24jan25 - revamped gui - gui2lua converter by @uniquadev
 ]]
 
 -- //
 
-local Ver = '1.15'
+local Ver = '1.16'
 
 -- \\
 
@@ -203,233 +204,412 @@ local Dir = {
 
 do  -- // GUI
 
-	-- Gui to Lua
-	-- Version: 3.2
+	function GUI()
+
+		local G2L = {};
+
+		-- StarterGui.ScreenGui
+		G2L["1"] = Instance.new("ScreenGui", game.CoreGui);
+		G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+
+		-- StarterGui.ScreenGui.Frame
+		G2L["2"] = Instance.new("Frame", G2L["1"]);
+		G2L["2"]["ZIndex"] = 2;
+		G2L["2"]["BorderSizePixel"] = 2;
+		G2L["2"]["BackgroundColor3"] = Color3.fromRGB(136, 136, 136);
+		G2L["2"]["BorderMode"] = Enum.BorderMode.Inset;
+		G2L["2"]["Size"] = UDim2.new(0, 373, 0, 459);
+		G2L["2"]["Position"] = UDim2.new(.5, -373/2, -1.5,0);
+		G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["2"]["BackgroundTransparency"] = 0.55;
+
+
+		-- StarterGui.ScreenGui.Frame.titlelabel
+		G2L["3"] = Instance.new("TextLabel", G2L["2"]);
+		G2L["3"]["TextWrapped"] = true;
+		G2L["3"]["TextStrokeTransparency"] = 0;
+		G2L["3"]["BorderSizePixel"] = 0;
+		G2L["3"]["TextSize"] = 40;
+		G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["3"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["3"]["BackgroundTransparency"] = 1;
+		G2L["3"]["Size"] = UDim2.new(1, 0, 0, 50);
+		G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["3"]["Text"] = [[tar's dupe v]]..Ver;
+		G2L["3"]["Name"] = [[titlelabel]];
+
+
+		-- StarterGui.ScreenGui.Frame.dupe
+		G2L["4"] = Instance.new("TextButton", G2L["2"]);
+		G2L["4"]["BorderSizePixel"] = 0;
+		G2L["4"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["4"]["TextSize"] = 14;
+		G2L["4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["4"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["4"]["Size"] = UDim2.new(0, 60, 0, 58);
+		G2L["4"]["BackgroundTransparency"] = 1;
+		G2L["4"]["Name"] = [[dupe]];
+		G2L["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["4"]["Text"] = [[Dupe]];
+		G2L["4"]["Position"] = UDim2.new(0.79357, 0, 0.12636, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.dupe.UICorner
+		G2L["5"] = Instance.new("UICorner", G2L["4"]);
+		G2L["5"]["CornerRadius"] = UDim.new(0.25, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.dupe.UIStroke
+		G2L["6"] = Instance.new("UIStroke", G2L["4"]);
+		G2L["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.dupe.UIStroke
+		G2L["7"] = Instance.new("UIStroke", G2L["4"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.all
+		G2L["8"] = Instance.new("TextButton", G2L["2"]);
+		G2L["8"]["BorderSizePixel"] = 0;
+		G2L["8"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["8"]["TextSize"] = 14;
+		G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["8"]["FontFace"] = Font.new([[rbxasset://fonts/families/Roboto.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["8"]["Size"] = UDim2.new(0, 20, 0, 20);
+		G2L["8"]["BackgroundTransparency"] = 1;
+		G2L["8"]["Name"] = [[all]];
+		G2L["8"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["8"]["Text"] = [[X]];
+		G2L["8"]["Position"] = UDim2.new(0.0429, 0, 0.12636, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.all.UICorner
+		G2L["9"] = Instance.new("UICorner", G2L["8"]);
+		G2L["9"]["CornerRadius"] = UDim.new(1, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.all.UIStroke
+		G2L["a"] = Instance.new("UIStroke", G2L["8"]);
+		G2L["a"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.all.UIStroke
+		G2L["b"] = Instance.new("UIStroke", G2L["8"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.all.amountlabel
+		G2L["c"] = Instance.new("TextLabel", G2L["8"]);
+		G2L["c"]["BorderSizePixel"] = 0;
+		G2L["c"]["TextSize"] = 17;
+		G2L["c"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+		G2L["c"]["TextYAlignment"] = Enum.TextYAlignment.Top;
+		G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["c"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["c"]["BackgroundTransparency"] = 1;
+		G2L["c"]["Size"] = UDim2.new(0, 175, 1, 0);
+		G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["c"]["Text"] = [[Dupe amount of pets:]];
+		G2L["c"]["Name"] = [[amountlabel]];
+		G2L["c"]["Position"] = UDim2.new(1, 10, 0, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.all.amountlabel.UIStroke
+		G2L["d"] = Instance.new("UIStroke", G2L["c"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.all.amountlabel.pets
+		G2L["e"] = Instance.new("TextBox", G2L["c"]);
+		G2L["e"]["CursorPosition"] = -1;
+		G2L["e"]["Name"] = [[pets]];
+		G2L["e"]["BorderSizePixel"] = 0;
+		G2L["e"]["TextSize"] = 14;
+		G2L["e"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["e"]["ClearTextOnFocus"] = false;
+		G2L["e"]["Size"] = UDim2.new(0, 50, 0, 20);
+		G2L["e"]["Position"] = UDim2.new(1, 10, 0, 1);
+		G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["e"]["Text"] = MAX_PETS_TO_DUPE;
+		G2L["e"]["BackgroundTransparency"] = 1;
+
+
+		-- StarterGui.ScreenGui.Frame.all.amountlabel.pets.UICorner
+		G2L["f"] = Instance.new("UICorner", G2L["e"]);
+		G2L["f"]["CornerRadius"] = UDim.new(1, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.all.amountlabel.pets.UIStroke
+		G2L["10"] = Instance.new("UIStroke", G2L["e"]);
+		G2L["10"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.all.amountlabel.pets.UIStroke
+		G2L["11"] = Instance.new("UIStroke", G2L["e"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.specific
+		G2L["12"] = Instance.new("TextButton", G2L["2"]);
+		G2L["12"]["BorderSizePixel"] = 0;
+		G2L["12"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["12"]["TextSize"] = 14;
+		G2L["12"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["12"]["FontFace"] = Font.new([[rbxasset://fonts/families/Roboto.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+		G2L["12"]["Size"] = UDim2.new(0, 20, 0, 20);
+		G2L["12"]["BackgroundTransparency"] = 1;
+		G2L["12"]["Name"] = [[specific]];
+		G2L["12"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["12"]["Text"] = [[]];
+		G2L["12"]["Position"] = UDim2.new(0.0429, 0, 0.1939, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.specific.UICorner
+		G2L["13"] = Instance.new("UICorner", G2L["12"]);
+		G2L["13"]["CornerRadius"] = UDim.new(1, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.specific.UIStroke
+		G2L["14"] = Instance.new("UIStroke", G2L["12"]);
+		G2L["14"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.specific.UIStroke
+		G2L["15"] = Instance.new("UIStroke", G2L["12"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.specific.specificlabel
+		G2L["16"] = Instance.new("TextLabel", G2L["12"]);
+		G2L["16"]["BorderSizePixel"] = 0;
+		G2L["16"]["TextSize"] = 17;
+		G2L["16"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+		G2L["16"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["16"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["16"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["16"]["BackgroundTransparency"] = 1;
+		G2L["16"]["Size"] = UDim2.new(0, 0, 0, 20);
+		G2L["16"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["16"]["Text"] = [[Dupe specific pets]];
+		G2L["16"]["Name"] = [[specificlabel]];
+		G2L["16"]["Position"] = UDim2.new(1, 10, 0, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.specific.specificlabel.UIStroke
+		G2L["17"] = Instance.new("UIStroke", G2L["16"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.accountlabel
+		G2L["18"] = Instance.new("TextLabel", G2L["2"]);
+		G2L["18"]["TextWrapped"] = true;
+		G2L["18"]["BorderSizePixel"] = 0;
+		G2L["18"]["TextSize"] = 17;
+		G2L["18"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["18"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["18"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["18"]["BackgroundTransparency"] = 1;
+		G2L["18"]["Size"] = UDim2.new(0.59479, 0, -0.06479, 50);
+		G2L["18"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["18"]["Text"] = [[Account to give pets to:]];
+		G2L["18"]["Name"] = [[accountlabel]];
+		G2L["18"]["Position"] = UDim2.new(0.04672, 0, 0.27909, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.accountlabel.UIStroke
+		G2L["19"] = Instance.new("UIStroke", G2L["18"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.accountlabel.acc
+		G2L["1a"] = Instance.new("TextBox", G2L["18"]);
+		G2L["1a"]["CursorPosition"] = -1;
+		G2L["1a"]["Name"] = [[acc]];
+		G2L["1a"]["PlaceholderColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["1a"]["BorderSizePixel"] = 0;
+		G2L["1a"]["TextSize"] = 14;
+		G2L["1a"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["1a"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["1a"]["PlaceholderText"] = [[Username]];
+		G2L["1a"]["Size"] = UDim2.new(0, 105, 0, 20);
+		G2L["1a"]["Position"] = UDim2.new(1.05012, 0, 0, 2);
+		G2L["1a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["1a"]["Text"] = [[]];
+		G2L["1a"]["BackgroundTransparency"] = 1;
+
+
+		-- StarterGui.ScreenGui.Frame.accountlabel.acc.UICorner
+		G2L["1b"] = Instance.new("UICorner", G2L["1a"]);
+		G2L["1b"]["CornerRadius"] = UDim.new(1, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.accountlabel.acc.UIStroke
+		G2L["1c"] = Instance.new("UIStroke", G2L["1a"]);
+		G2L["1c"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.accountlabel.acc.UIStroke
+		G2L["1d"] = Instance.new("UIStroke", G2L["1a"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.UIStroke
+		G2L["1e"] = Instance.new("UIStroke", G2L["2"]);
+		G2L["1e"]["Color"] = Color3.fromRGB(136, 136, 136);
+
+
+		-- StarterGui.ScreenGui.Frame.ScrollingFrame
+		G2L["1f"] = Instance.new("ScrollingFrame", G2L["2"]);
+		G2L["1f"]["Active"] = true;
+		G2L["1f"]["BorderSizePixel"] = 0;
+		G2L["1f"]["CanvasSize"] = UDim2.new(0, 0, 0, 0);
+		G2L["1f"]["TopImage"] = [[rbxassetid://3062506445]];
+		G2L["1f"]["MidImage"] = [[rbxassetid://3062506202]];
+		G2L["1f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["1f"]["BottomImage"] = [[rbxassetid://3062505976]];
+		G2L["1f"]["Size"] = UDim2.new(1, -40, 0, 270);
+		G2L["1f"]["ScrollBarImageColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["1f"]["Position"] = UDim2.new(0, 20, 1, -290);
+		G2L["1f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["1f"]["BackgroundTransparency"] = 1;
+		G2L["1f"]["Visible"] = false;
+
+		-- StarterGui.ScreenGui.Frame.ScrollingFrame.UIGridLayout
+		G2L["20"] = Instance.new("UIGridLayout", G2L["1f"]);
+		G2L["20"]["CellSize"] = UDim2.new(1, -12, 0, 20);
+		G2L["20"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+		G2L["20"]["CellPadding"] = UDim2.new(0, 0, 0, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.ScrollingFrame.UIStroke
+		G2L["21"] = Instance.new("UIStroke", G2L["1f"]);
+		G2L["21"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.countlabel
+		G2L["22"] = Instance.new("TextLabel", G2L["2"]);
+		G2L["22"]["BorderSizePixel"] = 0;
+		G2L["22"]["TextSize"] = 17;
+		G2L["22"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+		G2L["22"]["TextYAlignment"] = Enum.TextYAlignment.Top;
+		G2L["22"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["22"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["22"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["22"]["BackgroundTransparency"] = 1;
+		G2L["22"]["Size"] = UDim2.new(0, 175, 0, 20);
+		G2L["22"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["22"]["Text"] = [[Pets Selected: 0]];
+		G2L["22"]["Name"] = [[countlabel]];
+		G2L["22"]["Position"] = UDim2.new(0, 20, 1, -19);
+		G2L["22"]["Visible"] = false;
+
+
+		-- StarterGui.ScreenGui.Frame.countlabel.UIStroke
+		G2L["23"] = Instance.new("UIStroke", G2L["22"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.refresh
+		G2L["24"] = Instance.new("TextButton", G2L["2"]);
+		G2L["24"]["BorderSizePixel"] = 0;
+		G2L["24"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["24"]["TextSize"] = 14;
+		G2L["24"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["24"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["24"]["Size"] = UDim2.new(0, 70, 0, 15);
+		G2L["24"]["BackgroundTransparency"] = 1;
+		G2L["24"]["Name"] = [[refresh]];
+		G2L["24"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["24"]["Text"] = [[Refresh]];
+		G2L["24"]["Position"] = UDim2.new(1, -90, 1, -17);
+		G2L["24"]["Visible"] = false;
+
+		-- StarterGui.ScreenGui.Frame.refresh.UICorner
+		G2L["25"] = Instance.new("UICorner", G2L["24"]);
+		G2L["25"]["CornerRadius"] = UDim.new(1, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.refresh.UIStroke
+		G2L["26"] = Instance.new("UIStroke", G2L["24"]);
+		G2L["26"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.refresh.UIStroke
+		G2L["27"] = Instance.new("UIStroke", G2L["24"]);
+
+		do -- // draggable snippet not made by me \\
+			local UserInputService = game:GetService("UserInputService")
+
+			local gui = G2L['2']
+
+			local dragging
+			local dragInput
+			local dragStart
+			local startPos
+
+			local function update(input)
+				local delta = input.Position - dragStart
+				gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			end
+
+			gui.InputBegan:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+					dragging = true
+					dragStart = input.Position
+					startPos = gui.Position
+
+					input.Changed:Connect(function()
+						if input.UserInputState == Enum.UserInputState.End then
+							dragging = false
+						end
+					end)
+				end
+			end)
+
+			gui.InputChanged:Connect(function(input)
+				if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+					dragInput = input
+				end
+			end)
+
+			UserInputService.InputChanged:Connect(function(input)
+				if input == dragInput and dragging then
+					update(input)
+				end
+			end)
+		end -- \\ draggable snippet not made by me //
+
+		return G2L
+	end
 	
-	-- Instances:
+	local gui = GUI()
+	local ScreenGui      = gui['1']
+	local Frame          = gui['2']
+	local ScrollingFrame = gui['1f']
+	local dupe           = gui['4']
+	local refresh        = gui['24']
+	local pets           = gui['e']
+	local all            = gui['8']
+	local specific       = gui['12']
+	local count_selected = gui['22']
+	local acc            = gui['1a']
 	
-	local ScreenGui = Instance.new("ScreenGui")
-	local Frame = Instance.new("Frame")
-	local TextLabel = Instance.new("TextLabel")
-	local ScrollingFrame = Instance.new("ScrollingFrame")
-	local UIGridLayout = Instance.new("UIGridLayout")
-	local dupe = Instance.new("TextButton")
-	local all = Instance.new("TextButton")
-	local TextLabel_2 = Instance.new("TextLabel")
-	local pets = Instance.new("TextBox")
-	local specific = Instance.new("TextButton")
-	local TextLabel_3 = Instance.new("TextLabel")
-	local acc = Instance.new("TextBox")
-	local TextLabel_4 = Instance.new("TextLabel")
-
-	--Properties:
-
-	Instance.new('UICorner', Frame).CornerRadius = UDim.new(0, 5)
-
-	ScreenGui.Parent = game.CoreGui
-	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-	do -- // draggable snippet not made by me \\
-		local UserInputService = game:GetService("UserInputService")
-
-		local gui = Frame
-
-		local dragging
-		local dragInput
-		local dragStart
-		local startPos
-
-		local function update(input)
-			local delta = input.Position - dragStart
-			gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	task.spawn(function()
+		while task.wait() do
+			local total = 0
+			for _,_ in pairs(selected_IDs) do
+				total = total + 1
+			end
+			count_selected.Text = 'Pets Selected: ' .. total
 		end
-
-		gui.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-				dragging = true
-				dragStart = input.Position
-				startPos = gui.Position
-
-				input.Changed:Connect(function()
-					if input.UserInputState == Enum.UserInputState.End then
-						dragging = false
-					end
-				end)
-			end
-		end)
-
-		gui.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-				dragInput = input
-			end
-		end)
-
-		UserInputService.InputChanged:Connect(function(input)
-			if input == dragInput and dragging then
-				update(input)
-			end
-		end)
-	end -- \\ draggable snippet not made by me //
-
-	Frame.Parent = ScreenGui
-	Frame.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-	Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	Frame.BorderSizePixel = 0
-	Frame.Position = UDim2.new(0.38648814, 0, 0.13872759, 0)
-	Frame.Size = UDim2.new(0, 373, 0, 459)
-	Frame.ZIndex = 2
-
-	TextLabel.Parent = Frame
-	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel.BackgroundTransparency = 1.000
-	TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TextLabel.BorderSizePixel = 0
-	TextLabel.Size = UDim2.new(1, 0, 0, 50)
-	TextLabel.Font = Enum.Font.Cartoon
-	TextLabel.Text = "tar's dupe v"..Ver
-	TextLabel.TextColor3 = Color3.fromRGB(218, 218, 218)
-	TextLabel.TextScaled = true
-	TextLabel.TextSize = 14.000
-	TextLabel.TextWrapped = true
-
-	ScrollingFrame.Parent = Frame
-	ScrollingFrame.Active = true
-	ScrollingFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	ScrollingFrame.BackgroundTransparency = 0.500
-	ScrollingFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	ScrollingFrame.BorderSizePixel = 0
-	ScrollingFrame.Position = UDim2.new(0.0428954437, 0, 0.287581712, 0)
-	ScrollingFrame.Size = UDim2.new(0, 340, 0, 278)
-	ScrollingFrame.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
-	ScrollingFrame.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
-	ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-	ScrollingFrame.ScrollBarImageColor3 = Color3.new(0, 0, 0)
-	
-	UIGridLayout.Parent = ScrollingFrame
-	UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	UIGridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
-	UIGridLayout.CellSize = UDim2.new(1, -12, 0, 20)
-
-	dupe.Name = "dupe"
-	dupe.Parent = Frame
-	dupe.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	dupe.BackgroundTransparency = 0.500
-	dupe.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	dupe.BorderSizePixel = 0
-	dupe.Position = UDim2.new(0.793565691, 0, 0.126361653, 0)
-	dupe.Size = UDim2.new(0, 60, 0, 58)
-	dupe.Font = Enum.Font.Cartoon
-	dupe.Text = "doope"
-	dupe.TextColor3 = Color3.fromRGB(0, 0, 0)
-	dupe.TextSize = 14.000
-
-	all.Name = "all"
-	all.Parent = Frame
-	all.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	all.BackgroundTransparency = 0.500
-	all.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	all.BorderSizePixel = 0
-	all.Position = UDim2.new(0.0428954437, 0, 0.126361653, 0)
-	all.Size = UDim2.new(0, 20, 0, 20)
-	all.Font = Enum.Font.Cartoon
-	all.Text = "X"
-	all.TextColor3 = Color3.fromRGB(0, 0, 0)
-	all.TextSize = 14.000
-
-	TextLabel_2.Parent = Frame
-	TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel_2.BackgroundTransparency = 1.000
-	TextLabel_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TextLabel_2.BorderSizePixel = 0
-	TextLabel_2.Position = UDim2.new(0.1152815, 0, 0.126361653, 0)
-	TextLabel_2.Size = UDim2.new(0.436997324, 0, -0.0653594807, 50)
-	TextLabel_2.Font = Enum.Font.Cartoon
-	TextLabel_2.Text = "Dupe X amount of pets:"
-	TextLabel_2.TextColor3 = Color3.fromRGB(218, 218, 218)
-	TextLabel_2.TextSize = 17.000
-	TextLabel_2.TextWrapped = true
-
-	pets.Name = "pets"
-	pets.Parent = Frame
-	pets.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	pets.BackgroundTransparency = 0.500
-	pets.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	pets.BorderSizePixel = 0
-	pets.Position = UDim2.new(0.579088449, 0, 0.126361653, 0)
-	pets.Size = UDim2.new(0, 60, 0, 20)
-	pets.ClearTextOnFocus = false
-	pets.Font = Enum.Font.SourceSans
-	pets.Text = MAX_PETS_TO_DUPE
-	pets.TextColor3 = Color3.fromRGB(0, 0, 0)
-	pets.TextSize = 14.000
-
-	specific.Name = "specific"
-	specific.Parent = Frame
-	specific.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	specific.BackgroundTransparency = 0.500
-	specific.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	specific.BorderSizePixel = 0
-	specific.Position = UDim2.new(0.0428954437, 0, 0.193899781, 0)
-	specific.Size = UDim2.new(0, 20, 0, 20)
-	specific.Font = Enum.Font.Cartoon
-	specific.Text = ""
-	specific.TextColor3 = Color3.fromRGB(0, 0, 0)
-	specific.TextSize = 14.000
-
-	TextLabel_3.Parent = Frame
-	TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel_3.BackgroundTransparency = 1.000
-	TextLabel_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TextLabel_3.BorderSizePixel = 0
-	TextLabel_3.Position = UDim2.new(0.1152815, 0, 0.193899781, 0)
-	TextLabel_3.Size = UDim2.new(0.436997324, 0, -0.0653594807, 50)
-	TextLabel_3.Font = Enum.Font.Cartoon
-	TextLabel_3.Text = "Dupe specific pets"
-	TextLabel_3.TextColor3 = Color3.fromRGB(218, 218, 218)
-	TextLabel_3.TextSize = 17.000
-	TextLabel_3.TextWrapped = true
-
-	acc.Name = "acc"
-	acc.Parent = Frame
-	acc.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	acc.BackgroundTransparency = 0.500
-	acc.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	acc.BorderSizePixel = 0
-	acc.Position = UDim2.new(0.619302928, 0, 0.921568632, 0)
-	acc.Size = UDim2.new(0, 114, 0, 20)
-	acc.Font = Enum.Font.SourceSans
-	acc.PlaceholderColor3 = Color3.fromRGB(50, 50, 50)
-	acc.PlaceholderText = "Username"
-	acc.Text = ""
-	acc.TextColor3 = Color3.fromRGB(0, 0, 0)
-	acc.TextSize = 14.000
-
-	TextLabel_4.Parent = Frame
-	TextLabel_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel_4.BackgroundTransparency = 1.000
-	TextLabel_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TextLabel_4.BorderSizePixel = 0
-	TextLabel_4.Position = UDim2.new(0.0428954437, 0, 0.921568632, 0)
-	TextLabel_4.Size = UDim2.new(0.536193073, 0, -0.0653594807, 50)
-	TextLabel_4.Font = Enum.Font.Cartoon
-	TextLabel_4.Text = "Account to give pets to:"
-	TextLabel_4.TextColor3 = Color3.fromRGB(218, 218, 218)
-	TextLabel_4.TextSize = 17.000
-	TextLabel_4.TextWrapped = true
-	
-	local block = Instance.new('Frame', Frame)
-	block.Visible = true
-	block.BackgroundTransparency = .2
-	block.BorderSizePixel = 0
-	block.Position = ScrollingFrame.Position
-	block.Size = ScrollingFrame.Size
-	block.ZIndex = ScrollingFrame.ZIndex + 1
-	block.BackgroundColor3 = Color3.new(0.5115, 0.5115, 0.5115)
-
-	local colorz = {
-		['true'] = Color3.fromRGB(0, 130, 180),
-		['nil'] = Color3.new(.8, .8, .8)
-	}
+	end)
 	
 	local function LoadPets()
 		for _, v in pairs(ScrollingFrame:GetChildren()) do
@@ -439,13 +619,13 @@ do  -- // GUI
 		end
 		ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 
-		task.wait(.5)
-		
+		task.wait(.3)
+
 		local Pets = workspace.__REMOTES.Core["Get Stats"]:InvokeServer().Save.Pets
-	
+
 		table.sort(Pets, function(a, b) return tonumber(a.xp) > tonumber(b.xp) end)
-		
-		local fn = function(number)
+
+		local fn = function(number) -- not mine
 			if not number then return 'nil' end
 			local formatted = tostring(number)
 			local k
@@ -457,51 +637,56 @@ do  -- // GUI
 			end
 			return formatted
 		end
-	
+
 		for _, v in pairs(Pets) do
-			local b = Instance.new('TextButton', ScrollingFrame)
-			local prefix = v.dm and v.r and'Glitched'or v.dm and'Dark Matter'or v.r and'Rainbow'or v.g and'Gold'or'Regular'
-			b.Text = ' ' .. fn(v.l) .. ' | ' .. prefix .. ' ' .. Dir[tonumber(v.n)]
-			b.Font = Enum.Font.Cartoon
-			b.TextSize = 15
-			b.BackgroundColor3 = colorz[tostring(selected_IDs[v.id])]
-			b.TextXAlignment = 'Left'
-			b.BackgroundTransparency = .5
-			ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, ScrollingFrame.CanvasSize.Y.Offset + 20)
-			b.MouseButton1Click:Connect(function()
-				if selected_IDs[v.id] then
-					selected_IDs[v.id] = nil
-				else
-					selected_IDs[v.id] = true
-				end
-				b.BackgroundColor3 = colorz[tostring(selected_IDs[v.id])]
-			end)
+			if v.xp > -3 then
+				local b = Instance.new('TextButton', ScrollingFrame)
+				local prefix = v.dm and v.r and'Glitched'or v.dm and'Dark Matter'or v.r and'Rainbow'or v.g and'Gold'or'Regular'
+				b.Text = ' ' .. fn(v.l) .. ' | ' .. prefix .. ' ' .. Dir[tonumber(v.n)]
+				b["FontFace"] = Font.new([[rbxasset://fonts/families/Roboto.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+				b.TextSize = 15
+				b.BackgroundColor3 = Color3.fromRGB(0, 130, 180)
+				b.TextXAlignment = 'Left'
+				b.TextStrokeTransparency = .5
+				b.TextColor3 = Color3.fromRGB(218, 218, 218)
+				b.BackgroundTransparency = ({['true']=.5,['nil']=1})[tostring(selected_IDs[v.id])]
+				Instance.new('UIStroke', b).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+				ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, ScrollingFrame.CanvasSize.Y.Offset + 20)
+				b.MouseButton1Click:Connect(function()
+					if selected_IDs[v.id] then
+						selected_IDs[v.id] = nil
+					else
+						selected_IDs[v.id] = true
+					end
+					b.BackgroundTransparency = ({['true']=.5,['nil']=1})[tostring(selected_IDs[v.id])]
+				end)
+			end
 		end
 	end
+
+	refresh.MouseButton1Click:Connect(LoadPets)
+
 	
-	local Refresh = dupe:Clone()
-	Refresh.Size = pets.Size
-	Refresh.Position = UDim2.new(pets.Position.X.Scale, 0, TextLabel_3.Position.Y.Scale, 0)
-	Refresh.Text = 'Refresh'
-	Refresh.Parent = Frame
-	Refresh.MouseButton1Click:Connect(LoadPets)
-	
-	LoadPets()
 
 	all.MouseButton1Click:Connect(function()
 		all.Text = 'X'
 		specific.Text = ''
 		mode = 0
-		block.Visible = true
+		ScrollingFrame.Visible = false
+		refresh.Visible = false
+		count_selected.Visible = false
 	end)
 
 	specific.MouseButton1Click:Connect(function()
 		all.Text = ''
 		specific.Text = 'X'
 		mode = 1
-		block.Visible = false
+		ScrollingFrame.Visible = true
+		refresh.Visible = true
+		count_selected.Visible = true
 	end)
-	
+
 	pets:GetPropertyChangedSignal'Text':connect(function()
 		local N = tonumber(pets.Text)
 		N = N or 0
@@ -514,13 +699,18 @@ do  -- // GUI
 		pets.Text = Value
 		MAX_PETS_TO_DUPE = Value
 	end)
-	
+
 	acc:GetPropertyChangedSignal'Text':connect(function()
 		ACC_TO_GIVE_PETS = acc.Text 
 	end)
-	
+
 	local ready = false
 	local deb = false
+
+	Frame:TweenPosition(UDim2.new(.5, -373/2, .5, -459/2),Enum.EasingDirection.Out,Enum.EasingStyle.Back,1,true)
+	
+	LoadPets()
+
 	dupe.MouseButton1Click:Connect(function()
 		if deb then return end
 		deb = true
@@ -551,7 +741,7 @@ do  -- // GUI
 			deb = false
 			return
 		end
-		
+
 		H.Parent = workspace
 		-- servers
 		local servers = {}
@@ -575,10 +765,10 @@ do  -- // GUI
 			notify"Couldn't find a new server"
 			return
 		end
-		
+
 		ready = true
 	end)
-	
+
 	repeat wait() until ready
 end
 
