@@ -222,7 +222,7 @@ do  -- // GUI
 		G2L["2"]["Size"] = UDim2.new(0, 373, 0, 459);
 		G2L["2"]["Position"] = UDim2.new(.5, -373/2, -1.5,0);
 		G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-		G2L["2"]["BackgroundTransparency"] = 0.55;
+		G2L["2"]["BackgroundTransparency"] = 0.15;
 
 
 		-- StarterGui.ScreenGui.Frame.titlelabel
