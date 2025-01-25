@@ -18,11 +18,12 @@
     1.14 - 29dec24 - fixed post-teleport execution if injected too early
     1.15 - 01jan25 - changed the duping chance meter parameters and fixed a bug with the dupe button
     1.16 - 24jan25 - revamped gui - gui2lua converter by @uniquadev
+    1.17 - 25jan25 - QoL update - added de/select all visible and search feature
 ]]
 
 -- //
 
-local Ver = '1.16'
+local Ver = '1.17'
 
 -- \\
 
@@ -470,13 +471,14 @@ do  -- // GUI
 		G2L["1f"]["Active"] = true;
 		G2L["1f"]["BorderSizePixel"] = 0;
 		G2L["1f"]["CanvasSize"] = UDim2.new(0, 0, 0, 0);
-		G2L["1f"]["TopImage"] = [[rbxassetid://3062506445]];
-		G2L["1f"]["MidImage"] = [[rbxassetid://3062506202]];
+		G2L["1f"]["TopImage"] = [[rbxasset://textures/ui/Scroll/scroll-middle.png]];
+		G2L["1f"]["MidImage"] = [[rbxasset://textures/ui/Scroll/scroll-middle.png]];
 		G2L["1f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-		G2L["1f"]["BottomImage"] = [[rbxassetid://3062505976]];
-		G2L["1f"]["Size"] = UDim2.new(1, -40, 0, 270);
-		G2L["1f"]["ScrollBarImageColor3"] = Color3.fromRGB(219, 219, 219);
-		G2L["1f"]["Position"] = UDim2.new(0, 20, 1, -290);
+		G2L["1f"]["BottomImage"] = [[rbxasset://textures/ui/Scroll/scroll-middle.png]];
+		G2L["1f"]["Size"] = UDim2.new(1, -40, 0, 250);
+		G2L["1f"]["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["1f"]["ScrollBarThickness"] = 11;
+		G2L["1f"]["Position"] = UDim2.new(0, 20, 1, -270);
 		G2L["1f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 		G2L["1f"]["BackgroundTransparency"] = 1;
 		G2L["1f"]["Visible"] = false;
@@ -544,6 +546,115 @@ do  -- // GUI
 		-- StarterGui.ScreenGui.Frame.refresh.UIStroke
 		G2L["27"] = Instance.new("UIStroke", G2L["24"]);
 
+
+
+
+
+		-- StarterGui.ScreenGui.Frame.search
+		G2L["28"] = Instance.new("TextBox", G2L["2"]);
+		G2L["28"]["CursorPosition"] = -1;
+		G2L["28"]["Name"] = [[search]];
+		G2L["28"]["BorderSizePixel"] = 0;
+		G2L["28"]["TextSize"] = 14;
+		G2L["28"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["28"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["28"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["28"]["ClearTextOnFocus"] = false;
+		G2L["28"]["Size"] = UDim2.new(0, 200, 0, 20);
+		G2L["28"]["Position"] = UDim2.new(0, 20, 0.35, 0);
+		G2L["28"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["28"]["Text"] = [[]];
+		G2L["28"]["BackgroundTransparency"] = 1;
+		G2L["28"]["Visible"] = false;
+
+
+		-- StarterGui.ScreenGui.Frame.search.UICorner
+		G2L["29"] = Instance.new("UICorner", G2L["28"]);
+		G2L["29"]["CornerRadius"] = UDim.new(1, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.search.UIStroke
+		G2L["2a"] = Instance.new("UIStroke", G2L["28"]);
+		G2L["2a"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.search.UIStroke
+		G2L["2b"] = Instance.new("UIStroke", G2L["28"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.search.magglass
+		G2L["2c"] = Instance.new("ImageLabel", G2L["28"]);
+		G2L["2c"]["BorderSizePixel"] = 0;
+		G2L["2c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["2c"]["ImageColor3"] = Color3.fromRGB(32, 32, 32);
+		G2L["2c"]["Image"] = [[rbxassetid://8885668498]];
+		G2L["2c"]["Size"] = UDim2.new(0, 20, 0, 20);
+		G2L["2c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["2c"]["BackgroundTransparency"] = 1;
+		G2L["2c"]["Rotation"] = 90;
+		G2L["2c"]["Name"] = [[magglass]];
+		G2L["2c"]["Position"] = UDim2.new(1, -24, 0, 1);
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel
+		G2L["2d"] = Instance.new("TextButton", G2L["28"]);
+		G2L["2d"]["BorderSizePixel"] = 0;
+		G2L["2d"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["2d"]["TextSize"] = 14;
+		G2L["2d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["2d"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["2d"]["Size"] = UDim2.new(0, 50, 0, 20);
+		G2L["2d"]["BackgroundTransparency"] = 1;
+		G2L["2d"]["Name"] = [[sel]];
+		G2L["2d"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["2d"]["Text"] = [[Sel vis]];
+		G2L["2d"]["Position"] = UDim2.new(1, 10, 0, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.UICorner
+		G2L["2e"] = Instance.new("UICorner", G2L["2d"]);
+		G2L["2e"]["CornerRadius"] = UDim.new(0.25, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.UIStroke
+		G2L["2f"] = Instance.new("UIStroke", G2L["2d"]);
+		G2L["2f"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.UIStroke
+		G2L["30"] = Instance.new("UIStroke", G2L["2d"]);
+
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.desel
+		G2L["31"] = Instance.new("TextButton", G2L["2d"]);
+		G2L["31"]["BorderSizePixel"] = 0;
+		G2L["31"]["TextColor3"] = Color3.fromRGB(219, 219, 219);
+		G2L["31"]["TextSize"] = 14;
+		G2L["31"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		G2L["31"]["FontFace"] = Font.new([[rbxasset://fonts/families/Michroma.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+		G2L["31"]["Size"] = UDim2.new(0, 65, 0, 20);
+		G2L["31"]["BackgroundTransparency"] = 1;
+		G2L["31"]["Name"] = [[desel]];
+		G2L["31"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		G2L["31"]["Text"] = [[Desel vis]];
+		G2L["31"]["Position"] = UDim2.new(1, 5, 0, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.desel.UICorner
+		G2L["32"] = Instance.new("UICorner", G2L["31"]);
+		G2L["32"]["CornerRadius"] = UDim.new(0.25, 0);
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.desel.UIStroke
+		G2L["33"] = Instance.new("UIStroke", G2L["31"]);
+		G2L["33"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+
+
+		-- StarterGui.ScreenGui.Frame.search.sel.desel.UIStroke
+		G2L["34"] = Instance.new("UIStroke", G2L["31"]);
+
 		do -- // draggable snippet not made by me \\
 			local UserInputService = game:GetService("UserInputService")
 
@@ -588,7 +699,7 @@ do  -- // GUI
 
 		return G2L
 	end
-	
+
 	local gui = GUI()
 	local ScreenGui      = gui['1']
 	local Frame          = gui['2']
@@ -600,7 +711,10 @@ do  -- // GUI
 	local specific       = gui['12']
 	local count_selected = gui['22']
 	local acc            = gui['1a']
-	
+	local selb           = gui['2d']
+	local deselb         = gui['31']
+	local searchb        = gui['28']
+
 	task.spawn(function()
 		while task.wait() do
 			local total = 0
@@ -610,7 +724,25 @@ do  -- // GUI
 			count_selected.Text = 'Pets Selected: ' .. total
 		end
 	end)
-	
+
+	selb.MouseButton1Click:Connect(function()
+		for i, v in pairs(ScrollingFrame:GetChildren()) do
+			if v:IsA'TextButton' and v.Visible then
+				selected_IDs[tonumber(v.Name)] = true
+				v.BackgroundTransparency = .5
+			end
+		end	
+	end)
+
+	deselb.MouseButton1Click:Connect(function()
+		for i, v in pairs(ScrollingFrame:GetChildren()) do
+			if v:IsA'TextButton' and v.Visible then
+				selected_IDs[tonumber(v.Name)] = nil
+				v.BackgroundTransparency = 1
+			end
+		end	
+	end)
+
 	local function LoadPets()
 		for _, v in pairs(ScrollingFrame:GetChildren()) do
 			if v:IsA'TextButton' then
@@ -649,6 +781,8 @@ do  -- // GUI
 				b.TextXAlignment = 'Left'
 				b.TextStrokeTransparency = .5
 				b.TextColor3 = Color3.fromRGB(218, 218, 218)
+				b.Name = v.id
+				b.Visible = (b.Text:lower():match(searchb.Text:lower()))
 				b.BackgroundTransparency = ({['true']=.5,['nil']=1})[tostring(selected_IDs[v.id])]
 				Instance.new('UIStroke', b).ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
@@ -665,9 +799,19 @@ do  -- // GUI
 		end
 	end
 
+	local function searchF(S)
+		for _, v in pairs(ScrollingFrame:GetChildren()) do
+			if v:IsA'TextButton' then
+				v.Visible = (v.Text:lower():match(S:lower()))
+			end
+		end		
+	end
+
 	refresh.MouseButton1Click:Connect(LoadPets)
 
-	
+	searchb:GetPropertyChangedSignal('Text'):Connect(function()
+		searchF(searchb.Text)
+	end)
 
 	all.MouseButton1Click:Connect(function()
 		all.Text = 'X'
@@ -676,6 +820,7 @@ do  -- // GUI
 		ScrollingFrame.Visible = false
 		refresh.Visible = false
 		count_selected.Visible = false
+		searchb.Visible = false
 	end)
 
 	specific.MouseButton1Click:Connect(function()
@@ -685,6 +830,7 @@ do  -- // GUI
 		ScrollingFrame.Visible = true
 		refresh.Visible = true
 		count_selected.Visible = true
+		searchb.Visible = true
 	end)
 
 	pets:GetPropertyChangedSignal'Text':connect(function()
@@ -708,8 +854,8 @@ do  -- // GUI
 	local deb = false
 
 	Frame:TweenPosition(UDim2.new(.5, -373/2, .5, -459/2),Enum.EasingDirection.Out,Enum.EasingStyle.Back,1,true)
-	
-	LoadPets()
+
+	LoadPets('')
 
 	dupe.MouseButton1Click:Connect(function()
 		if deb then return end
