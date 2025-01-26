@@ -1,14 +1,32 @@
--- do _G.FARMING = false to stop
+--[[ Instructions
+
+stop script: [ _G.FARMING = false ]
+
+PET_ID - the ID of the Pet to be levelled up
+CLEANER_PET_ID - the ID of the Pet that breaks unused coins that build up and are bad for farming, use some high-power pet like a Dominus Huge
+
+# Best configuration for Pets leveled under 2,250,000 #
+---
+mineCoins = {"Christmas2 Small Coin"}
+mineUnusedCoins = {"Christmas2 Coin", "Christmas2 Coin Stack", "Christmas2 Small Chest", "Christmas2 Chest"}
+---
+
+# Best configuration for Pets leveled above 2,250,000 #
+---
+CLEANER_PET_ID = 0
+mineCoins = {"Christmas3 Small Cane", "Christmas3 Cane"}
+mineUnusedCoins = {}
+---
+]]
+
+-- Settings :
 
 PET_ID = 12345670
-CLEANER_PET_ID = 12345670 -- This is to break unused coins that build up and are bad for farming, use like a Dom Huge idk
-
--- Best configuration for Pets leveled under 2,250,000
-
+CLEANER_PET_ID = 12345670
 mineCoins = {"Christmas2 Small Coin"}
 mineUnusedCoins = {"Christmas2 Coin", "Christmas2 Coin Stack", "Christmas2 Small Chest", "Christmas2 Chest"}
 
---//
+--// Don't change anything under
 
 function getLvl(ID)
     local Stats = workspace.__REMOTES.Core["Get Stats"]:InvokeServer()
